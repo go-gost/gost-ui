@@ -1,7 +1,8 @@
 import React from "react";
+import { Config } from "../api/types";
 
 type GostCtx = {
-  gostConfig?: object;
+  gostConfig?: Partial<Config>;
   updateConfig?: () => PromiseLike<object>;
   logout?: () => void;
 };
