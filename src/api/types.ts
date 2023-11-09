@@ -1,3 +1,5 @@
+// 从 swagger.yaml 提取;
+
 export type APIConfig = {
   accesslog: boolean;
   addr: string;

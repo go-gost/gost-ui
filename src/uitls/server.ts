@@ -42,7 +42,8 @@ export const init = async () => {
 };
 
 const verify = async (arg: GostApiConfig) => {
-  return axios.head(arg.addr + "/config");
+  const baseUrl = arg.addr.replace(/\/+$/, "");
+  return axios.get(baseUrl + "/config");
 };
 
 export const login = async (arg: GostApiConfig, saveLocal?: false) => {
@@ -62,9 +63,9 @@ export const logout = async () => {
 export const save2Local = async (arg: GostApiConfig, id: string) => {
   let servers: any = {};
   try {
-    let serversJson = localStorage.getItem(localServersKey);
+    const serversJson = localStorage.getItem(localServersKey);
     servers = serversJson ? JSON.parse(serversJson) : [];
-  } catch (e) {}
+  } catch (e) { /* empty */ }
   servers[id] = arg;
   localStorage.setItem(localServersKey, JSON.stringify(servers));
 };
@@ -72,9 +73,9 @@ export const save2Local = async (arg: GostApiConfig, id: string) => {
 export const getLocalServer = async (id: string): Promise<GostApiConfig> => {
   let servers: any = {};
   try {
-    let serversJson = localStorage.getItem(localServersKey);
+    const serversJson = localStorage.getItem(localServersKey);
     servers = serversJson ? JSON.parse(serversJson) : [];
-  } catch (e) {}
+  } catch (e) { /* empty */ }
   return servers[id];
 };
 
