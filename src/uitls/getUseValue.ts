@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Events from "events";
+import { EventEmitter as Events } from "events";
 
 type userObject<T = any> = {
   (v?: T): T;
