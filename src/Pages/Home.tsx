@@ -43,7 +43,7 @@ const Home: React.FC = () => {
         columns={columns}
       ></BetaSchemaForm> */}
       <LoginForm
-        title="GOST(v3) 动态配制客户端"
+        title="GOST API Manage"
         subTitle="首先连接API服务"
         layout="horizontal"
         submitter={{
@@ -91,15 +91,6 @@ const Home: React.FC = () => {
           placeholder={"password"}
         />
       </LoginForm>
-      <div>
-        <table>
-          <tr>
-            <th>服务器</th>
-            <th>操作</th>
-          </tr>
-          <tbody></tbody>
-        </table>
-      </div>
     </div>
   );
 };

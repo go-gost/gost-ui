@@ -1,14 +1,19 @@
-name: CI
+name: Deploy gh-pages
 on:
   push:
     branches:
       - master
+permissions:
+  contents: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build
+      - name: Install & Build
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
@@ -16,7 +21,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - name: Deploy # 部署
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages # 部署后提交到那个分支
           folder: dist # 这里填打包好的目录名称
