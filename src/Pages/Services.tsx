@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
-import qs from 'qs';
+import qs from "qs";
 // import { ProTable, ProCard } from "@ant-design/pro-components";
 import Ctx from "../uitls/ctx";
 import * as API from "../api";
@@ -56,11 +56,19 @@ const Services: React.FC = () => {
             title: "详情",
             ellipsis: true,
             render: (value, record: ServiceConfig, index) => {
-              const {handler,listener, addr} = record;
-              const xy = handler.type === listener.type ? handler.type : handler.type + '+' + listener.type;
-              const auth = handler.auth ? handler.auth.username + ':' + handler.auth.password + '@' : '';
-              const metadata = handler.metadata ? qs.stringify(handler.metadata) : '';
-              return `${xy}://${auth}${addr}?${metadata}` ;
+              const { handler, listener, addr, forwarder } = record;
+              const xy =
+                handler.type === listener.type
+                  ? handler.type
+                  : handler.type + "+" + listener.type;
+              const auth = handler.auth
+                ? handler.auth.username + ":" + handler.auth.password + "@"
+                : "";
+              const metadata = handler.metadata
+                ? qs.stringify(handler.metadata)
+                : "";
+              // const targets = forwarder  // TODO:
+              return `${xy}://${auth}${addr}${metadata ? "?" + metadata : ""}`;
             },
           },
           {

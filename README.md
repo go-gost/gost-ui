@@ -1,27 +1,18 @@
-# React + TypeScript + Vite
+# GOST V3 API Manage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+官方的 web-ui 还没完成，先弄个简单的用一下，好过在 postMan 上捣腾；  
+纯前端的项目，部署在`github-pages`上, 放心[试用](https://blog.whyoop.com/gost-ui/);
 
-Currently, two official plugins are available:
+## 使用方式
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. 启动 API 服务
 
-## Expanding the ESLint configuration
+   > `gost -api :18080` 或者 `gost -api admin:123456@:18080`
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+2. 打开 web 端管理地址 [点击打开](https://blog.whyoop.com/gost-ui/)
 
-- Configure the top-level `parserOptions` property like this:
+   - API 地址 `http://IP:PORT`， 如果配置了`pathPrefix`，加上`pathPrefix`路径；
+   - (如果有) 填写 用户，密码;
+   - 点击 `连接` 按钮;
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+3. 管理面板，动态管理GOST
