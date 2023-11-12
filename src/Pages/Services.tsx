@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import qs from "qs";
 // import { ProTable, ProCard } from "@ant-design/pro-components";
@@ -6,13 +6,17 @@ import Ctx from "../uitls/ctx";
 import * as API from "../api";
 import JsonForm from "../components/Forms/Json";
 import { ServiceConfig } from "../api/types";
+import templates from "../uitls/templates";
+import { jsonFormat } from "../uitls";
 
 const Services: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
   const { services } = gostConfig || {};
   const [json, setJson] = useState<any>(null);
   const [config, setConfig] = useState("");
-
+  const ts = useMemo(() => {
+    return templates['services']
+  }, [])
   useEffect(() => {
     if (json) {
       setConfig(JSON.stringify(json));
@@ -86,12 +90,13 @@ const Services: React.FC = () => {
                   </Button> */}
                   <JsonForm
                     layoutType="ModalForm"
+                    templates={ts}
                     trigger={
                       <Button type="link" size={"small"}>
                         修改
                       </Button>
                     }
-                    initialValues={{ value: JSON.stringify(record, null, 4) }}
+                    initialValues={{ value: jsonFormat(record) }}
                     onFinish={async (values: any) => {
                       const { value } = values;
                       await updateService(record.name, value);
@@ -146,7 +151,7 @@ const Services: React.FC = () => {
       <div>
         <JsonForm
           title="添加 Services"
-          layoutType="ModalForm"
+          templates={ts}
           trigger={<Button>{"添加服务"}</Button>}
           onFinish={async (values: any) => {
             const { value } = values;

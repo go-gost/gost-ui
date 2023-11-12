@@ -1,15 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import Ctx from "../uitls/ctx";
 import * as API from "../api";
 import JsonForm from "../components/Forms/Json";
 import { ChainConfig } from "../api/types";
+import { jsonFormat } from "../uitls";
+import templates from "../uitls/templates";
 
 const Chains: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
   const { chains } = gostConfig || {};
   const [json, setJson] = useState<any>(null);
   const [config, setConfig] = useState("");
+  const ts = useMemo(() => {
+    return templates['chains']
+  }, [])
 
   useEffect(() => {
     if (json) {
@@ -79,13 +84,13 @@ const Chains: React.FC = () => {
               return (
                 <Space size={"small"}>
                   <JsonForm
-                    layoutType="ModalForm"
+                    templates={ts}
                     trigger={
                       <Button type="link" size={"small"}>
                         修改
                       </Button>
                     }
-                    initialValues={{ value: JSON.stringify(record, null, 4) }}
+                    initialValues={{ value: jsonFormat(record) }}
                     onFinish={async (values: any) => {
                       const { value } = values;
                       await updateService(record.name, value);
@@ -110,7 +115,7 @@ const Chains: React.FC = () => {
       <div>
         <JsonForm
           title="添加 Chains"
-          layoutType="ModalForm"
+          templates={ts}
           trigger={<Button>新增</Button>}
           onFinish={async (values: any) => {
             const { value } = values;
