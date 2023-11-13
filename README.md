@@ -1,7 +1,7 @@
 # GOST V3 API Manage
 
-官方的 web-ui 还没完成，先弄个简单的用一下，好过在 postMan 上捣腾；  
-纯前端的项目，部署在`github-pages`上, 放心[试用](https://blog.whyoop.com/gost-ui/);
+官方的 web-ui 还没完成，先弄个简单的用一下，好过在 Postman 上捣腾；  
+纯前端的项目，部署在`github-pages`上, 放心使用;
 
 ## 使用方式
 
@@ -9,10 +9,15 @@
 
    > `gost -api :18080` 或者 `gost -api admin:123456@:18080`
 
-2. 打开 web 端管理地址 [点击打开](https://blog.whyoop.com/gost-ui/)
+2. 打开 web 端管理地址 [点击打开](http://blog.whyoop.com/gost-ui/)
 
    - API 地址 `http://IP:PORT`， 如果配置了`pathPrefix`，加上`pathPrefix`路径；
    - (如果有) 填写 用户，密码;
    - 点击 `连接` 按钮;
 
-3. 管理面板，动态管理GOST
+3. 在管理面板，动态管理 GOST
+
+## 常见问题
+
+1. 添加配置时必须有`name`字段，修改时`name`字段会被忽略；
+2. `GOST`的API是支持跨域的，如碰到跨域问题，检查一下页面和API的协议是否一至
