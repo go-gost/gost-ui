@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { Button, Popconfirm, Space, Table } from "antd";
+import { Button, Popconfirm, Space, Table, message } from "antd";
 import qs from "qs";
 // import { ProTable, ProCard } from "@ant-design/pro-components";
 import Ctx from "../uitls/ctx";
@@ -11,12 +11,12 @@ import { jsonFormat } from "../uitls";
 
 const Services: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
-  const { services } = gostConfig || {};
+  const { services: dataList } = gostConfig || {};
   const [json, setJson] = useState<any>(null);
   const [config, setConfig] = useState("");
   const ts = useMemo(() => {
-    return templates['services']
-  }, [])
+    return templates["services"];
+  }, []);
   useEffect(() => {
     if (json) {
       setConfig(JSON.stringify(json));
@@ -53,7 +53,7 @@ const Services: React.FC = () => {
     <div>
       <Table
         size="small"
-        dataSource={services}
+        dataSource={dataList}
         columns={[
           { title: "Name", dataIndex: "name", width: 100 },
           {
@@ -155,7 +155,22 @@ const Services: React.FC = () => {
           trigger={<Button>{"添加服务"}</Button>}
           onFinish={async (values: any) => {
             const { value } = values;
-            await addService(value);
+            const json = JSON.parse(value);
+            let addName = json.name || "services-0";
+            let rename = json.name ? false : true;
+            const hasName = () => {
+              return dataList?.find((item) => {
+                return item.name === addName;
+              });
+            };
+            while (hasName()) {
+              addName = (addName as string).replace(/\d*$/, (a) => {
+                return String(a == "" ? "-0" : Number(a) + 1);
+              });
+              rename = true;
+            }
+            await addService(JSON.stringify({ ...json, name: addName }));
+            rename && message.info(`己自动处理 name 为 "${addName}"`);
             return true;
           }}
         ></JsonForm>

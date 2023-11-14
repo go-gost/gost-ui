@@ -81,7 +81,7 @@ const JsonForm: React.FC<any> = (props) => {
   const hasTemplate = templates?.length;
   return (
     <>
-      <ModalForm {...other} formRef={formRef}>
+      <ModalForm {...other} destroyOnClose formRef={formRef}>
         {hasTemplate && (
           <Space size={"small"} style={{ marginBottom: 5 }}>
             <span>选择模板</span>

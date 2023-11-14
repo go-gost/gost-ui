@@ -1,16 +1,18 @@
 import { v4 } from "uuid";
 import getUseValue from "./getUseValue";
 import axios from "axios";
+import qs from "qs";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
 const localServersKey = "__GOST_SERVERS__";
 
-type GostApiConfig = {
+export type GostApiConfig = {
   addr: string;
   auth?: {
     username: string;
     password: string;
   };
+  time?: number;
 };
 
 export const useGolstCofnig = getUseValue<GostApiConfig | null>();
@@ -34,10 +36,22 @@ export const init = async () => {
     return true;
   }
 
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true });
+  if (query.use) {
+    window[uselocalServerKey] = query.use;
+    window.history.replaceState(null, "", location.pathname);
+  }
+
   // 本地保存的服务器信息
   if (window[uselocalServerKey]) {
-    const server = await getLocalServer(window[uselocalServerKey]);
-    await login(server);
+    const server = await getLocal(window[uselocalServerKey]);
+    if (server) {
+      await login(server);
+      if (server) {
+        server.time = Date.now();
+        saveLocal(window[uselocalServerKey], server);
+      }
+    }
   }
 };
 
@@ -46,12 +60,12 @@ const verify = async (arg: GostApiConfig) => {
   return axios.get(baseUrl + "/config");
 };
 
-export const login = async (arg: GostApiConfig, saveLocal?: false) => {
+export const login = async (arg: GostApiConfig, save?: false) => {
   await verify(arg);
   window[gostServerKey] = arg;
   window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
-  if (saveLocal) {
-    save2Local(arg, v4());
+  if (save) {
+    saveLocal(arg.addr, arg);
   }
 };
 
@@ -60,23 +74,35 @@ export const logout = async () => {
   window.sessionStorage.removeItem(gostServerKey);
 };
 
-export const save2Local = async (arg: GostApiConfig, id: string) => {
-  let servers: any = {};
+export const saveLocal = async (id: string, arg: GostApiConfig) => {
+  let servers: Record<string, GostApiConfig> = {};
   try {
-    const serversJson = localStorage.getItem(localServersKey);
-    servers = serversJson ? JSON.parse(serversJson) : [];
-  } catch (e) { /* empty */ }
-  servers[id] = arg;
+    servers = await getLocalServers();
+  } catch (e) {
+    /* empty */
+  }
+  servers[id] = { ...arg, time: Date.now() };
   localStorage.setItem(localServersKey, JSON.stringify(servers));
 };
 
-export const getLocalServer = async (id: string): Promise<GostApiConfig> => {
-  let servers: any = {};
+export const getLocal = async (
+  id: string
+): Promise<GostApiConfig | undefined> => {
+  const servers = await getLocalServers();
+  const server = servers[id];
+  return server;
+};
+
+export const getLocalServers = async (): Promise<
+  Record<string, GostApiConfig>
+> => {
   try {
     const serversJson = localStorage.getItem(localServersKey);
-    servers = serversJson ? JSON.parse(serversJson) : [];
-  } catch (e) { /* empty */ }
-  return servers[id];
+    const servers = serversJson ? JSON.parse(serversJson) : {};
+    return servers;
+  } catch (e) {
+    return {};
+  }
 };
 
 // 把链接信息保存到本要，下次可以继续使用

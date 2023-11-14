@@ -7,7 +7,7 @@
 
 1. 启动 API 服务
 
-   > `gost -api :18080` 或者 `gost -api admin:123456@:18080`
+   > `gost -api :18080`
 
 2. 打开 web 端管理地址 [点击打开](http://blog.whyoop.com/gost-ui/)
 
