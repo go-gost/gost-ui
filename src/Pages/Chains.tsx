@@ -13,8 +13,8 @@ const Chains: React.FC = () => {
   const [json, setJson] = useState<any>(null);
   const [config, setConfig] = useState("");
   const ts = useMemo(() => {
-    return templates['chains']
-  }, [])
+    return templates["chains"];
+  }, []);
 
   useEffect(() => {
     if (json) {
@@ -65,12 +65,15 @@ const Chains: React.FC = () => {
                 const _nodes = nodes.map((node) => {
                   const {
                     addr,
-                    connector: { type: connectorType },
+                    connector: { type: connectorType, auth },
                     dialer: { type: dialerType },
                   } = node;
+                  const _auth = auth
+                    ? auth.username + ":" + auth.password + "@"
+                    : "";
                   return `${connectorType}${
                     dialerType ? "+" + dialerType : ""
-                  }://${addr}`;
+                  }://${_auth}${addr}`;
                 });
                 return _nodes.join(",");
               });

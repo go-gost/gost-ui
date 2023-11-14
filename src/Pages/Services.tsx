@@ -71,8 +71,12 @@ const Services: React.FC = () => {
               const metadata = handler.metadata
                 ? qs.stringify(handler.metadata)
                 : "";
-              // const targets = forwarder  // TODO:
-              return `${xy}://${auth}${addr}${metadata ? "?" + metadata : ""}`;
+              const targets =
+                forwarder?.nodes.map((item) => item.addr).join(",") || "";
+
+              return `${xy}://${auth}${addr}${targets ? "/" + targets : ""}${
+                metadata ? "?" + metadata : ""
+              }`;
             },
           },
           {
@@ -170,7 +174,7 @@ const Services: React.FC = () => {
               rename = true;
             }
             await addService(JSON.stringify({ ...json, name: addName }));
-            rename && message.info(`己自动处理 name 为 "${addName}"`);
+            rename && message.info(`name 已自动处理为 "${addName}"`);
             return true;
           }}
         ></JsonForm>

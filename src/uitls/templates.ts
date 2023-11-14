@@ -33,6 +33,7 @@ export default {
               label: "http",
               json: `
               {
+                "name": "service-0",
                 "addr": ":1080",
                 "handler": {
                   "type": "http",
@@ -50,6 +51,7 @@ export default {
               label: "https",
               json: `
               {
+                "name": "service-0",
                 "addr": ":1080",
                 "handler": {
                   "type": "http",
@@ -130,6 +132,41 @@ export default {
         }
       }`,
     },
+  ],
+  chains: [
+    {
+      label: "典型转发",
+      cli: "",
+      json: `
+{
+  "name": "chain-0",
+  "hops": [
+    {
+      "name": "hop-0",
+      "nodes": [
+        {
+          "name": "node-0",
+          "addr": "proxy.xxx.com:1080",
+          "connector": {
+            "type": "socks5",
+            "auth": {
+              "username": "username",
+              "password": "password"
+            }
+          },
+          "dialer": {
+            "type": "tcp",
+            "tls": {
+              "serverName": "proxy.xxx.com"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+      `
+    }
   ],
   authers: [
     {
