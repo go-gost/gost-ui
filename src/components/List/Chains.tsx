@@ -1,11 +1,11 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
-import Ctx from "../uitls/ctx";
-import * as API from "../api";
-import JsonForm from "../components/Forms/Json";
-import { ChainConfig } from "../api/types";
-import { jsonFormat } from "../uitls";
-import templates from "../uitls/templates";
+import Ctx from "../../uitls/ctx";
+import * as API from "../../api";
+import JsonForm from "../Forms/Json";
+import { ChainConfig } from "../../api/types";
+import { jsonFormat } from "../../uitls";
+import templates from "../../uitls/templates";
 
 const Chains: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
@@ -21,15 +21,6 @@ const Chains: React.FC = () => {
       setConfig(JSON.stringify(json));
     }
   }, [json]);
-
-  const submit = async (v?: string) => {
-    const data = JSON.parse(v || config);
-    if (json) {
-      await API.chains.put(data.name, data);
-    } else {
-      await API.chains.post(data);
-    }
-  };
 
   const addService = async (servic: any) => {
     const data = JSON.parse(servic);
@@ -49,7 +40,7 @@ const Chains: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ height: 230, overflow: "auto" }}>
       <Table
         size="small"
         dataSource={chains}

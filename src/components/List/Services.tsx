@@ -2,12 +2,12 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Space, Table, message } from "antd";
 import qs from "qs";
 // import { ProTable, ProCard } from "@ant-design/pro-components";
-import Ctx from "../uitls/ctx";
-import * as API from "../api";
-import JsonForm from "../components/Forms/Json";
-import { ServiceConfig } from "../api/types";
-import templates from "../uitls/templates";
-import { jsonFormat } from "../uitls";
+import Ctx from "../../uitls/ctx";
+import * as API from "../../api";
+import JsonForm from "../Forms/Json";
+import { ServiceConfig } from "../../api/types";
+import templates from "../../uitls/templates";
+import { jsonFormat } from "../../uitls";
 
 const Services: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
@@ -50,10 +50,11 @@ const Services: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ height: 230, overflow: "auto" }}>
       <Table
         size="small"
         dataSource={dataList}
+        pagination={false}
         columns={[
           { title: "Name", dataIndex: "name", width: 100 },
           {
@@ -85,13 +86,6 @@ const Services: React.FC = () => {
             render: (value, record, index) => {
               return (
                 <Space size={"small"}>
-                  {/* <Button
-                    type="link"
-                    size={"small"}
-                    onClick={() => setJson(record)}
-                  >
-                    修改
-                  </Button> */}
                   <JsonForm
                     layoutType="ModalForm"
                     templates={ts}
@@ -123,40 +117,13 @@ const Services: React.FC = () => {
             },
           },
         ]}
-      >
-        {/* {services?.length ? (
-          services.map((servic) => (
-            <ProCard
-              key={servic.name}
-              colSpan={colSpan}
-              title={servic.name}
-              extra={
-                <Space>
-                  <span onClick={() => setJson(servic)}>查看</span>
-                  <Popconfirm
-                    title="警告"
-                    description="确定要删除吗？"
-                    onConfirm={() => deleteService(servic)}
-                    // okText="Yes"
-                    // cancelText="No"
-                  >
-                    <span>删除</span>
-                  </Popconfirm>
-                </Space>
-              }
-            >
-              <pre>{JSON.stringify(servic)}</pre>
-            </ProCard>
-          ))
-        ) : (
-          <ProCard>无数据</ProCard>
-        )} */}
-      </Table>
-      <div>
+      ></Table>
+      {/* <div>
         <JsonForm
           title="添加 Services"
           templates={ts}
-          trigger={<Button>{"添加服务"}</Button>}
+          trigger={<Button>{"新增"}</Button>}
+          // initialValues={{ value: "" }}
           onFinish={async (values: any) => {
             const { value } = values;
             const json = JSON.parse(value);
@@ -178,7 +145,7 @@ const Services: React.FC = () => {
             return true;
           }}
         ></JsonForm>
-      </div>
+      </div> */}
     </div>
   );
 };

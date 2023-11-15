@@ -61,6 +61,7 @@ const JsonForm: React.FC<any> = (props) => {
       value = jsonStringFormat(json);
     }
     formRef.current?.setFieldValue("value", value);
+    formRef.current?.validateFields();
   };
   const template2menu: any = (template: Template) => {
     const { children, ...other } = template;
@@ -81,7 +82,13 @@ const JsonForm: React.FC<any> = (props) => {
   const hasTemplate = templates?.length;
   return (
     <>
-      <ModalForm {...other} destroyOnClose formRef={formRef}>
+      <ModalForm
+        {...other}
+        formRef={formRef}
+        modalProps={{
+          destroyOnClose: true,
+        }}
+      >
         {hasTemplate && (
           <Space size={"small"} style={{ marginBottom: 5 }}>
             <span>选择模板</span>
@@ -142,7 +149,17 @@ const JsonForm: React.FC<any> = (props) => {
         <ProFormTextArea
           fieldProps={{ rows: 16 }}
           name="value"
-          // label="JSON"
+          rules={[
+            { required: true, message: "不能为空" },
+            {
+              validator: (rule, value) => {
+                return new Promise((resolve, reject) => {
+                  if (value) JSON.parse(value);
+                  resolve(null);
+                });
+              }
+            },
+          ]}
         ></ProFormTextArea>
       </ModalForm>
     </>

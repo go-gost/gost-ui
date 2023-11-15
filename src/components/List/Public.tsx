@@ -1,29 +1,38 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
-import Ctx from "../uitls/ctx";
-import * as API from "../api";
-import JsonForm from "../components/Forms/Json";
-import { ChainConfig } from "../api/types";
-import { jsonFormat } from "../uitls";
-import templates from "../uitls/templates";
+import Ctx from "../../uitls/ctx";
+import { getRESTfulApi } from "../../api";
+import JsonForm from "../Forms/Json";
+import { ChainConfig } from "../../api/types";
+import { jsonFormat } from "../../uitls";
+import templates from "../../uitls/templates";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 type Props = {
   name: string;
   title: string;
-  api: any;
+  api: ReturnType<typeof getRESTfulApi>;
   keyName?: string;
+  renderConfig?: (v: any, r: any, i: number) => React.ReactNode;
 };
-const PublicPage: React.FC<Props> = (props) => {
-  const { name, title, api, keyName = "name" } = props;
+
+const defaultRenderConfig = (value: any, record: any, index: number) => {
+  return JSON.stringify(record);
+};
+
+const PublicList: React.FC<Props> = (props) => {
+  const {
+    name,
+    title,
+    api,
+    keyName = "name",
+    renderConfig = defaultRenderConfig,
+  } = props;
   const { gostConfig } = useContext(Ctx);
   const dataList = (gostConfig as any)?.[name] || [];
   const ts = useMemo(() => {
     return templates[name];
   }, []);
-  const addService = async (servic: any) => {
-    const data = JSON.parse(servic);
-    await api.post(data);
-  };
 
   const updateService = async (id: string, servic: any) => {
     const data = JSON.parse(servic);
@@ -35,22 +44,22 @@ const PublicPage: React.FC<Props> = (props) => {
   };
 
   return (
-    <div>
+    <div style={{ height: 348, overflow: "auto" }}>
       <Table
+        scroll={{ y: 246 }}
         size="small"
         dataSource={dataList}
         columns={[
-          { title: keyName, dataIndex: keyName, width: 100 },
+          { title: keyName, dataIndex: keyName, ellipsis: true, width: 100 },
           {
             title: "详情",
             ellipsis: true,
-            render: (value, record, index) => {
-              return JSON.stringify(record);
-            },
+            render: renderConfig,
           },
           {
             title: "操作",
-            width: 120,
+            width: 80,
+            align: "right",
             dataIndex: keyName,
             render: (value, record, index) => {
               return (
@@ -59,9 +68,12 @@ const PublicPage: React.FC<Props> = (props) => {
                     title={`修改 ${value || ""}`}
                     templates={ts}
                     trigger={
-                      <Button type="link" size={"small"}>
-                        修改
-                      </Button>
+                      <Button
+                        title="修改"
+                        icon={<EditOutlined />}
+                        type="link"
+                        size={"small"}
+                      />
                     }
                     initialValues={{ value: jsonFormat(record) }}
                     onFinish={async (values: any) => {
@@ -75,9 +87,12 @@ const PublicPage: React.FC<Props> = (props) => {
                     description="确定要删除吗？"
                     onConfirm={() => deleteService(record)}
                   >
-                    <Button type="link" size={"small"}>
-                      删除
-                    </Button>
+                    <Button
+                      title="删除"
+                      icon={<DeleteOutlined />}
+                      type="link"
+                      size={"small"}
+                    />
                   </Popconfirm>
                 </Space>
               );
@@ -85,7 +100,7 @@ const PublicPage: React.FC<Props> = (props) => {
           },
         ]}
       ></Table>
-      <div>
+      {/* <div>
         <JsonForm
           title={`添加 ${title || ""}`}
           templates={ts}
@@ -96,8 +111,8 @@ const PublicPage: React.FC<Props> = (props) => {
             return true;
           }}
         ></JsonForm>
-      </div>
+      </div> */}
     </div>
   );
 };
-export default PublicPage;
+export default PublicList;

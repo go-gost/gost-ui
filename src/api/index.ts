@@ -17,7 +17,7 @@ const apis = {
   services: "/config/services",
 };
 
-const getRESTfulApi = <T = any>(basePath: string) => {
+export const getRESTfulApi = <T = any>(basePath: string) => {
   type G = Partial<T>;
   return {
     post: (data: G) => require.post(basePath, data),

@@ -15,12 +15,16 @@ import Ctx from "./uitls/ctx";
 import { init, logout, useGolstCofnig } from "./uitls/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
-import Services from "./Pages/Services";
-import Chains from "./Pages/Chains";
+import Services from "./components/List/Services";
+import Chains from "./components/List/Chains";
 import "./App.css";
 import { configEvent } from "./uitls/events";
-import PublicPage from "./Pages/PublicPage";
-import { jsonFormat } from "./uitls";
+import PublicList from "./components/List/Public";
+import { download, jsonFormat } from "./uitls";
+import { saveCofnig } from "./api";
+import ListCard from "./components/ListCard";
+import ChainCard from "./components/ListCard/Chains";
+import ServiceCard from "./components/ListCard/Services";
 
 const colSpan = {
   xs: 24,
@@ -95,7 +99,27 @@ function App() {
                 </Col>
                 <Col>{gostInfo.addr}</Col>
                 <Col>
-                  <Button type="link" onClick={logout}>切换连接</Button>
+                  <Space>
+                    <Button
+                      // type="link"
+                      onClick={() => {
+                        saveCofnig();
+                      }}
+                    >
+                      保存配置
+                    </Button>
+                    <Button
+                      // type="link"
+                      onClick={() => {
+                        download(jsonFormat(gostConfig), "gost.json");
+                      }}
+                    >
+                      下载当前配置
+                    </Button>
+                    <Button type="link" onClick={logout}>
+                      切换连接
+                    </Button>
+                  </Space>
                 </Col>
               </Row>
             </Layout.Header>
@@ -103,107 +127,96 @@ function App() {
               <Row style={{ padding: 16, overflow: "hidden" }}>
                 <Row gutter={[16, 16]}>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="服务(Service)">
-                      <Services></Services>
-                    </ProCard>
+                    <ServiceCard></ServiceCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="转发链(Chain)">
-                      <Chains></Chains>
-                    </ProCard>
+                    <ChainCard></ChainCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="认证器(Auther)">
-                      <PublicPage
-                        title="认证器"
-                        name="authers"
-                        api={API.authers}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="认证器(Auther)"
+                      subTitle="认证器"
+                      name="authers"
+                      api={API.authers}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="准入控制器(Admission)">
-                      <PublicPage
-                        title="准入控制器"
-                        name="admissions"
-                        api={API.admissions}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="准入控制器(Admission)"
+                      subTitle="准入控制器"
+                      name="admissions"
+                      api={API.admissions}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="分流器(Bypass)">
-                      <PublicPage
-                        title="分流器"
-                        name="bypass"
-                        api={API.bypasses}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="分流器(Bypass)"
+                      subTitle="分流器"
+                      name="bypass"
+                      api={API.bypasses}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="主机映射器(Hosts)">
-                      <PublicPage
-                        title="主机映射器"
-                        name="hosts"
-                        api={API.hosts}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="主机映射器(Hosts)"
+                      subTitle="主机映射器"
+                      name="hosts"
+                      api={API.hosts}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="跳跃点(Hop)">
-                      <PublicPage
-                        title="跳跃点"
-                        name="hop"
-                        api={API.hops}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="跳跃点(Hop)"
+                      subTitle="跳跃点"
+                      name="hop"
+                      api={API.hops}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="Ingress">
-                      <PublicPage
-                        title="Ingress"
-                        name="ingresses"
-                        api={API.ingresses}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="Ingress"
+                      subTitle="Ingress"
+                      name="ingresses"
+                      api={API.ingresses}
+                    ></ListCard>
                   </Col>
                   <Col {...colSpan}>
-                    <ProCard boxShadow title="域名解析器(Resolver)">
-                      <PublicPage
-                        title="Resolver"
-                        name="resolvers"
-                        api={API.resolvers}
-                      ></PublicPage>
-                    </ProCard>
+                    <ListCard
+                      title="域名解析器(Resolver)"
+                      subTitle="Resolver"
+                      name="resolvers"
+                      api={API.resolvers}
+                    ></ListCard>
                   </Col>
                   <Col span={24}>
                     <ProCard boxShadow title="限速限流">
                       <Row gutter={[16, 16]}>
                         <Col {...colSpan1}>
-                          <ProCard bordered title="流量速率限制">
-                            <PublicPage
-                              title=""
-                              name="limiters"
-                              api={API.limiters}
-                            ></PublicPage>
-                          </ProCard>
+                          <ListCard
+                            title="流量速率限制"
+                            subTitle=""
+                            name="limiters"
+                            api={API.limiters}
+                            bordered
+                          ></ListCard>
                         </Col>
                         <Col {...colSpan1}>
-                          <ProCard bordered title="请求速率限制">
-                            <PublicPage
-                              title=""
-                              name="rlimiters"
-                              api={API.rlimiters}
-                            ></PublicPage>
-                          </ProCard>
+                          <ListCard
+                            title="请求速率限制"
+                            subTitle=""
+                            name="rlimiters"
+                            api={API.rlimiters}
+                            bordered
+                          ></ListCard>
                         </Col>
                         <Col {...colSpan1}>
-                          <ProCard bordered title="并发连接数限制">
-                            <PublicPage
-                              title=""
-                              name="climiters"
-                              api={API.climiters}
-                            ></PublicPage>
-                          </ProCard>
+                          <ListCard
+                            title="并发连接数限制"
+                            subTitle=""
+                            name="climiters"
+                            api={API.climiters}
+                            bordered
+                          ></ListCard>
                         </Col>
                       </Row>
                     </ProCard>
