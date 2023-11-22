@@ -93,6 +93,17 @@ export const getLocal = async (
   return server;
 };
 
+export const deleteLocal = async (id: string) => {
+  let servers: Record<string, GostApiConfig> = {};
+  try {
+    servers = await getLocalServers();
+  } catch (e) {
+    /* empty */
+  }
+  delete servers[id];
+  localStorage.setItem(localServersKey, JSON.stringify(servers));
+};
+
 export const getLocalServers = async (): Promise<
   Record<string, GostApiConfig>
 > => {

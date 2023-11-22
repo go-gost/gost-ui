@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   BetaSchemaForm,
   ProForm,
@@ -11,9 +11,19 @@ import type {
   ProFormColumnsType,
   ProFormLayoutType,
 } from "@ant-design/pro-components";
-import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Checkbox, Col, Form, Row, Space } from "antd";
-import { GostApiConfig, getLocalServers, login } from "../uitls/server";
+import {
+  DeleteOutlined,
+  GlobalOutlined,
+  LockOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Checkbox, Col, Flex, Form, Row, Space } from "antd";
+import {
+  GostApiConfig,
+  getLocalServers,
+  login,
+  deleteLocal,
+} from "../uitls/server";
 
 type DataItem = { name: string; state: string };
 const columns: ProFormColumnsType<DataItem>[] = [
@@ -37,11 +47,11 @@ const columns: ProFormColumnsType<DataItem>[] = [
 const LocalServers = () => {
   const [list, setList] = useState<{ id: string; config: GostApiConfig }[]>();
   // const [local, setLocal] = useState<Record<string, GostApiConfig>>();
-  useEffect(() => {
-    getLocalServers().then((local) => {
-      // setLocal(local);
-      setList(
-        Object.keys(local)
+
+  const updateList = useCallback(async () => {
+    return getLocalServers()
+      .then((local) => {
+        return Object.keys(local)
           .map((key) => {
             return {
               id: key,
@@ -52,15 +62,20 @@ const LocalServers = () => {
             const t1 = a.config.time || 0;
             const t2 = b.config.time || 0;
             return t2 - t1;
-          })
-      );
-    });
+          });
+      })
+      .then((list) => setList(list));
   }, []);
+  useEffect(() => {
+    updateList();
+    // getList().then(list=>setList(list))
+  }, []);
+
   return (
     <>
       {list && list?.length > 0 ? (
         <Space direction="vertical" style={{ display: "flex" }}>
-          <div>快速链接</div>
+          <div>快速连接</div>
           <Row gutter={10}>
             {list.map((item) => {
               return (
@@ -69,11 +84,29 @@ const LocalServers = () => {
                   span={12}
                   title={item.config.addr}
                   style={{
-                    overflow: 'hidden',
+                    overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
                 >
-                  <a href={`?use=${item.id}`}>{item.config.addr}</a>
+                  <Flex gap={5} style={{ overflow: "hidden" }}>
+                    <a
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        flex: "auto",
+                      }}
+                      href={`?use=${item.id}`}
+                    >
+                      {item.config.addr}
+                    </a>
+                    <DeleteOutlined
+                      style={{ color: "red" }}
+                      onClick={async () => {
+                        await deleteLocal(item.id);
+                        updateList();
+                      }}
+                    />
+                  </Flex>
                 </Col>
               );
             })}
