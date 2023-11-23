@@ -4,7 +4,7 @@ import Ctx from "../../uitls/ctx";
 import { getRESTfulApi } from "../../api";
 import JsonForm from "../Forms/Json";
 import { ChainConfig } from "../../api/types";
-import { jsonFormat } from "../../uitls";
+import { jsonFormat, jsonParse } from "../../uitls";
 import templates from "../../uitls/templates";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
@@ -35,7 +35,7 @@ const PublicList: React.FC<Props> = (props) => {
   }, []);
 
   const updateService = async (id: string, servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await api.put(id, data);
   };
 

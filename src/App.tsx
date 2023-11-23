@@ -15,13 +15,12 @@ import Ctx from "./uitls/ctx";
 import { init, logout, useGolstCofnig } from "./uitls/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
-import Services from "./components/List/Services";
-import Chains from "./components/List/Chains";
+// import Services from "./components/List/Services";
+// import Chains from "./components/List/Chains";
+// import PublicList from "./components/List/Public";
 import "./App.css";
 import { configEvent } from "./uitls/events";
-import PublicList from "./components/List/Public";
 import { download, jsonFormat } from "./uitls";
-import { saveCofnig } from "./api";
 import ListCard from "./components/ListCard";
 import ChainCard from "./components/ListCard/Chains";
 import ServiceCard from "./components/ListCard/Services";
@@ -54,7 +53,9 @@ function App() {
 
   useEffect(() => {
     init();
-    const updateConfig = () => {
+    const updateConfig = (reqConfig: any) => {
+      console.log("reqConfig", reqConfig);
+      if(reqConfig.url === API.apis.config) return;
       return API.getConfig().then((data) => {
         setGostConfig(data);
         return data;
@@ -103,7 +104,7 @@ function App() {
                     <Button
                       // type="link"
                       onClick={() => {
-                        saveCofnig();
+                        API.saveCofnig();
                       }}
                     >
                       保存配置

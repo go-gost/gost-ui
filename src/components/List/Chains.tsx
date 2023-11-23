@@ -4,7 +4,7 @@ import Ctx from "../../uitls/ctx";
 import * as API from "../../api";
 import JsonForm from "../Forms/Json";
 import { ChainConfig } from "../../api/types";
-import { jsonFormat } from "../../uitls";
+import { jsonFormat, jsonParse } from "../../uitls";
 import templates from "../../uitls/templates";
 
 const Chains: React.FC = () => {
@@ -23,12 +23,12 @@ const Chains: React.FC = () => {
   }, [json]);
 
   const addService = async (servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await API.chains.post(data);
   };
 
   const updateService = async (id: string, servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await API.chains.put(id, data);
   };
 

@@ -5,7 +5,7 @@ export default {
       cli: "-L tcp://:80/:8080",
       json: `
       {
-        "name": "service-0",
+        "name": "service-0", // 服务名称
         "addr": ":80",
         "handler": {
           "type": "tcp"

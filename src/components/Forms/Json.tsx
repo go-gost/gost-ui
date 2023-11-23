@@ -4,9 +4,11 @@ import {
   ModalForm,
   ProFormInstance,
 } from "@ant-design/pro-components";
-import { Button, Dropdown, Space } from "antd";
+import { Button, Dropdown, Form, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { jsonFormat, jsonStringFormat } from "../../uitls";
+import { jsonFormat, jsonStringFormat, jsonParse } from "../../uitls";
+import MonacoEditor, { MonacoEditorProps } from "react-monaco-editor";
+import "./userMonacoWorker";
 
 type Template = {
   label: string;
@@ -53,8 +55,8 @@ const JsonForm: React.FC<any> = (props) => {
   const templateHandle = (json: string) => {
     let value;
     if (props.initialValues?.value) {
-      const _json = JSON.parse(json);
-      const _old = JSON.parse(props.initialValues.value);
+      const _json = jsonParse(json);
+      const _old = jsonParse(props.initialValues.value);
       _json.name = _old.name ? _old.name : _json.name;
       value = jsonFormat(_json);
     } else {
@@ -146,21 +148,51 @@ const JsonForm: React.FC<any> = (props) => {
             })}
           </Space>
         )}
-        <ProFormTextArea
-          fieldProps={{ rows: 16 }}
+        {/* <ProFormTextArea
+          fieldProps={{ rows: 8 }}
           name="value"
           rules={[
             { required: true, message: "不能为空" },
             {
               validator: (rule, value) => {
                 return new Promise((resolve, reject) => {
-                  if (value) JSON.parse(value);
+                  if (value) jsonParse(value);
                   resolve(null);
                 });
-              }
+              },
             },
           ]}
-        ></ProFormTextArea>
+        ></ProFormTextArea> */}
+        <Form.Item
+          name="value"
+          rules={[
+            { required: true, message: "不能为空" },
+            {
+              validator: (rule, value) => {
+                return new Promise((resolve, reject) => {
+                  if (value) {
+                    jsonParse(value);
+                  }
+                  resolve(null)
+                }).catch((err) => {
+                  console.error(err);
+                  throw new Error('json 格式错误');
+                } );
+              },
+            },
+          ]}
+        >
+          <MonacoEditor
+            className={"g-boder"}
+            height={300}
+            language="json"
+            options={{
+              // selectOnLineNumbers: true,
+              minimap: { enabled: false },
+              // readOnly: readOnly,
+            }}
+          ></MonacoEditor>
+        </Form.Item>
       </ModalForm>
     </>
   );

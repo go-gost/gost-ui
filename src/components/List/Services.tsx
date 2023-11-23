@@ -7,7 +7,7 @@ import * as API from "../../api";
 import JsonForm from "../Forms/Json";
 import { ServiceConfig } from "../../api/types";
 import templates from "../../uitls/templates";
-import { jsonFormat } from "../../uitls";
+import { jsonFormat, jsonParse } from "../../uitls";
 
 const Services: React.FC = () => {
   const { gostConfig, updateConfig } = useContext(Ctx);
@@ -24,7 +24,7 @@ const Services: React.FC = () => {
   }, [json]);
 
   const submit = async (v?: string) => {
-    const data = JSON.parse(v || config);
+    const data = jsonParse(v || config);
     if (json) {
       await API.services.put(data.name, data);
     } else {
@@ -33,12 +33,12 @@ const Services: React.FC = () => {
   };
 
   const addService = async (servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await API.services.post(data);
   };
 
   const updateService = async (id: string, servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await API.services.put(id, data);
   };
 
@@ -126,7 +126,7 @@ const Services: React.FC = () => {
           // initialValues={{ value: "" }}
           onFinish={async (values: any) => {
             const { value } = values;
-            const json = JSON.parse(value);
+            const json = jsonParse(value);
             let addName = json.name || "services-0";
             let rename = json.name ? false : true;
             const hasName = () => {

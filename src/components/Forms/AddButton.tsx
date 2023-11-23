@@ -5,6 +5,7 @@ import { Button, message } from "antd";
 import { getRESTfulApi } from "../../api";
 import { PlusOutlined } from "@ant-design/icons";
 import Ctx from "../../uitls/ctx";
+import { jsonParse } from "../../uitls";
 
 type Props = {
   name: string;
@@ -22,7 +23,7 @@ const AddButton: React.FC<Props> = (props) => {
   }, []);
 
   const addService = async (servic: any) => {
-    const data = JSON.parse(servic);
+    const data = jsonParse(servic);
     await api.post(data);
   };
 
@@ -37,7 +38,7 @@ const AddButton: React.FC<Props> = (props) => {
         // return true;
 
         const { value } = values;
-        const json = JSON.parse(value);
+        const json = jsonParse(value);
         let addName = json.name || `${name}-0`;
         let rename = json.name ? false : true;
         const hasName = () => {

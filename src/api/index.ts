@@ -1,7 +1,9 @@
 import require from "../uitls/require";
 import type * as Gost from "./types";
 
-const apis = {
+type Format = "json" | "yaml";
+
+export const apis = {
   config: "/config",
   admissions: "/config/admissions",
   authers: "/config/authers",
@@ -42,8 +44,8 @@ export const resolvers = getRESTfulApi<Gost.ResolverConfig>(apis["resolvers"]);
 export const services = getRESTfulApi<Gost.ServiceConfig>(apis["services"]);
 
 // 获取当前config
-export const getConfig = () =>
-  require.get(apis.config);
+export const getConfig = (format?: Format) => require.get(apis.config);
 
-// 保存当前config(使之重启也生效)
-export const saveCofnig = () => require.post(apis.config)
+// 保存当前config到服务器
+export const saveCofnig = (format: Format = "json") =>
+  require.post(apis.config, null, { params: { format } });
