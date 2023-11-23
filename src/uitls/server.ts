@@ -57,7 +57,9 @@ export const init = async () => {
 
 const verify = async (arg: GostApiConfig) => {
   const baseUrl = arg.addr.replace(/\/+$/, "");
-  return axios.get(baseUrl + "/config");
+  return axios.get(baseUrl + "/config", {
+    auth: arg.auth
+  });
 };
 
 export const login = async (arg: GostApiConfig, save?: false) => {

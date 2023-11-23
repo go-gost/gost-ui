@@ -133,7 +133,7 @@ const Home: React.FC = () => {
               addr: value.baseURL,
               auth: {
                 username: value.username,
-                password: value.passowrd,
+                password: value.password,
               },
             },
             value.save
