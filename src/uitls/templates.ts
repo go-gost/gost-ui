@@ -1,3 +1,51 @@
+import * as JSONC from "jsonc-parser";
+const proxyTypes = "http,http2,socks,socks5,ss,ssu,sni,relay";
+const listenerTypes =
+  "h2,h2c,h3,tls,dtls,ws,wss,grpc,quic,pht,phts,kcp,ssh,mtcp";
+
+const getProxyJson = (
+  handlerType: string,
+  listenerType: string,
+  metadata?: object
+) => {
+  let jsonc = `
+{
+  "name": "service-0",
+  "addr": ":1080",
+  "handler": {
+    "type": "${handlerType}",
+    // "auth": {
+    //   "username": "user",
+    //   "password": "password"
+    // }
+  },
+  "listener": {
+    "type": "${listenerType}"
+  }
+}`;
+  if (metadata) {
+    const edits = JSONC.modify(jsonc, ["metadata"], metadata, {});
+    edits.push(...JSONC.modify(jsonc, ["handler", "metadata"], metadata, {}));
+    edits.push(...JSONC.modify(jsonc, ["listener", "metadata"], metadata, {}));
+    // edits.push(...JSONC.modify(jsonc, ["name"], undefined, {})) // undefined 可删除
+    jsonc = JSONC.applyEdits(jsonc, edits);
+    // jsonc = JSONC.applyEdits(
+    //   jsonc,
+    //   JSONC.modify(jsonc, ["metadata"], metadata, {})
+    // );
+    // jsonc = JSONC.applyEdits(
+    //   jsonc,
+    //   JSONC.modify(jsonc, ["handler","metadata"], metadata, {})
+    // );
+    // jsonc = JSONC.applyEdits(
+    //   jsonc,
+    //   JSONC.modify(jsonc, ["listener","metadata"], metadata, {})
+    // );
+  }
+
+  return jsonc;
+};
+
 export default {
   services: [
     {
@@ -24,6 +72,37 @@ export default {
       }`,
     },
     {
+      label: "反向代理",
+      cli: "",
+      json: `
+      {
+        "name": "service-0",
+        "addr": ":80",
+        "handler": {
+            "type": "tcp",
+            "metadata": {
+                "sniffing": "true"
+            }
+        },
+        "listener": {
+            "type": "tcp"
+        },
+        "forwarder": {
+            "nodes": [
+                {
+                    "name": "target-1",
+                    "addr": "www.baidu.com:80",
+                    // "host": "myhost.com",
+                    // "path": "/"
+                    "http": {
+                        "host": "www.baidu.com"
+                    }
+                }
+            ]
+        }
+      }`,
+    },
+    {
       label: "代理服务",
       children: [
         {
@@ -31,90 +110,61 @@ export default {
           children: [
             {
               label: "http",
-              json: `
-              {
-                "name": "service-0",
-                "addr": ":1080",
-                "handler": {
-                  "type": "http",
-                  "auth": {
-                    "username": "user",
-                    "password": "password"
-                  }
-                },
-                "listener": {
-                  "type": "tcp"
-                }
-              }`,
+              json: getProxyJson("http", "tcp"),
             },
             {
-              label: "https",
-              json: `
-              {
-                "name": "service-0",
-                "addr": ":1080",
-                "handler": {
-                  "type": "http",
-                  "auth": {
-                    "username": "user",
-                    "password": "password"
-                  }
-                },
-                "listener": {
-                  "type": "tls"
-                }
-              }`,
+              label: "https(http+tsl)",
+              json: getProxyJson("http", "tls"),
+            },
+            {
+              label: "http+wss",
+              json: getProxyJson("http", "wss"),
+            },
+            {
+              label: "http2",
+              json: getProxyJson("http2", "http2"),
             },
           ],
         },
         {
-          label: "socks5",
-          json: `
-          {
-            "name": "service-0",
-            "addr": ":1080",
-            "handler": {
-              "type": "socks5",
-              "auth": {
-                "username": "user",
-                "password": "password"
-              },
-              "metadata": {
-                "udp": "true"
-              }
+          label: "relay",
+          children: [
+            {
+              label: "relay+tcp",
+              json: getProxyJson("relay", "tcp"),
             },
-            "listener": {
-              "type": "tcp",
-              "metadata": {
-                "udp": "true"
-              }
+            {
+              label: "relay+tls",
+              json: getProxyJson("relay", "tls"),
             },
-            "metadata": {
-              "udp": "true"
-            }
-          }`,
+            {
+              label: "relay+wss",
+              json: getProxyJson("relay", "tls"),
+            },
+          ],
+        },
+        {
+          label: "socks",
+          children: [
+            {
+              label: "socks4",
+              json: getProxyJson("socks", "tcp"),
+            },
+            {
+              label: "socks5",
+              json: getProxyJson("socks5", "tcp"),
+            },
+            {
+              label: "socks5(支持udp)",
+              json: getProxyJson("socks5", "tcp", { udp: "true" }),
+            },
+            {
+              label: "socks5+tls",
+              json: getProxyJson("socks5", "tls", { notls: "true" }),
+            },
+          ],
         },
       ],
-      // json: `
-      // {
-      //   "name": "service-0",
-      //   "addr": ":1080",
-      //   "handler": {
-      //     "type": "socks5",
-      //     "metadata": {
-      //       "udp": "true"
-      //     }
-      //   },
-      //   "listener": {
-      //     "type": "tcp",
-      //     "metadata": {
-      //       "udp": "true"
-      //     }
-      //   },
-      //   "metadata": {
-      //     "udp": "true"
-      //   }
-      // }`,
     },
     {
       label: "代理转发",
@@ -135,7 +185,7 @@ export default {
   ],
   chains: [
     {
-      label: "典型转发",
+      label: "典型转发链",
       cli: "",
       json: `
 {
@@ -165,8 +215,8 @@ export default {
     }
   ]
 }
-      `
-    }
+      `,
+    },
   ],
   authers: [
     {

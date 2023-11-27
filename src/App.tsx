@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Button,
   Col,
@@ -44,32 +44,37 @@ function App() {
   const [isDark, setIsDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
-  const updateConfig = useCallback(() => {
-    return API.getConfig().then((data) => {
-      setGostConfig(data);
-      return data;
-    });
-  }, []);
 
-  useEffect(() => {
-    init();
-    const updateConfig = (reqConfig: any) => {
-      console.log("reqConfig", reqConfig);
-      if(reqConfig.url === API.apis.config) return;
+  const slef = useRef({
+    updateConfig: () => {
       return API.getConfig().then((data) => {
         setGostConfig(data);
         return data;
       });
+    },
+    defaultTitle: document.title,
+  });
+
+  useEffect(() => {
+    init();
+    const apiUpdate = (reqConfig: any) => {
+      console.log("reqConfig", reqConfig);
+      if (reqConfig.url === API.apis.config) return;
+      return slef.current.updateConfig();
     };
-    configEvent.on("apiUpdate", updateConfig);
+    configEvent.on("apiUpdate", apiUpdate);
     return () => {
-      configEvent.off("apiUpdate", updateConfig);
+      configEvent.off("apiUpdate", apiUpdate);
     };
   }, []);
 
   useEffect(() => {
     if (gostInfo) {
-      updateConfig();
+      slef.current.updateConfig().then(() => {
+        document.title = gostInfo.addr.replace(/^(https?:)?\/\//,'');
+      });
+    } else {
+      document.title = slef.current.defaultTitle;
     }
   }, [gostInfo]);
 
@@ -77,7 +82,7 @@ function App() {
     <Ctx.Provider
       value={{
         gostConfig,
-        updateConfig,
+        updateConfig: slef.current.updateConfig,
         logout,
       }}
     >
