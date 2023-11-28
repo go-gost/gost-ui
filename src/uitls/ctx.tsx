@@ -8,3 +8,8 @@ type GostCtx = {
 };
 const Ctx = React.createContext<GostCtx>({});
 export default Ctx;
+
+export const CardCtx = React.createContext<{
+  localList: any[];
+  updateLocalList?: () => void;
+}>({localList:[]});

@@ -1,26 +1,30 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import JsonForm from "./Json";
 import templates from "../../uitls/templates";
 import { Button, message } from "antd";
 import { getRESTfulApi } from "../../api";
 import { PlusOutlined } from "@ant-design/icons";
-import Ctx from "../../uitls/ctx";
+import Ctx, { CardCtx } from "../../uitls/ctx";
 import { jsonParse } from "../../uitls";
+import { GostCommit } from "../../api/local";
 
 type Props = {
   name: string;
   title: string;
   api: ReturnType<typeof getRESTfulApi>;
+  localApi?: GostCommit;
   keyName?: string;
 };
 
 const AddButton: React.FC<Props> = (props) => {
-  const { name, title, api } = props;
-  const { gostConfig, updateConfig } = useContext(Ctx);
+  const { name, title, api, localApi } = props;
+  const { gostConfig } = useContext(Ctx);
+  const { localList, updateLocalList } = useContext(CardCtx);
   const dataList = (gostConfig as any)?.[name] || [];
+  const dataSource = [...dataList, ...localList];
   const ts = useMemo(() => {
     return templates[name];
-  }, []);
+  }, [name]);
 
   const addService = async (servic: any) => {
     const data = jsonParse(servic);
@@ -42,7 +46,7 @@ const AddButton: React.FC<Props> = (props) => {
         let addName = json.name || `${name}-0`;
         let rename = json.name ? false : true;
         const hasName = () => {
-          return dataList?.find((item: any) => {
+          return dataSource?.find((item: any) => {
             return item.name === addName;
           });
         };

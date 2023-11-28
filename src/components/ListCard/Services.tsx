@@ -1,9 +1,8 @@
 import { services } from "../../api";
-import { ProCard } from "@ant-design/pro-components";
-import PublicList from "../List/Public";
-import AddButton from "../Forms/AddButton";
+import { services as localServices } from "../../api/local";
 import { ServiceConfig } from "../../api/types";
 import qs from "qs";
+import ListCard from ".";
 
 const record = (value: any, record: ServiceConfig, index: number) => {
   const { handler, listener, addr, forwarder } = record;
@@ -14,11 +13,8 @@ const record = (value: any, record: ServiceConfig, index: number) => {
   const auth = handler.auth
     ? handler.auth.username + ":" + handler.auth.password + "@"
     : "";
-  const metadata = handler.metadata
-    ? qs.stringify(handler.metadata)
-    : "";
-  const targets =
-    forwarder?.nodes.map((item) => item.addr).join(",") || "";
+  const metadata = handler.metadata ? qs.stringify(handler.metadata) : "";
+  const targets = forwarder?.nodes.map((item) => item.addr).join(",") || "";
 
   return `${xy}://${auth}${addr}${targets ? "/" + targets : ""}${
     metadata ? "?" + metadata : ""
@@ -26,20 +22,14 @@ const record = (value: any, record: ServiceConfig, index: number) => {
 };
 const ServiceCard: React.FC = (props) => {
   const _prop = {
-    title: "服务",
+    title: "服务(Service)",
+    subTitle: "服务",
     name: "services",
     api: services,
     keyName: "name",
+    localApi: localServices,
+    renderConfig: record,
   };
-  return (
-    <ProCard
-      boxShadow={true}
-      bordered={false}
-      title={"服务(Service)"}
-      extra={<AddButton {..._prop} />}
-    >
-      <PublicList {..._prop} renderConfig={record}></PublicList>
-    </ProCard>
-  );
+  return <ListCard {..._prop} />;
 };
 export default ServiceCard;

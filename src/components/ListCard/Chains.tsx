@@ -1,8 +1,6 @@
-import { getRESTfulApi, chains } from "../../api";
-import { ProCard } from "@ant-design/pro-components";
-import PublicList from "../List/Public";
-import AddButton from "../Forms/AddButton";
+import { chains } from "../../api";
 import { ChainConfig } from "../../api/types";
+import ListCard from ".";
 
 const record = (value: any, record: ChainConfig, index: number) => {
   const { hops } = record;
@@ -22,20 +20,13 @@ const record = (value: any, record: ChainConfig, index: number) => {
 };
 const ChainCard: React.FC = (props) => {
   const _prop = {
-    title: "转发链",
+    title: "转发链(Chain)",
+    subTitle: "转发链",
     name: "chains",
     api: chains,
     keyName: "name",
+    renderConfig: record,
   };
-  return (
-    <ProCard
-      boxShadow={true}
-      bordered={false}
-      title={"转发链(Chain)"}
-      extra={<AddButton {..._prop} />}
-    >
-      <PublicList {..._prop} renderConfig={record}></PublicList>
-    </ProCard>
-  );
+  return <ListCard {..._prop} />;
 };
 export default ChainCard;
