@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import getUseValue from "./getUseValue";
 import axios from "axios";
 import qs from "qs";
+import { message } from "antd";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
 const localServersKey = "__GOST_SERVERS__";
@@ -63,11 +64,17 @@ const verify = async (arg: GostApiConfig) => {
 };
 
 export const login = async (arg: GostApiConfig, save?: false) => {
-  await verify(arg);
-  window[gostServerKey] = arg;
-  window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
-  if (save) {
-    saveLocal(arg.addr, arg);
+  try{
+    await verify(arg);
+    window[gostServerKey] = arg;
+    window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
+    if (save) {
+      saveLocal(arg.addr, arg);
+    }
+  }catch(e:any){
+    // console.log(e);
+    message.error(e?.message || '链接失败');
+    throw(e);
   }
 };
 
