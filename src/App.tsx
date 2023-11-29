@@ -15,15 +15,13 @@ import Ctx from "./uitls/ctx";
 import { init, logout, useGolstCofnig } from "./uitls/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
-// import Services from "./components/List/Services";
-// import Chains from "./components/List/Chains";
-// import PublicList from "./components/List/Public";
 import "./App.css";
 import { configEvent } from "./uitls/events";
 import { download, jsonFormat } from "./uitls";
 import ListCard from "./components/ListCard";
 import ChainCard from "./components/ListCard/Chains";
 import ServiceCard from "./components/ListCard/Services";
+import zhCN from "antd/locale/zh_CN";
 
 const colSpan = {
   xs: 24,
@@ -71,7 +69,7 @@ function App() {
   useEffect(() => {
     if (gostInfo) {
       slef.current.updateConfig().then(() => {
-        document.title = gostInfo.addr.replace(/^(https?:)?\/\//,'');
+        document.title = gostInfo.addr.replace(/^(https?:)?\/\//, "");
       });
     } else {
       document.title = slef.current.defaultTitle;
@@ -88,6 +86,7 @@ function App() {
     >
       <ConfigProvider
         theme={{ algorithm: isDark ? theme.darkAlgorithm : undefined }}
+        locale={zhCN}
       >
         {gostInfo ? (
           <Layout style={{ height: "100vh", overflow: "hidden" }}>

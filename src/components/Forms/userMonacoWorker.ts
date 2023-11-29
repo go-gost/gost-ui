@@ -6,7 +6,7 @@ import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 // import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 // import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 // @ts-ignore 
-import { language as yamlLanguage } from "monaco-editor/esm/vs/basic-languages/yaml/yaml";
+// import { language as yamlLanguage } from "monaco-editor/esm/vs/basic-languages/yaml/yaml";
 
 // eslint-disable-next-line
 // @ts-ignore
