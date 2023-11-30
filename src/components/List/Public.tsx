@@ -1,19 +1,19 @@
-import { useContext, useMemo, useRef } from "react";
+import { useContext } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import { red, green } from "@ant-design/colors";
-import Ctx from "../../uitls/ctx";
 import { getRESTfulApi } from "../../api";
 import JsonForm from "../Forms/Json";
 import { jsonFormat, jsonParse } from "../../uitls";
-import templates from "../../uitls/templates";
 import {
   CheckCircleOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   StopOutlined,
 } from "@ant-design/icons";
 import { GostCommit } from "../../api/local";
 import { CardCtx } from "../../uitls/ctx";
+import { UseListData, UseTemplates } from "../ListCard/hooks";
 
 type Props = {
   name: string;
@@ -37,48 +37,9 @@ const PublicList: React.FC<Props> = (props) => {
     keyName = "name",
     renderConfig = defaultRenderConfig,
   } = props;
-  const { gostConfig } = useContext(Ctx);
-  const { localList, updateLocalList } = useContext(CardCtx);
-  const dataList = (gostConfig as any)?.[name] || [];
-  const dataSource = [...dataList, ...localList];
-  const ts = useMemo(() => {
-    return templates[name];
-  }, [name]);
-
-  const comm = useRef({
-    updateValue: async (id: string, value: any) => {
-      const data = jsonParse(value);
-      await api.put(id, data);
-    },
-    deleteValue: async (value: any) => {
-      await api.delete(value.name);
-    },
-    dispatch: async (value: any) => {
-      const { deleteValue } = comm.current;
-      if (!localApi) return;
-      await deleteValue(value);
-      await localApi.add(value);
-      updateLocalList?.();
-    },
-    enable: async (value: any) => {
-      if (!localApi) return;
-      // console.log("enable", value);
-      await api.post(value);
-      await localApi.delete(value.name);
-      updateLocalList?.();
-    },
-    updateLocal: async (key: string, value: any) => {
-      if (!localApi) return;
-      const data = jsonParse(value);
-      await localApi.put(key, { ...data, name: key });
-      updateLocalList?.();
-    },
-    deleteLocal: async (value: any) => {
-      if (!localApi) return;
-      await localApi.delete(value.name);
-      updateLocalList?.();
-    },
-  });
+  const { localList, comm } = useContext(CardCtx);
+  const { dataList, dataSource } = UseListData({ localList, name });
+  const templates = UseTemplates({ name });
 
   return (
     <div style={{ height: 348, overflow: "auto" }}>
@@ -95,7 +56,7 @@ const PublicList: React.FC<Props> = (props) => {
           },
           {
             title: "操作",
-            width: 90,
+            width: name === "services" ? 120 : 90,
             align: "right",
             dataIndex: keyName,
             render: (value, record, index) => {
@@ -107,7 +68,9 @@ const PublicList: React.FC<Props> = (props) => {
                 enable,
                 updateLocal,
                 deleteLocal,
-              } = comm.current;
+                addValue,
+                // } = comm.current;
+              } = comm!;
               const isEnable = dataList.includes(record);
               return (
                 <Space size={2}>
@@ -144,7 +107,7 @@ const PublicList: React.FC<Props> = (props) => {
                   ) : null}
                   <JsonForm
                     title={`修改 ${value || ""}`}
-                    templates={ts}
+                    templates={templates}
                     trigger={
                       <Button
                         title="修改"
@@ -163,6 +126,25 @@ const PublicList: React.FC<Props> = (props) => {
                         await updateLocal(record.name, value);
                         return true;
                       }
+                    }}
+                  ></JsonForm>
+                  <JsonForm
+                    title={`复制自 ${value || ""}`}
+                    templates={templates}
+                    trigger={
+                      <Button
+                        title="复制"
+                        icon={<CopyOutlined />}
+                        type="link"
+                        size={"small"}
+                      />
+                    }
+                    initialValues={{ value: jsonFormat(record) }}
+                    onFinish={async (values: any) => {
+                      const { value } = values;
+                      const json = jsonParse(value);
+                      await comm!.addValue(json);
+                      return true;
                     }}
                   ></JsonForm>
                   <Popconfirm

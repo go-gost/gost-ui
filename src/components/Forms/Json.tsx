@@ -4,7 +4,7 @@ import { Button, Dropdown, Form, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { jsonFormat, jsonStringFormat, jsonParse } from "../../uitls";
 import MonacoEditor, { MonacoEditorProps } from "react-monaco-editor";
-import "./userMonacoWorker";
+import "../../uitls/userMonacoWorker";
 
 type Template = {
   label: string;
