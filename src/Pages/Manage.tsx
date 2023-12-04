@@ -94,7 +94,7 @@ const Manage = () => {
               <ListCard
                 title="分流器(Bypass)"
                 subTitle="分流器"
-                name="bypass"
+                name="bypasses"
                 api={API.bypasses}
               ></ListCard>
             </Col>
@@ -110,7 +110,7 @@ const Manage = () => {
               <ListCard
                 title="跳跃点(Hop)"
                 subTitle="跳跃点"
-                name="hop"
+                name="hops"
                 api={API.hops}
               ></ListCard>
             </Col>

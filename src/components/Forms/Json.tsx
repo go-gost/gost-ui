@@ -87,9 +87,9 @@ const JsonForm: React.FC<any> = (props) => {
           destroyOnClose: true,
         }}
       >
-        {hasTemplate && (
+        {hasTemplate ? (
           <Space size={"small"} style={{ marginBottom: 5 }}>
-            <span>选择模板</span>
+            <span>模板:</span>
             {templates.map((template: any, index: any) => {
               if (template.children?.length) {
                 const menu = {
@@ -143,7 +143,7 @@ const JsonForm: React.FC<any> = (props) => {
               }
             })}
           </Space>
-        )}
+        ) : null}
         {/* <ProFormTextArea
           fieldProps={{ rows: 8 }}
           name="value"
@@ -169,11 +169,11 @@ const JsonForm: React.FC<any> = (props) => {
                   if (value) {
                     jsonParse(value);
                   }
-                  resolve(null)
+                  resolve(null);
                 }).catch((err) => {
                   console.error(err);
-                  throw new Error('json 格式错误');
-                } );
+                  throw new Error("json 格式错误");
+                });
               },
             },
           ]}

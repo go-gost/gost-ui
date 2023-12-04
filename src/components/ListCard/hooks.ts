@@ -1,5 +1,5 @@
 import Ctx, { CardCtx } from "../../uitls/ctx";
-import ConfigTemplates from "../../uitls/templates";
+import ConfigTemplates from "../../templates";
 import { useContext, useMemo } from "react";
 
 type UseListDataProps = {
