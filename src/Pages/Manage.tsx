@@ -76,6 +76,14 @@ const Manage = () => {
             </Col>
             <Col {...colSpan}>
               <ListCard
+                title="跳跃点(Hop)"
+                subTitle="跳跃点"
+                name="hops"
+                api={API.hops}
+              ></ListCard>
+            </Col>
+            <Col {...colSpan}>
+              <ListCard
                 title="认证器(Auther)"
                 subTitle="认证器"
                 name="authers"
@@ -104,14 +112,6 @@ const Manage = () => {
                 subTitle="主机映射器"
                 name="hosts"
                 api={API.hosts}
-              ></ListCard>
-            </Col>
-            <Col {...colSpan}>
-              <ListCard
-                title="跳跃点(Hop)"
-                subTitle="跳跃点"
-                name="hops"
-                api={API.hops}
               ></ListCard>
             </Col>
             <Col {...colSpan}>

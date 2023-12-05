@@ -52,7 +52,13 @@ const PublicList: React.FC<Props> = (props) => {
           {
             title: "详情",
             ellipsis: true,
-            render: renderConfig,
+            render: (...args) => {
+              try {
+                return renderConfig(...args);
+              } catch (e) {
+                return defaultRenderConfig(...args);
+              }
+            },
           },
           {
             title: "操作",
