@@ -19,5 +19,7 @@ export default [
       ]
     }`,
       },
-  ...getOtherAll("rlimiter", "https://gost.run/concepts/limiter/"),
+  ...getOtherAll("rlimiter", "https://gost.run/concepts/limiter/", {
+    redisType: "set",
+  }),
 ];
