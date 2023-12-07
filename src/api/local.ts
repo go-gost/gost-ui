@@ -3,18 +3,17 @@ import type * as Gost from "./types";
 import { getGost } from "../uitls/server";
 
 export class GostCommit<T = any> {
-  name: string;
+  private name: string;
   constructor(name: string) {
     this.name = name;
   }
-  _getStoreName= ()=>{
+  private _getStoreName = () => {
     const { addr } = getGost() || {};
     if (!addr) throw "no Server";
-    return `${this.name}-${encodeURIComponent(addr)}`
+    return `${this.name}-${encodeURIComponent(addr)}`;
   };
-  _getIdb = () => {
+  private _getIdb = () => {
     return getIdb(`${this._getStoreName()}|name`);
-    
   };
   getList = async () => {
     const idb = await this._getIdb();

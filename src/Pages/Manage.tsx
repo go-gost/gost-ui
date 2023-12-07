@@ -8,6 +8,7 @@ import ListCard from "../components/ListCard";
 import ChainCard from "../components/ListCard/Chains";
 import ServiceCard from "../components/ListCard/Services";
 import { ProCard } from "@ant-design/pro-components";
+import HopsCard from "../components/ListCard/Hops";
 
 const colSpan = {
   xs: 24,
@@ -75,12 +76,7 @@ const Manage = () => {
               <ChainCard></ChainCard>
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="跳跃点(Hop)"
-                subTitle="跳跃点"
-                name="hops"
-                api={API.hops}
-              ></ListCard>
+              <HopsCard />
             </Col>
             <Col {...colSpan}>
               <ListCard
