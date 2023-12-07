@@ -44,6 +44,7 @@ const PublicList: React.FC<Props> = (props) => {
   return (
     <div style={{ height: 348, overflow: "auto" }}>
       <Table
+        rowKey={'name'}
         scroll={{ y: 246 }}
         size="small"
         dataSource={dataSource}

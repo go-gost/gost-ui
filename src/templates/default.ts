@@ -255,7 +255,7 @@ export const getDefaultTempplates = (name: string) => {
 
 export const getByName = (name: string, label = "默认") => {
   const defT = getDefaultTempplates(name);
-  console.log("defT", name, defT);
+//   console.log("defT", name, defT);
   if (defT) {
     return {
       label,

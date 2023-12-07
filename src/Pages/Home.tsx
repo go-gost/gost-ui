@@ -128,9 +128,13 @@ const Home: React.FC = () => {
           searchConfig: { submitText: "连接" },
         }}
         onFinish={(value) => {
+          let addr: string = value.baseURL;
+          if (!/^(https?:)?\/\//.test(addr)) {
+            addr = "//" + addr;
+          }
           return login(
             {
-              addr: value.baseURL,
+              addr: addr,
               auth: {
                 username: value.username,
                 password: value.password,
