@@ -119,65 +119,64 @@ const LocalServers = () => {
 
 const Home: React.FC = () => {
   return (
-    <div style={{ height: "100%" }}>
-      <LoginForm
-        title="GOST API Manage"
-        subTitle="首先连接API服务"
-        layout="horizontal"
-        submitter={{
-          searchConfig: { submitText: "连接" },
-        }}
-        onFinish={(value) => {
-          let addr: string = value.baseURL;
-          if (!/^(https?:)?\/\//.test(addr)) {
-            addr = "//" + addr;
-          }
-          return login(
-            {
-              addr: addr,
-              auth: {
-                username: value.username,
-                password: value.password,
-              },
+    <LoginForm
+      containerStyle={{ boxSizing: "border-box" }}
+      title="GOST API Manage"
+      subTitle="首先连接API服务"
+      layout="horizontal"
+      submitter={{
+        searchConfig: { submitText: "连接" },
+      }}
+      onFinish={(value) => {
+        let addr: string = value.baseURL;
+        if (!/^(https?:)?\/\//.test(addr)) {
+          addr = "//" + addr;
+        }
+        return login(
+          {
+            addr: addr,
+            auth: {
+              username: value.username,
+              password: value.password,
             },
-            value.save
-          );
+          },
+          value.save
+        );
+      }}
+      actions={<LocalServers></LocalServers>}
+    >
+      <ProFormText
+        name="baseURL"
+        fieldProps={{
+          size: "large",
+          prefix: <GlobalOutlined className={"prefixIcon"} />,
         }}
-        actions={<LocalServers></LocalServers>}
-      >
-        <ProFormText
-          name="baseURL"
-          fieldProps={{
-            size: "large",
-            prefix: <GlobalOutlined className={"prefixIcon"} />,
-          }}
-          placeholder={"API baseURL"}
-          rules={[
-            {
-              required: true,
-              message: "请输入API地址",
-            },
-          ]}
-        />
-        <ProFormText
-          name="username"
-          fieldProps={{
-            size: "large",
-            prefix: <UserOutlined className={"prefixIcon"} />,
-          }}
-          placeholder={"username"}
-        />
-        <ProFormText.Password
-          name="password"
-          fieldProps={{
-            size: "large",
-            prefix: <LockOutlined className={"prefixIcon"} />,
-          }}
-          placeholder={"password"}
-        />
-        <ProFormCheckbox labelAlign="right" label="保存到本地" name="save" />
-      </LoginForm>
-    </div>
+        placeholder={"API baseURL"}
+        rules={[
+          {
+            required: true,
+            message: "请输入API地址",
+          },
+        ]}
+      />
+      <ProFormText
+        name="username"
+        fieldProps={{
+          size: "large",
+          prefix: <UserOutlined className={"prefixIcon"} />,
+        }}
+        placeholder={"username"}
+      />
+      <ProFormText.Password
+        name="password"
+        fieldProps={{
+          size: "large",
+          prefix: <LockOutlined className={"prefixIcon"} />,
+        }}
+        placeholder={"password"}
+      />
+      <ProFormCheckbox labelAlign="right" label="保存到本地" name="save" />
+    </LoginForm>
   );
 };
 

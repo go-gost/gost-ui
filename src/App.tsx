@@ -13,6 +13,7 @@ import Manage from "./Pages/Manage";
 function App() {
   const gostInfo = useGolstCofnig();
   const [gostConfig, setGostConfig] = useState<any>(null);
+  const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
   const [isDark, setIsDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
@@ -34,9 +35,15 @@ function App() {
       if (reqConfig.url === API.apis.config) return;
       return slef.current.updateConfig();
     };
+    const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
+    const themeChange = (ev: MediaQueryListEvent) => {
+      setIsDark(ev.matches);
+    };
+    matchMedia.addEventListener("change", themeChange);
     configEvent.on("apiUpdate", apiUpdate);
     return () => {
       configEvent.off("apiUpdate", apiUpdate);
+      matchMedia.removeEventListener("change", themeChange);
     };
   }, []);
 
