@@ -45,22 +45,17 @@ const columns: ProFormColumnsType<DataItem>[] = [
 ];
 
 const LocalServers = () => {
-  const [list, setList] = useState<{ id: string; config: GostApiConfig }[]>();
+  const [list, setList] = useState<GostApiConfig[]>();
   // const [local, setLocal] = useState<Record<string, GostApiConfig>>();
 
   const updateList = useCallback(async () => {
     return getLocalServers()
       .then((local) => {
-        return Object.keys(local)
-          .map((key) => {
-            return {
-              id: key,
-              config: local[key],
-            };
-          })
+      
+        return local
           .sort((a, b) => {
-            const t1 = a.config.time || 0;
-            const t2 = b.config.time || 0;
+            const t1 = a.time || 0;
+            const t2 = b.time || 0;
             return t2 - t1;
           });
       })
@@ -80,9 +75,9 @@ const LocalServers = () => {
             {list.map((item) => {
               return (
                 <Col
-                  key={item.id}
+                  key={item.addr}
                   span={12}
-                  title={item.config.addr}
+                  title={item.addr}
                   style={{
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -95,14 +90,14 @@ const LocalServers = () => {
                         textOverflow: "ellipsis",
                         flex: "auto",
                       }}
-                      href={`?use=${item.id}`}
+                      href={`?use=${item.addr}`}
                     >
-                      {item.config.addr}
+                      {item.addr}
                     </a>
                     <DeleteOutlined
                       style={{ color: "red" }}
                       onClick={async () => {
-                        await deleteLocal(item.id);
+                        await deleteLocal(item.addr);
                         updateList();
                       }}
                     />

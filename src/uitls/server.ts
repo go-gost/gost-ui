@@ -3,11 +3,13 @@ import getUseValue from "./getUseValue";
 import axios from "axios";
 import qs from "qs";
 import { message } from "antd";
+import { ServerComm } from "../api/local";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
 const localServersKey = "__GOST_SERVERS__";
 
 export type GostApiConfig = {
+  key?: string;
   addr: string;
   auth?: {
     username: string;
@@ -59,22 +61,22 @@ export const init = async () => {
 const verify = async (arg: GostApiConfig) => {
   const baseUrl = arg.addr.replace(/\/+$/, "");
   return axios.get(baseUrl + "/config", {
-    auth: arg.auth
+    auth: arg.auth,
   });
 };
 
 export const login = async (arg: GostApiConfig, save?: false) => {
-  try{
+  try {
     await verify(arg);
     window[gostServerKey] = arg;
     window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
     if (save) {
       saveLocal(arg.addr, arg);
     }
-  }catch(e:any){
+  } catch (e: any) {
     // console.log(e);
-    message.error(e?.message || '链接失败');
-    throw(e);
+    message.error(e?.message || "链接失败");
+    throw e;
   }
 };
 
@@ -84,45 +86,24 @@ export const logout = async () => {
 };
 
 export const saveLocal = async (id: string, arg: GostApiConfig) => {
-  let servers: Record<string, GostApiConfig> = {};
-  try {
-    servers = await getLocalServers();
-  } catch (e) {
-    /* empty */
-  }
-  servers[id] = { ...arg, time: Date.now() };
-  localStorage.setItem(localServersKey, JSON.stringify(servers));
+  return ServerComm.set({ ...arg, time: Date.now() });
 };
 
 export const getLocal = async (
   id: string
 ): Promise<GostApiConfig | undefined> => {
-  const servers = await getLocalServers();
-  const server = servers[id];
-  return server;
+  return ServerComm.get(id);
 };
 
 export const deleteLocal = async (id: string) => {
-  let servers: Record<string, GostApiConfig> = {};
-  try {
-    servers = await getLocalServers();
-  } catch (e) {
-    /* empty */
-  }
-  delete servers[id];
-  localStorage.setItem(localServersKey, JSON.stringify(servers));
+  return ServerComm.delete(id);
 };
 
 export const getLocalServers = async (): Promise<
-  Record<string, GostApiConfig>
+  // Record<string, GostApiConfig>
+  GostApiConfig[]
 > => {
-  try {
-    const serversJson = localStorage.getItem(localServersKey);
-    const servers = serversJson ? JSON.parse(serversJson) : {};
-    return servers;
-  } catch (e) {
-    return {};
-  }
+  return ServerComm.getAll();
 };
 
 // 把链接信息保存到本要，下次可以继续使用

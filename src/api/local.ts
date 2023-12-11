@@ -49,3 +49,27 @@ export const hosts = new GostCommit<Gost.HostsConfig>("hosts");
 export const ingresses = new GostCommit<Gost.IngressConfig>("ingresses");
 export const resolvers = new GostCommit<Gost.ResolverConfig>("resolvers");
 export const services = new GostCommit<Gost.ServiceConfig>("services");
+
+export class ServerComm {
+  private static _storeName = "savedServer";
+  private static _getIdb() {
+    return getIdb(`${this._storeName}|addr`);
+  }
+  static async getAll() {
+    const idb = await this._getIdb();
+    return idb.getAll(this._storeName);
+  }
+  static async get(key: string) {
+    const idb = await this._getIdb();
+    return idb.get(this._storeName, key);
+  }
+  static async set(value: any) {
+    const idb = await this._getIdb();
+    return idb.put(this._storeName, value);
+  }
+  static async delete(key: string) {
+    const idb = await this._getIdb();
+    return idb.delete(this._storeName, key);
+  }
+}
+
