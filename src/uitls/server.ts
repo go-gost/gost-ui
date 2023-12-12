@@ -1,4 +1,3 @@
-import { v4 } from "uuid";
 import getUseValue from "./getUseValue";
 import axios from "axios";
 import qs from "qs";
@@ -6,7 +5,6 @@ import { message } from "antd";
 import { ServerComm } from "../api/local";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
-const localServersKey = "__GOST_SERVERS__";
 
 export type GostApiConfig = {
   key?: string;
@@ -19,7 +17,6 @@ export type GostApiConfig = {
 };
 
 export const useGolstCofnig = getUseValue<GostApiConfig | null>();
-
 Object.defineProperty(window, gostServerKey, {
   get: useGolstCofnig.get,
   set: useGolstCofnig.set,

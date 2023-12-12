@@ -10,10 +10,7 @@ const HopsCard: React.FC = (props) => {
   const { gostConfig } = useContext(Ctx);
   return (
     <ListCard
-      title="跳跃点(Hop)"
-      subTitle="跳跃点"
-      name="hops"
-      api={hops}
+      module="hop"
       renderConfig={(value: any, record: HopConfig, index: number) => {
         return viewHop.call(gostConfig!, record);
       }}

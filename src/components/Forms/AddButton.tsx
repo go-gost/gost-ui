@@ -9,17 +9,14 @@ import { GostCommit } from "../../api/local";
 import { UseTemplates } from "../ListCard/hooks";
 
 type Props = {
-  name: string;
+  keyName: string;
   title: string;
-  api: ReturnType<typeof getRESTfulApi>;
-  localApi?: GostCommit;
-  keyName?: string;
 };
 
 const AddButton: React.FC<Props> = (props) => {
-  const { name, title } = props;
+  const { keyName, title } = props;
   const { comm } = useContext(CardCtx);
-  const templates = UseTemplates({ name });
+  const templates = UseTemplates({ name: keyName! });
   
   return (
     <JsonForm

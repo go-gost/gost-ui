@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useState,
-  useMemo,
-} from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { getRESTfulApi } from "../../api";
 import { ProCard } from "@ant-design/pro-components";
 import PublicList from "../List/Public";
@@ -13,16 +8,19 @@ import { CardCtx, Comm } from "../../uitls/ctx";
 import { jsonParse } from "../../uitls";
 import { UseListData } from "./hooks";
 import { Modal, notification } from "antd";
+import { getModule } from "../../api/modules";
 
 export type ListCardProps = {
-  name: string;
-  title: string;
-  subTitle: string;
-  api: ReturnType<typeof getRESTfulApi>;
+  module?: string;
+  name?: string;
+  title?: string;
+  subTitle?: string;
+  api?: ReturnType<typeof getRESTfulApi>;
   keyName?: string;
+  rowKey?: string;
+  localApi?: GostCommit;
   boxShadow?: boolean;
   bordered?: boolean;
-  localApi?: GostCommit;
   renderConfig?: (v: any, r: any, i: number) => React.ReactNode;
 };
 
@@ -31,18 +29,22 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     title,
     subTitle,
     name,
+    keyName,
     api,
     boxShadow = true,
     bordered = false,
-    keyName = "name",
+    rowKey = "name",
     renderConfig,
     localApi,
-  } = props;
+  } = useMemo(() => {
+    return { ...getModule(props.module || "")!, ...props };
+  }, [props]);
   const _prop = {
-    title: subTitle,
+    title: subTitle || "",
     name,
     api,
     keyName,
+    rowKey,
     localApi,
     renderConfig,
   };
@@ -65,7 +67,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     updateLocalList();
   }, [updateLocalList]);
 
-  const { dataSource } = UseListData({ name, localList });
+  const { dataSource } = UseListData({ name: keyName, localList });
 
   const comm = useMemo<Comm>(
     () => ({
@@ -101,7 +103,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
           });
         }
         await addService(JSON.stringify({ ...json, name: addName }));
-        (json.name !== addName) &&
+        json.name !== addName &&
           notification.info({
             description: `新分配 name 为 "${addName}"`,
             message: "自动修正提醒",

@@ -6,6 +6,7 @@ import ListCard from ".";
 import { useContext } from "react";
 import Ctx from "../../uitls/ctx";
 import viewService from "../viewer/services";
+import { getModule } from "../../api/modules";
 
 // const record = (value: any, record: ServiceConfig, index: number) => {
 //   const { handler, listener, addr, forwarder } = record;
@@ -26,12 +27,8 @@ import viewService from "../viewer/services";
 const ServiceCard: React.FC = (props) => {
   const { gostConfig } = useContext(Ctx);
   const _prop = {
-    title: "服务(Service)",
-    subTitle: "服务",
-    name: "services",
-    api: services,
-    keyName: "name",
-    localApi: localServices,
+    // ...getModule('services'),
+    module: 'service',
     renderConfig: (value: any, record: ServiceConfig, index: number) => {
       return viewService.call(gostConfig!, record);
     },

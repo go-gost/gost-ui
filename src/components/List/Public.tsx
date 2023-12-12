@@ -20,7 +20,8 @@ type Props = {
   title: string;
   api: ReturnType<typeof getRESTfulApi>;
   localApi?: GostCommit;
-  keyName?: string;
+  keyName: string;
+  rowKey?: string;
   renderConfig?: (v: any, r: any, i: number) => React.ReactNode;
 };
 
@@ -34,22 +35,23 @@ const PublicList: React.FC<Props> = (props) => {
     title,
     api,
     localApi,
-    keyName = "name",
+    keyName, 
+    rowKey = "name",
     renderConfig = defaultRenderConfig,
   } = props;
   const { localList, comm } = useContext(CardCtx);
-  const { dataList, dataSource } = UseListData({ localList, name });
-  const templates = UseTemplates({ name });
+  const { dataList, dataSource } = UseListData({ localList, name: keyName });
+  const templates = UseTemplates({ name: keyName });
 
   return (
     <div style={{ height: 348, overflow: "auto" }}>
       <Table
-        rowKey={'name'}
+        rowKey={(obj) => obj.id || obj.name}
         scroll={{ y: 246 }}
         size="small"
         dataSource={dataSource}
         columns={[
-          { title: keyName, dataIndex: keyName, ellipsis: true, width: 100 },
+          { title: rowKey, dataIndex: rowKey, ellipsis: true, width: 100 },
           {
             title: "详情",
             ellipsis: true,
@@ -63,9 +65,9 @@ const PublicList: React.FC<Props> = (props) => {
           },
           {
             title: "操作",
-            width: name === "services" ? 120 : 90,
+            width: name === "service" ? 120 : 90,
             align: "right",
-            dataIndex: keyName,
+            dataIndex: rowKey,
             render: (value, record, index) => {
               // console.log("render", record);
               const {

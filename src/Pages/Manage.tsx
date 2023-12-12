@@ -79,82 +79,34 @@ const Manage = () => {
               <HopsCard />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="认证器(Auther)"
-                subTitle="认证器"
-                name="authers"
-                api={API.authers}
-              ></ListCard>
+              <ListCard module="auther" />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="准入控制器(Admission)"
-                subTitle="准入控制器"
-                name="admissions"
-                api={API.admissions}
-              ></ListCard>
+              <ListCard module="admission" />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="分流器(Bypass)"
-                subTitle="分流器"
-                name="bypasses"
-                api={API.bypasses}
-              ></ListCard>
+              <ListCard module="bypass" />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="主机映射器(Hosts)"
-                subTitle="主机映射器"
-                name="hosts"
-                api={API.hosts}
-              ></ListCard>
+              <ListCard module="host" />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="Ingress"
-                subTitle="Ingress"
-                name="ingresses"
-                api={API.ingresses}
-              ></ListCard>
+              <ListCard module="ingress" />
             </Col>
             <Col {...colSpan}>
-              <ListCard
-                title="域名解析器(Resolver)"
-                subTitle="Resolver"
-                name="resolvers"
-                api={API.resolvers}
-              ></ListCard>
+              <ListCard module="resolver" />
             </Col>
             <Col span={24}>
               <ProCard boxShadow title="限速限流">
                 <Row gutter={[16, 16]}>
                   <Col {...colSpan1}>
-                    <ListCard
-                      title="流量速率限制"
-                      subTitle=""
-                      name="limiters"
-                      api={API.limiters}
-                      bordered
-                    ></ListCard>
+                    <ListCard module="limiter" bordered />
                   </Col>
                   <Col {...colSpan1}>
-                    <ListCard
-                      title="请求速率限制"
-                      subTitle=""
-                      name="rlimiters"
-                      api={API.rlimiters}
-                      bordered
-                    ></ListCard>
+                    <ListCard module="rlimiter" bordered />
                   </Col>
                   <Col {...colSpan1}>
-                    <ListCard
-                      title="并发连接数限制"
-                      subTitle=""
-                      name="climiters"
-                      api={API.climiters}
-                      bordered
-                    ></ListCard>
+                    <ListCard module="climiter" bordered />
                   </Col>
                 </Row>
               </ProCard>

@@ -3,37 +3,48 @@ import type * as Gost from "./types";
 import { getGost } from "../uitls/server";
 
 export class GostCommit<T = any> {
-  private name: string;
-  constructor(name: string) {
-    this.name = name;
+  private storeName: string;
+  constructor(storeName: string) {
+    this.storeName = storeName;
   }
-  private _getStoreName = () => {
-    const { addr } = getGost() || {};
-    if (!addr) throw "no Server";
-    return `${this.name}-${encodeURIComponent(addr)}`;
-  };
+  private get key() {
+    return getGost()?.addr;
+  }
   private _getIdb = () => {
-    return getIdb(`${this._getStoreName()}|name`);
+    return getIdb(`${this.storeName}|++id,_key_,[name+_key_]`);
   };
   getList = async () => {
     const idb = await this._getIdb();
-    return idb.getAll(this._getStoreName());
+    return idb.getAllFromIndex(this.storeName,'_key_',this.key);
   };
-  get = async (key: string) => {
+  get = async (name: string) => {
     const idb = await this._getIdb();
-    return idb.get(this._getStoreName(), key);
+    // return idb.get(this.name);
+    return idb.getFromIndex(
+      this.storeName,
+      "[name+_key_]",
+      IDBKeyRange.only([name, this.key])
+    );
   };
   add = async (obj: any) => {
     const idb = await this._getIdb();
-    return idb.add(this._getStoreName(), obj);
+    return idb.add(this.storeName, { ...obj, _key_: this.key });
   };
-  put = async (key: string, obj: any) => {
+  put = async (name: string, obj: any) => {
     const idb = await this._getIdb();
-    return idb.put(this._getStoreName(), obj);
+    const t = idb.transaction(this.storeName, "readwrite");
+    const os = t.objectStore(this.storeName);
+    const old = await os.index('[name+_key_]').get(IDBKeyRange.only([name, this.key]));
+    await os.put(obj, old.id);
+    return t.done;
   };
-  delete = async (key: string) => {
+  delete = async (name: string) => {
     const idb = await this._getIdb();
-    return idb.delete(this._getStoreName(), key);
+    const t = idb.transaction(this.storeName, "readwrite");
+    const os = t.objectStore(this.storeName);
+    const old = await os.index('[name+_key_]').get(IDBKeyRange.only([name, this.key]));
+    await os.delete(old.id);
+    return t.done
   };
 }
 
@@ -72,4 +83,3 @@ export class ServerComm {
     return idb.delete(this._storeName, key);
   }
 }
-

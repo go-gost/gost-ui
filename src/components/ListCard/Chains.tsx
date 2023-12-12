@@ -24,11 +24,7 @@ import Ctx from "../../uitls/ctx";
 const ChainCard: React.FC = (props) => {
   const { gostConfig } = useContext(Ctx);
   const _prop = {
-    title: "转发链(Chain)",
-    subTitle: "转发链",
-    name: "chains",
-    api: chains,
-    keyName: "name",
+    module: 'chain',
     renderConfig: (value: any, record: ChainConfig, index: number) => {
       return viewChain.call(gostConfig!, record);
     },
