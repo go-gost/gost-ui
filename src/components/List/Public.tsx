@@ -65,7 +65,7 @@ const PublicList: React.FC<Props> = (props) => {
           },
           {
             title: "操作",
-            width: name === "service" ? 120 : 90,
+            width: localApi ? 120 : 90,
             align: "right",
             dataIndex: rowKey,
             render: (value, record, index) => {

@@ -14,7 +14,7 @@ type Module = {
 const getAttr = (keyName: string) => ({
   keyName,
   api: (API as any)[keyName],
-  // localApi: (API as any)[keyName],
+  localApi: (LocalApi as any)[keyName],
   rowKey: "name",
 });
 
@@ -41,6 +41,7 @@ const modules: Module[] = [
     name: "chain",
     title: "转发链(Chain)",
     subTitle: "转发链",
+    // localApi: (LocalApi as any)['chains'],
     ...getAttr("chains"),
   },
   {
@@ -89,9 +90,10 @@ const modules: Module[] = [
     name: "service",
     title: "服务(Service)",
     subTitle: "服务",
-    // localApi: (API as any)['services'],
-    localApi: (LocalApi as any)['services'],
     ...getAttr("services"),
+    // localApi: (API as any)['services'],
+    // localApi: (LocalApi as any)['services'],
+    // localApi: (LocalApi as any)['services'],
   },
 ];
 
