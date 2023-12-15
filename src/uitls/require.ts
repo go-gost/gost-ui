@@ -13,7 +13,7 @@ require.interceptors.request.use((config) => {
 require.interceptors.response.use(
   (res) => {
     if (res.config.method !== "get") {
-      configEvent.emit("apiUpdate", res.config);
+      // configEvent.emit("apiUpdate", res.config);
       message.success('操作成功！')
     }
     if (res.data) {

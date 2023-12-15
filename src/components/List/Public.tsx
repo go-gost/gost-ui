@@ -13,7 +13,7 @@ import {
 } from "@ant-design/icons";
 import { GostCommit } from "../../api/local";
 import { CardCtx } from "../../uitls/ctx";
-import { UseListData, UseTemplates } from "../ListCard/hooks";
+import { UseListData, UseListData1, UseTemplates } from "../ListCard/hooks";
 
 type Props = {
   name: string;
@@ -40,7 +40,8 @@ const PublicList: React.FC<Props> = (props) => {
     renderConfig = defaultRenderConfig,
   } = props;
   const { localList, comm } = useContext(CardCtx);
-  const { dataList, dataSource } = UseListData({ localList, name: keyName });
+  // const { dataList, dataSource } = UseListData({ localList, name: keyName });
+  const { dataList, dataSource } = UseListData1({ localApi, name: keyName });
   const templates = UseTemplates({ name: keyName });
 
   return (

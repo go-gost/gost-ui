@@ -83,24 +83,24 @@ export const logout = async () => {
 };
 
 export const saveLocal = async (id: string, arg: GostApiConfig) => {
-  return ServerComm.set({ ...arg, time: Date.now() });
+  return ServerComm.setServer({ ...arg, time: Date.now() });
 };
 
 export const getLocal = async (
   id: string
 ): Promise<GostApiConfig | undefined> => {
-  return ServerComm.get(id);
+  return ServerComm.getServer(id);
 };
 
 export const deleteLocal = async (id: string) => {
-  return ServerComm.delete(id);
+  return ServerComm.deleteServer(id);
 };
 
 export const getLocalServers = async (): Promise<
   // Record<string, GostApiConfig>
   GostApiConfig[]
 > => {
-  return ServerComm.getAll();
+  return ServerComm.getAllServer();
 };
 
 // 把链接信息保存到本要，下次可以继续使用

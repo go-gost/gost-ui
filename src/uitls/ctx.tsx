@@ -3,7 +3,7 @@ import { Config } from "../api/types";
 
 type GostCtx = {
   gostConfig?: Partial<Config>;
-  updateConfig?: () => PromiseLike<object>;
+  localConfig?: Partial<Config>;
   logout?: () => void;
 };
 
@@ -22,7 +22,7 @@ export default Ctx;
 
 export const CardCtx = React.createContext<{
   name: string;
-  localList: any[];
+  localList?: any[];
   updateLocalList?: () => void;
   comm?: Comm;
 }>({ localList: [], name: "" });

@@ -6,9 +6,10 @@ import AddButton from "../Forms/AddButton";
 import { GostCommit } from "../../api/local";
 import { CardCtx, Comm } from "../../uitls/ctx";
 import { jsonParse } from "../../uitls";
-import { UseListData } from "./hooks";
+import { UseListData, UseListData1 } from "./hooks";
 import { Modal, notification } from "antd";
 import { getModule } from "../../api/modules";
+import { configEvent } from "../../uitls/events";
 
 export type ListCardProps = {
   module?: string;
@@ -48,37 +49,38 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     localApi,
     renderConfig,
   };
-  const [localList, setLocalList] = useState<any[]>([]);
-  const updateLocalList = useCallback(() => {
-    if (!localApi) return;
-    localApi.getList().then((data) => {
-      // console.log("updateLocalList", data);
-      setLocalList(data);
-    });
-  }, [localApi]);
-  const addService = useCallback(
-    async (servic: any) => {
+  // const [localList, setLocalList] = useState<any[]>([]);
+  // const updateLocalList = useCallback(() => {
+  //   if (!localApi) return;
+  //   localApi.getList().then((data) => {
+  //     // console.log("updateLocalList", data);
+  //     setLocalList(data);
+  //   });
+  // }, [localApi]);
+
+  // useEffect(() => {
+  //   updateLocalList();
+  // }, [updateLocalList]);
+
+  // const { dataSource } = UseListData({ name: keyName, localList });
+  const { dataSource } = UseListData1({ localApi, name: keyName });
+
+  const comm = useMemo<Comm>(() => {
+    const addValue = async (servic: any) => {
       const data = jsonParse(servic);
       await api.post(data);
-    },
-    [api]
-  );
-  useEffect(() => {
-    updateLocalList();
-  }, [updateLocalList]);
-
-  const { dataSource } = UseListData({ name: keyName, localList });
-
-  const comm = useMemo<Comm>(
-    () => ({
-      updateValue: async (id: string, value: any) => {
+    };
+    return {
+      updateValue: async (id: string, value: any, update = true) => {
         const data = jsonParse(value);
         await api.put(id, data);
+        update && configEvent.emit("apiUpdate", {});
       },
-      deleteValue: async (value: any) => {
+      deleteValue: async (value: any, update = true) => {
         await api.delete(value.name);
+        update && configEvent.emit("apiUpdate", {});
       },
-      addValue: async (json: any) => {
+      addValue: async (json: any, update = true) => {
         let addName = json.name || `${name}-0`;
         const hasName = () => {
           return dataSource?.find((item: any) => {
@@ -102,43 +104,46 @@ const ListCard: React.FC<ListCardProps> = (props) => {
             return String(a == "" ? "-0" : Number(a) + 1);
           });
         }
-        await addService(JSON.stringify({ ...json, name: addName }));
+        await addValue(JSON.stringify({ ...json, name: addName }));
         json.name !== addName &&
           notification.info({
             description: `新分配 name 为 "${addName}"`,
             message: "自动修正提醒",
           });
+        update && configEvent.emit("apiUpdate", {});
       },
       dispatch: async (value: any) => {
         if (!localApi) return;
         await api.delete(value.name);
         await localApi.add(value);
-        updateLocalList?.();
+        configEvent.emit("update");
+        // updateLocalList?.();
       },
       enable: async (value: any) => {
         if (!localApi) return;
         await api.post(value);
         await localApi.delete(value.name);
-
-        updateLocalList?.();
+        configEvent.emit("update");
+        // updateLocalList?.();
       },
       updateLocal: async (key: string, value: any) => {
         if (!localApi) return;
         const data = jsonParse(value);
         await localApi.put(key, { ...data, name: key });
-        updateLocalList?.();
+        configEvent.emit("localUpdate");
+        // updateLocalList?.();
       },
       deleteLocal: async (value: any) => {
         if (!localApi) return;
         await localApi.delete(value.name);
-        updateLocalList?.();
+        configEvent.emit("localUpdate");
+        // updateLocalList?.();
       },
-    }),
-    [addService, api, dataSource, localApi, name, updateLocalList]
-  );
+    };
+  }, [api, dataSource, localApi, name]);
 
   return (
-    <CardCtx.Provider value={{ localList, updateLocalList, name, comm }}>
+    <CardCtx.Provider value={{ name, comm }}>
       <ProCard
         boxShadow={boxShadow}
         bordered={bordered}

@@ -1,6 +1,7 @@
 import { getIdb } from "./db";
 import type * as Gost from "./types";
 import { getGost } from "../uitls/server";
+import { configEvent } from "../uitls/events";
 const localCache = "localCache";
 const savedServer = "savedServer";
 
@@ -98,7 +99,7 @@ export class GostCommit1<T = any> {
   };
   add = async (obj: any) => {
     const idb = await this._getIdb();
-    return idb.add(this.dsName, {
+    await idb.add(this.dsName, {
       ...obj,
       _key_: this.key,
       _type_: this.type,
@@ -137,32 +138,40 @@ export const services = new GostCommit1<Gost.ServiceConfig>("services");
 
 export class ServerComm {
   private static _getIdb() {
-    return getIdb({ [localCache]: `addr`, [savedServer]: "_key_" });
+    return getIdb({ [savedServer]: `addr`, [localCache]: "++id,_key_" });
   }
-  static async getAll() {
+  static async getAllServer() {
     const idb = await this._getIdb();
     return idb.getAll(savedServer);
   }
-  static async get(key: string) {
+  static async getServer(key: string) {
     const idb = await this._getIdb();
     return idb.get(savedServer, key);
   }
-  static async set(value: any) {
+  static async setServer(value: any) {
     const idb = await this._getIdb();
-    return idb.put(savedServer, value);
+    await idb.put(savedServer, value);
   }
-  static async deleteCache(key: string) {
+  static async deleteServer(key: string, rmCache: boolean = false) {
+    const idb = await this._getIdb();
+    await idb.delete(savedServer, key);
+    if (rmCache) {
+      await this.deleteCacheConfig(key);
+    }
+  }
+  static async deleteCacheConfig(key: string) {
     const idb = await this._getIdb();
     const t = idb.transaction([localCache], "readwrite");
     const sCache = await t.objectStore(localCache);
     const keys = await sCache.index("_key_").getAllKeys(IDBKeyRange.only(key));
     await sCache.delete(keys);
   }
-  static async delete(key: string, rmCache: boolean = false) {
+  static async getAllCacheConfig(key?: string){
     const idb = await this._getIdb();
-    await idb.delete(savedServer, key);
-    if (rmCache) {
-      await this.deleteCache(key);
+    if(key){
+      return idb.getAllFromIndex(localCache, "_key_", IDBKeyRange.only(key));
+    }else{
+      return idb.getAll(localCache);
     }
   }
 }

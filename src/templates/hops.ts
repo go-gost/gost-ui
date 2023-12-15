@@ -14,7 +14,7 @@ export default [
       "nodes": [
         {
           "name": "node-0",
-          "addr": "8888",
+          "addr": ":8888",
           "connector": {
             "type": "http"
           },
@@ -24,7 +24,7 @@ export default [
         },
         {
           "name": "node-1",
-          "addr": "9999",
+          "addr": ":9999",
           "connector": {
             "type": "socks5"
           },
