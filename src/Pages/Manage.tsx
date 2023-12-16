@@ -2,13 +2,15 @@ import { Button, Col, Layout, Row, Select, Space } from "antd";
 import { logout, useGolstCofnig } from "../uitls/server";
 import { download, jsonFormat } from "../uitls";
 import Ctx from "../uitls/ctx";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import * as API from "../api";
 import ListCard from "../components/ListCard";
 import ChainCard from "../components/ListCard/Chains";
 import ServiceCard from "../components/ListCard/Services";
 import { ProCard } from "@ant-design/pro-components";
 import HopsCard from "../components/ListCard/Hops";
+import { fixOldCacheConfig } from "../api/local";
+import { configEvent } from "../uitls/events";
 
 const colSpan = {
   xs: 24,
@@ -26,6 +28,12 @@ const colSpan1 = {
 const Manage = () => {
   const gostInfo = useGolstCofnig()!;
   const { gostConfig } = useContext(Ctx);
+  useEffect(() => {
+    fixOldCacheConfig().then((up) => {
+      up && configEvent.emit("update");
+    });
+    return () => {};
+  }, []);
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <Layout.Header style={{ color: "#FFF" }}>

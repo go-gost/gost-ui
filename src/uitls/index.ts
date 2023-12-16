@@ -1,7 +1,17 @@
 import { format, parse, applyEdits } from "jsonc-parser";
 
-export const jsonFormat = (json: object) => {
+const localCacheKeys = ['_id_', '_key_', '_type_'];
+
+export const jsonFormat = (json: any) => {
   return JSON.stringify(json, null, 4);
+};
+
+export const jsonFormatValue = (json: any) => {
+  const newJson = {...json};
+  for (const key of localCacheKeys) {
+    delete newJson[key];
+  }
+  return jsonFormat(newJson);
 };
 
 export const jsonStringFormat = (str: string) => {

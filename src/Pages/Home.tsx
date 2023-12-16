@@ -125,7 +125,9 @@ const Home: React.FC = () => {
       onFinish={(value) => {
         let addr: string = value.baseURL;
         if (!/^(https?:)?\/\//.test(addr)) {
-          addr = "//" + addr;
+          addr = `${location.protocol}//` + addr;
+        }else if(/^\/\//.test(addr)){
+          addr = `${location.protocol}` + addr;
         }
         return login(
           {

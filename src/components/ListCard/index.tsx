@@ -5,7 +5,6 @@ import PublicList from "../List/Public";
 import AddButton from "../Forms/AddButton";
 import { GostCommit } from "../../api/local";
 import { CardCtx, Comm } from "../../uitls/ctx";
-import { jsonParse } from "../../uitls";
 import { UseListData, UseListData1 } from "./hooks";
 import { Modal, notification } from "antd";
 import { getModule } from "../../api/modules";
@@ -67,13 +66,11 @@ const ListCard: React.FC<ListCardProps> = (props) => {
 
   const comm = useMemo<Comm>(() => {
     const addValue = async (servic: any) => {
-      const data = jsonParse(servic);
-      await api.post(data);
+      await api.post(servic);
     };
     return {
       updateValue: async (id: string, value: any, update = true) => {
-        const data = jsonParse(value);
-        await api.put(id, data);
+        await api.put(id, value);
         update && configEvent.emit("apiUpdate", {});
       },
       deleteValue: async (value: any, update = true) => {
@@ -104,7 +101,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
             return String(a == "" ? "-0" : Number(a) + 1);
           });
         }
-        await addValue(JSON.stringify({ ...json, name: addName }));
+        await addValue({ ...json, name: addName });
         json.name !== addName &&
           notification.info({
             description: `新分配 name 为 "${addName}"`,
@@ -128,8 +125,8 @@ const ListCard: React.FC<ListCardProps> = (props) => {
       },
       updateLocal: async (key: string, value: any) => {
         if (!localApi) return;
-        const data = jsonParse(value);
-        await localApi.put(key, { ...data, name: key });
+        // const data = jsonParse(value);
+        await localApi.put(key, { ...value, name: key });
         configEvent.emit("localUpdate");
         // updateLocalList?.();
       },

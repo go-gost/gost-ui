@@ -1,63 +1,12 @@
-import { getIdb } from "./db";
+import { getIdb, updatedIdb } from "./db";
 import type * as Gost from "./types";
 import { getGost } from "../uitls/server";
 import { configEvent } from "../uitls/events";
 const localCache = "localCache";
 const savedServer = "savedServer";
 
-// TODO: cache 放入不同一个store中
-export class GostCommit<T = any> {
-  private storeName: string;
-  constructor(storeName: string) {
-    this.storeName = storeName;
-  }
-  private get key() {
-    return getGost()?.addr;
-  }
-  private _getIdb = () => {
-    return getIdb(`${this.storeName}|++id,_key_,[name+_key_]`);
-  };
-  getList = async () => {
-    const idb = await this._getIdb();
-    return idb.getAllFromIndex(this.storeName, "_key_", this.key);
-  };
-  get = async (name: string) => {
-    const idb = await this._getIdb();
-    // return idb.get(this.name);
-    return idb.getFromIndex(
-      this.storeName,
-      "[name+_key_]",
-      IDBKeyRange.only([name, this.key])
-    );
-  };
-  add = async (obj: any) => {
-    const idb = await this._getIdb();
-    return idb.add(this.storeName, { ...obj, _key_: this.key });
-  };
-  put = async (name: string, obj: any) => {
-    const idb = await this._getIdb();
-    const t = idb.transaction(this.storeName, "readwrite");
-    const os = t.objectStore(this.storeName);
-    const old = await os
-      .index("[name+_key_]")
-      .get(IDBKeyRange.only([name, this.key]));
-    await os.put(obj, old.id);
-    return t.done;
-  };
-  delete = async (name: string) => {
-    const idb = await this._getIdb();
-    const t = idb.transaction(this.storeName, "readwrite");
-    const os = t.objectStore(this.storeName);
-    const old = await os
-      .index("[name+_key_]")
-      .get(IDBKeyRange.only([name, this.key]));
-    await os.delete(old.id);
-    return t.done;
-  };
-}
-
 // cache 放入同一个store中
-export class GostCommit1<T = any> {
+export class GostCommit<T = any> {
   private dsName = localCache;
   private type: string;
   constructor(type: string) {
@@ -68,7 +17,7 @@ export class GostCommit1<T = any> {
   }
   private _getIdb = () => {
     return getIdb(
-      `${this.dsName}|++id,_key_,_type_,[_type_+_key_],[name+_type_+_key_]`
+      `${this.dsName}|++_id_,_key_,_type_,[_type_+_key_],[name+_type_+_key_]`
     );
   };
   private _getTransaction = async () => {
@@ -106,39 +55,45 @@ export class GostCommit1<T = any> {
     });
   };
   put = async (name: string, obj: any) => {
-    const { transaction, store } = await this._getTransaction();
-    const old = await store
-      .index("[name+_type_+_key_]")
-      .get(IDBKeyRange.only([name, this.type, this.key]));
-    await store.put(obj, old.id);
-    return transaction.done;
+    if (!obj._id_) {
+      const { transaction, store } = await this._getTransaction();
+      const old = await store
+        .index("[name+_type_+_key_]")
+        .get(IDBKeyRange.only([name, this.type, this.key]));
+      obj._id_ = old._id_;
+      await store.put({ ...old, ...obj, _id_: old._id_ });
+      return transaction.done;
+    } else {
+      const idb = await this._getIdb();
+      await idb.put(this.dsName, obj);
+    }
   };
   delete = async (name: string) => {
     const { transaction, store } = await this._getTransaction();
     const old = await store
       .index("[name+_type_+_key_]")
       .get(IDBKeyRange.only([name, this.type, this.key]));
-    await store.delete(old.id);
+    await store.delete(old._id_);
     return transaction.done;
   };
 }
 
-export const admissions = new GostCommit1<Gost.AdmissionConfig>("admissions");
-export const authers = new GostCommit1<Gost.AdmissionConfig>("authers");
-export const bypasses = new GostCommit1<Gost.BypassConfig>("bypasses");
-export const chains = new GostCommit1<Gost.ChainConfig>("chains");
-export const climiters = new GostCommit1<Gost.LimiterConfig>("climiters");
-export const limiters = new GostCommit1<Gost.LimiterConfig>("limiters");
-export const rlimiters = new GostCommit1<Gost.LimiterConfig>("rlimiters");
-export const hops = new GostCommit1<Gost.HopConfig>("hops");
-export const hosts = new GostCommit1<Gost.HostsConfig>("hosts");
-export const ingresses = new GostCommit1<Gost.IngressConfig>("ingresses");
-export const resolvers = new GostCommit1<Gost.ResolverConfig>("resolvers");
-export const services = new GostCommit1<Gost.ServiceConfig>("services");
+export const admissions = new GostCommit<Gost.AdmissionConfig>("admissions");
+export const authers = new GostCommit<Gost.AdmissionConfig>("authers");
+export const bypasses = new GostCommit<Gost.BypassConfig>("bypasses");
+export const chains = new GostCommit<Gost.ChainConfig>("chains");
+export const climiters = new GostCommit<Gost.LimiterConfig>("climiters");
+export const limiters = new GostCommit<Gost.LimiterConfig>("limiters");
+export const rlimiters = new GostCommit<Gost.LimiterConfig>("rlimiters");
+export const hops = new GostCommit<Gost.HopConfig>("hops");
+export const hosts = new GostCommit<Gost.HostsConfig>("hosts");
+export const ingresses = new GostCommit<Gost.IngressConfig>("ingresses");
+export const resolvers = new GostCommit<Gost.ResolverConfig>("resolvers");
+export const services = new GostCommit<Gost.ServiceConfig>("services");
 
 export class ServerComm {
   private static _getIdb() {
-    return getIdb({ [savedServer]: `addr`, [localCache]: "++id,_key_" });
+    return getIdb({ [savedServer]: `addr`, [localCache]: "++_id_,_key_" });
   }
   static async getAllServer() {
     const idb = await this._getIdb();
@@ -166,12 +121,48 @@ export class ServerComm {
     const keys = await sCache.index("_key_").getAllKeys(IDBKeyRange.only(key));
     await sCache.delete(keys);
   }
-  static async getAllCacheConfig(key?: string){
+  static async getAllCacheConfig(key?: string) {
     const idb = await this._getIdb();
-    if(key){
+    if (key) {
       return idb.getAllFromIndex(localCache, "_key_", IDBKeyRange.only(key));
-    }else{
+    } else {
       return idb.getAll(localCache);
     }
   }
 }
+
+export const fixOldCacheConfig = async () => {
+  // 旧数据迁移
+  const db = await getIdb(`${localCache}|++_id_`);
+  const names = db.objectStoreNames;
+  const test = /^services-/;
+  const _type_ = "services";
+  const oldNames = [...names].filter((name) => test.test(name));
+  const t = db.transaction(names, "readwrite");
+  for (const name of oldNames) {
+    const list = await t.objectStore(name).getAll();
+    let _key_ = decodeURIComponent(name.replace(/^services-/, ""));
+    if (!/^(https?:)?\/\//.test(_key_)) {
+      _key_ = `${location.protocol}//` + _key_;
+    } else if (/^\/\//.test(_key_)) {
+      _key_ = `${location.protocol}` + _key_;
+    }
+    if (list.length > 0) {
+      await list.map((value) =>
+        t.objectStore(localCache).add({ ...value, _type_, _key_ })
+      );
+    }
+    await t.objectStore(name).clear();
+  }
+  await t.done;
+  oldNames.length &&
+    updatedIdb((t: IDBTransaction) => {
+      const names = [...t.objectStoreNames];
+      const test = /^services-/;
+      const oldNames = names.filter((name) => test.test(name));
+      [...oldNames, "services", "localConfigStore"].forEach((name) => {
+        if (names.includes(name)) t.db.deleteObjectStore(name);
+      });
+    });
+  return oldNames.length > 0;
+};

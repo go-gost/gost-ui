@@ -22,7 +22,7 @@ function App() {
 
   const slef = useRef({
     update: async () => {
-      console.log("update");
+      // console.log("update");
       const [l1, l2] = await Promise.all([
         API.getConfig(),
         slef.current.updateLocalConfig(useGolstCofnig.get()?.addr),
@@ -52,12 +52,12 @@ function App() {
   useEffect(() => {
     init();
     const apiUpdate = async (reqConfig: any) => {
-      console.log("reqConfig", reqConfig);
+      // console.log("reqConfig", reqConfig);
       if (reqConfig.url === API.apis.config) return;
       return setGostConfig(await API.getConfig());
     };
     const localUpdate = async () => {
-      console.log("localUpdate");
+      // console.log("localUpdate");
       return setLocalConfig(
         await slef.current.updateLocalConfig(useGolstCofnig.get()?.addr)
       );

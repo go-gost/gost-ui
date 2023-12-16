@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Button, Popconfirm, Space, Table } from "antd";
 import { red, green } from "@ant-design/colors";
 import { getRESTfulApi } from "../../api";
 import JsonForm from "../Forms/Json";
-import { jsonFormat, jsonParse } from "../../uitls";
+import { jsonFormatValue, jsonParse } from "../../uitls";
 import {
   CheckCircleOutlined,
   CopyOutlined,
@@ -11,9 +11,10 @@ import {
   EditOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { GostCommit } from "../../api/local";
+import { GostCommit, fixOldCacheConfig } from "../../api/local";
 import { CardCtx } from "../../uitls/ctx";
 import { UseListData, UseListData1, UseTemplates } from "../ListCard/hooks";
+import { configEvent } from "../../uitls/events";
 
 type Props = {
   name: string;
@@ -35,7 +36,7 @@ const PublicList: React.FC<Props> = (props) => {
     title,
     api,
     localApi,
-    keyName, 
+    keyName,
     rowKey = "name",
     renderConfig = defaultRenderConfig,
   } = props;
@@ -47,7 +48,7 @@ const PublicList: React.FC<Props> = (props) => {
   return (
     <div style={{ height: 348, overflow: "auto" }}>
       <Table
-        rowKey={(obj) => obj.id || obj.name}
+        rowKey={(obj) => obj._id_ || obj.name}
         scroll={{ y: 246 }}
         size="small"
         dataSource={dataSource}
@@ -126,14 +127,15 @@ const PublicList: React.FC<Props> = (props) => {
                         size={"small"}
                       />
                     }
-                    initialValues={{ value: jsonFormat(record) }}
+                    initialValues={{ value: jsonFormatValue(record) }}
                     onFinish={async (values: any) => {
                       const { value } = values;
+                      const json = jsonParse(value)
                       if (isEnable) {
-                        await updateValue(record.name, value);
+                        await updateValue(record.name, json);
                         return true;
                       } else {
-                        await updateLocal(record.name, value);
+                        await updateLocal(record.name, { ...record, ...json });
                         return true;
                       }
                     }}
@@ -149,7 +151,7 @@ const PublicList: React.FC<Props> = (props) => {
                         size={"small"}
                       />
                     }
-                    initialValues={{ value: jsonFormat(record) }}
+                    initialValues={{ value: jsonFormatValue(record) }}
                     onFinish={async (values: any) => {
                       const { value } = values;
                       const json = jsonParse(value);
