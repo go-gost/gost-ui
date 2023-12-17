@@ -9,13 +9,18 @@
 
    > `gost -api :18080`
 
+
 2. 打开 web 端管理地址 [点击打开](http://blog.whyoop.com/gost-ui/)
 
    - API 地址 `http://IP:PORT`， 如果配置了`pathPrefix`，加上`pathPrefix`路径；
    - (如果有) 填写 用户，密码;
-   - 点击 `连接` 按钮;
+   - 点击 `连接` 按钮; 
+  
+   ![home page](https://blog.whyoop.com/gost-ui/page-home.png)
 
 3. 在管理面板，动态管理 GOST
+
+   ![home page](https://blog.whyoop.com/gost-ui/page-manage.png)
 
 ## 常见问题
 
