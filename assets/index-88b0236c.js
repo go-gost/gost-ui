@@ -262,7 +262,7 @@ var Ti=Object.defineProperty;var _i=(e,t,r)=>t in e?Ti(e,t,{enumerable:!0,config
       "addr": "127.0.0.1:6379",
       "db": "1",
       "password": "123456",
-      ${t?`"type": ${t}`:""}
+      ${t?`"type": "${t}"`:""}
       "key": "gost:${e}-0"
     }
   }`,af=e=>`{
