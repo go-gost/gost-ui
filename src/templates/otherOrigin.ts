@@ -14,7 +14,7 @@ export const getRedisTemplate = (name: string, type?: string) => {
       "addr": "127.0.0.1:6379",
       "db": "1",
       "password": "123456",
-      ${type ? `"type": ${type}` : ""}
+      ${type ? `"type": "${type}"` : ""}
       "key": "gost:${name}-0"
     }
   }`;
