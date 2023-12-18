@@ -26,6 +26,6 @@
 
 1. 添加配置时必须有`name`字段，修改时`name`字段会被忽略；
 2. `GOST`的API是支持跨域的，如碰到跨域问题，检查一下页面和API的协议是否一至
-3. 由于`Chrome`安全规则，连接本地`GOST API`(127.0.0.1:xxx 或 localhost:xxx) 需要用[https页面](https://blog.whyoop.com/gost-ui/); 但连接局域网内的`GOST API`修改浏览器配置 [设置方式可以参考这篇博文](https://blog.csdn.net/Flywithdawn/article/details/128253604)
+3. 由于`Chrome`安全规则，连接本地`API`(127.0.0.1:xxx 或 localhost:xxx) 需要用[https页面](https://blog.whyoop.com/gost-ui/); 但连接局域网内的`API` 需要修改浏览器配置 [设置方式可以参考这篇博文](https://blog.csdn.net/Flywithdawn/article/details/128253604)
    - 补充：可以本地启一个 http/socks 代理，`Chrome`通过本地代理访问管理页面，再链接本地/局域网API时，不再触发安全规则；
 4. `快速连接`和`禁用`的配置数据保存在浏览器的`indexedDB`中,要快速清除本地数据，可以直接删除`indexedDb`中的`GOST-UI`库即可；
