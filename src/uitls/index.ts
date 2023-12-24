@@ -37,6 +37,5 @@ export const download = (content: BlobPart, filename: string) => {
   link.download = filename;
   link.href = href;
   link.click();
-  document.body.removeChild(link);
   URL.revokeObjectURL(href);
 };

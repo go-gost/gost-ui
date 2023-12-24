@@ -14,6 +14,10 @@ export type GostApiConfig = {
     password: string;
   };
   time?: number;
+  autoSave?: boolean | null;
+  saveFormat?: "json" | "yaml";
+  savePath?: string | null;
+  isLocal?: boolean | null;
 };
 
 export const useGolstCofnig = getUseValue<GostApiConfig | null>();
@@ -46,6 +50,7 @@ export const init = async () => {
   if (window[uselocalServerKey]) {
     const server = await getLocal(window[uselocalServerKey]);
     if (server) {
+      server.isLocal = true;
       await login(server);
       if (server) {
         server.time = Date.now();
@@ -68,7 +73,9 @@ export const login = async (arg: GostApiConfig, save?: false) => {
     window[gostServerKey] = arg;
     window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
     if (save) {
-      saveLocal(arg.addr, arg);
+      arg.isLocal = true;
+      window[gostServerKey] = arg
+      await saveLocal(arg.addr, arg);
     }
   } catch (e: any) {
     // console.log(e);
@@ -83,7 +90,7 @@ export const logout = async () => {
 };
 
 export const saveLocal = async (id: string, arg: GostApiConfig) => {
-  return ServerComm.setServer({ ...arg, time: Date.now() });
+  return ServerComm.setServer({ ...arg, isLocal: true, time: Date.now() });
 };
 
 export const getLocal = async (
