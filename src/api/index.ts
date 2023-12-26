@@ -47,5 +47,5 @@ export const services = getRESTfulApi<Gost.ServiceConfig>(apis["services"]);
 export const getConfig = (format?: Format) => require.get(apis.config);
 
 // 保存当前config到服务器
-export const saveCofnig = (format: Format = "json") =>
-  require.post(apis.config, null, { params: { format } });
+export const saveCofnig = (format: Format = "json", path?: string | null) =>
+  require.post(apis.config, null, { params: { format, path }, noMsg: true } as any);
