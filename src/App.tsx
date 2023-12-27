@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { ConfigProvider, theme } from "antd";
 import Ctx from "./uitls/ctx";
-import { init, logout, useGolstCofnig } from "./uitls/server";
+import { init, logout, useInfo } from "./uitls/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
 import "./App.css";
@@ -12,7 +12,7 @@ import Manage from "./Pages/Manage";
 import { ServerComm } from "./api/local";
 
 function App() {
-  const gostInfo = useGolstCofnig();
+  const info = useInfo();
   const [gostConfig, setGostConfig] = useState<any>(null);
   const [localConfig, setLocalConfig] = useState<any>(null);
   const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
@@ -25,7 +25,7 @@ function App() {
       // console.log("update");
       const [l1, l2] = await Promise.all([
         API.getConfig(),
-        slef.current.updateLocalConfig(useGolstCofnig.get()?.addr),
+        slef.current.updateLocalConfig(useInfo.get()?.addr),
       ]);
       setGostConfig(l1);
       setLocalConfig(l2);
@@ -59,7 +59,7 @@ function App() {
     const localUpdate = async () => {
       // console.log("localUpdate");
       return setLocalConfig(
-        await slef.current.updateLocalConfig(useGolstCofnig.get()?.addr)
+        await slef.current.updateLocalConfig(useInfo.get()?.addr)
       );
     };
     const update = slef.current.update;
@@ -80,15 +80,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (gostInfo) {
+    if (info) {
       slef.current.update().then(([data]) => {
         setGostConfig(data);
-        document.title = gostInfo.addr.replace(/^(https?:)?\/\//, "");
+        document.title = info.addr.replace(/^(https?:)?\/\//, "");
       });
     } else {
       document.title = slef.current.defaultTitle;
     }
-  }, [gostInfo]);
+  }, [info]);
   
   return (
     <Ctx.Provider
@@ -102,7 +102,7 @@ function App() {
         theme={{ algorithm: isDark ? theme.darkAlgorithm : undefined }}
         locale={zhCN}
       >
-        {gostInfo ? <Manage /> : <Home />}
+        {info ? <Manage /> : <Home />}
       </ConfigProvider>
     </Ctx.Provider>
   );

@@ -1,13 +1,13 @@
 import axios from "axios";
-import { getGost } from "./server";
+import { getInfo } from "./server";
 import { message } from "antd";
 import { configEvent } from "./events";
 
 const require = axios.create();
 require.interceptors.request.use((config) => {
-  const gost = getGost();
-  config.baseURL = gost?.addr;
-  config.auth = gost?.auth;
+  const info = getInfo();
+  config.baseURL = info?.addr;
+  config.auth = info?.auth;
   return config;
 });
 require.interceptors.response.use(

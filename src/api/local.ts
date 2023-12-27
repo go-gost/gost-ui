@@ -1,6 +1,6 @@
 import { getIdb, updatedIdb } from "./db";
 import type * as Gost from "./types";
-import { getGost } from "../uitls/server";
+import { getInfo } from "../uitls/server";
 import { configEvent } from "../uitls/events";
 const localCache = "localCache";
 const savedServer = "savedServer";
@@ -13,7 +13,7 @@ export class GostCommit<T = any> {
     this.type = type;
   }
   private get key() {
-    return getGost()?.addr;
+    return getInfo()?.addr;
   }
   private _getIdb = () => {
     return getIdb(

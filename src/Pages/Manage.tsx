@@ -12,7 +12,7 @@ import {
   Space,
   Switch,
 } from "antd";
-import { logout, saveLocal, useGolstCofnig } from "../uitls/server";
+import { logout, saveLocal, useInfo } from "../uitls/server";
 import { download, jsonFormat } from "../uitls";
 import Ctx from "../uitls/ctx";
 import * as API from "../api";
@@ -44,7 +44,7 @@ const colSpan1 = {
 };
 
 const Manage = () => {
-  const gostInfo = useGolstCofnig()!;
+  const info = useInfo()!;
   const { gostConfig } = useContext(Ctx);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,7 +60,7 @@ const Manage = () => {
     const onSave = (ref.current.onSave = async () => {
       try {
         setLoading(true);
-        const { saveFormat, savePath } = useGolstCofnig.get() || {};
+        const { saveFormat, savePath } = useInfo.get() || {};
         await API.saveCofnig(saveFormat, savePath);
         setIsSaved(true);
       } finally {
@@ -70,12 +70,12 @@ const Manage = () => {
 
     const update = () => {
       setIsSaved(false);
-      if (!useGolstCofnig.get()?.autoSave) return;
+      if (!useInfo.get()?.autoSave) return;
       return onSave();
     };
     const onApiUpdate = async (reqConfig: any) => {
       setIsSaved(false);
-      if (!useGolstCofnig.get()?.autoSave) return;
+      if (!useInfo.get()?.autoSave) return;
       if (reqConfig.url === API.apis.config) return;
       return onSave();
     };
@@ -87,7 +87,7 @@ const Manage = () => {
       configEvent.off("apiUpdate", onApiUpdate);
     };
   }, []);
-  console.log('gostInfo', gostInfo)
+  console.log('gostInfo', info)
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <Layout.Header style={{ color: "#FFF" }}>
@@ -102,7 +102,7 @@ const Manage = () => {
               <Select placeholder="快捷操作"></Select>
             </Space>
           </Col>
-          <Col>{gostInfo.addr}</Col>
+          <Col>{info.addr}</Col>
           <Col>
             <Space>
               <Space.Compact>
@@ -140,15 +140,15 @@ const Manage = () => {
           footer={false}
         >
           <Form
-            initialValues={gostInfo}
+            initialValues={info}
             layout="horizontal"
             labelCol={{span:4}}
             onValuesChange={(v, vs) => {
               console.log(v,vs)
-              Object.assign(gostInfo, v);
-              useGolstCofnig.set(gostInfo);
-              if (gostInfo.isLocal) {
-                saveLocal(gostInfo.addr, gostInfo);
+              Object.assign(info, v);
+              useInfo.set(info);
+              if (info.isLocal) {
+                saveLocal(info.addr, info);
               }
             }}
           >

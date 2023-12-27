@@ -20,30 +20,32 @@ export type GostApiConfig = {
   isLocal?: boolean | null;
 };
 
-export const useGolstCofnig = getUseValue<GostApiConfig | null>();
+export const useInfo = getUseValue<GostApiConfig | null>();
 Object.defineProperty(window, gostServerKey, {
-  get: useGolstCofnig.get,
-  set: useGolstCofnig.set,
+  get: useInfo.get,
+  set: useInfo.set,
 });
 
-export const getGost = (): GostApiConfig | null => useGolstCofnig.get();
+export const getInfo = (): GostApiConfig | null => useInfo.get();
 
 export const init = async () => {
   // 内存
   if (window[gostServerKey]) return true;
 
-  // sessionStorage
+  // 本地保存
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true });
+  if (query.use) {
+    window[uselocalServerKey] = query.use;
+    window.history.replaceState(null, "", location.pathname);
+    logout(); // 清理sessionStorage
+  }
+
+  // 刷新（会话保持）
   const serverJson = sessionStorage.getItem(gostServerKey);
   if (serverJson) {
     const server = JSON.parse(serverJson);
     await login(server);
     return true;
-  }
-
-  const query = qs.parse(location.search, { ignoreQueryPrefix: true });
-  if (query.use) {
-    window[uselocalServerKey] = query.use;
-    window.history.replaceState(null, "", location.pathname);
   }
 
   // 本地保存的服务器信息
@@ -62,9 +64,13 @@ export const init = async () => {
 
 const verify = async (arg: GostApiConfig) => {
   const baseUrl = arg.addr.replace(/\/+$/, "");
-  return axios.get(baseUrl + "/config", {
-    auth: arg.auth,
-  });
+  return axios
+    .get(baseUrl + "/config", {
+      auth: arg.auth,
+    })
+    .catch((error) => {
+      throw "verify error";
+    });
 };
 
 export const login = async (arg: GostApiConfig, save?: false) => {
@@ -74,18 +80,20 @@ export const login = async (arg: GostApiConfig, save?: false) => {
     window.sessionStorage.setItem(gostServerKey, JSON.stringify(arg));
     if (save) {
       arg.isLocal = true;
-      window[gostServerKey] = arg
+      window[gostServerKey] = arg;
       await saveLocal(arg.addr, arg);
     }
   } catch (e: any) {
-    // console.log(e);
-    message.error(e?.message || "链接失败");
+    if (e === "verify error") {
+      logout();
+      message.error(e?.message || "连接失败");
+    }
     throw e;
   }
 };
 
 export const logout = async () => {
-  useGolstCofnig.set(null);
+  useInfo.set(null);
   window.sessionStorage.removeItem(gostServerKey);
 };
 
