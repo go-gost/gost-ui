@@ -1,7 +1,15 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Button,
   Col,
+  Dropdown,
   Form,
   Input,
   Layout,
@@ -12,8 +20,15 @@ import {
   Space,
   Switch,
 } from "antd";
-import { logout, saveLocal, useInfo } from "../uitls/server";
+import {
+  getLocalServers,
+  logout,
+  saveLocal,
+  useInfo,
+  useServerConfig,
+} from "../uitls/server";
 import { download, jsonFormat } from "../uitls";
+import { MonacoEditor } from "../uitls/userMonacoWorker";
 import Ctx from "../uitls/ctx";
 import * as API from "../api";
 import ListCard from "../components/ListCard";
@@ -26,6 +41,7 @@ import { configEvent } from "../uitls/events";
 import {
   CheckCircleOutlined,
   DownloadOutlined,
+  ReloadOutlined,
   SaveOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
@@ -45,12 +61,40 @@ const colSpan1 = {
 
 const Manage = () => {
   const info = useInfo()!;
-  const { gostConfig } = useContext(Ctx);
+  const gostConfig = useServerConfig();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
+  const [locals, setLocals] = useState<any[]>([]);
 
-  const ref = useRef<any>({ config: gostConfig });
+  const ref = useRef<any>({});
+
+  const updateList = useCallback(async () => {
+    return getLocalServers()
+      .then((local) => {
+        return local.sort((a, b) => {
+          const t1 = a.time || 0;
+          const t2 = b.time || 0;
+          return t2 - t1;
+        });
+      })
+      .then((list) =>
+        setLocals(
+          list
+            .filter((item) => {
+              if (item.addr === info.addr) return false;
+              return true;
+            })
+            .map((item) => ({
+              key: item.addr,
+              label: <a href={`./?use=${item.addr}`}>{item.addr}</a>,
+              // onClick: () => {
+              //   window.open(`./?use=${item.addr}`, undefined, "noopener");
+              // },
+            }))
+        )
+      );
+  }, []);
 
   useEffect(() => {
     fixOldCacheConfig().then((up) => {
@@ -73,13 +117,14 @@ const Manage = () => {
       if (!useInfo.get()?.autoSave) return;
       return onSave();
     };
+
     const onApiUpdate = async (reqConfig: any) => {
       setIsSaved(false);
       if (!useInfo.get()?.autoSave) return;
-      if (reqConfig.url === API.apis.config) return;
+      if (reqConfig?.url === API.apis.config) return;
       return onSave();
     };
-
+    updateList();
     configEvent.on("update", update);
     configEvent.on("apiUpdate", onApiUpdate);
     return () => {
@@ -87,7 +132,31 @@ const Manage = () => {
       configEvent.off("apiUpdate", onApiUpdate);
     };
   }, []);
-  console.log('gostInfo', info)
+
+  const items = useMemo<any[]>(() => {
+    const items = [];
+    if (locals.length) {
+      items.push({
+        key: "2",
+        label: " 切换 ",
+        children: locals,
+      });
+      items.push({
+        type: "divider",
+      });
+    }
+    items.push({
+      key: "new",
+      label: "打开新链接",
+      onClick: () => {
+        console.log(location.href);
+        window.open(location.href, undefined, "noopener");
+      },
+    });
+    return items;
+  }, [locals]);
+
+  console.log("gostInfo", info);
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <Layout.Header style={{ color: "#FFF" }}>
@@ -98,9 +167,11 @@ const Manage = () => {
           // style={{ padding: "0 15px" }}
         >
           <Col color="">
-            <Space>
-              <Select placeholder="快捷操作"></Select>
-            </Space>
+            <Button type="link" icon={<ReloadOutlined />} onClick={async () => {
+                  useServerConfig.set((await API.getConfig()) as any)
+            }}>
+              刷新配置
+            </Button>
           </Col>
           <Col>{info.addr}</Col>
           <Col>
@@ -127,9 +198,12 @@ const Manage = () => {
               >
                 下载当前配置
               </Button>
-              <Button type="link" onClick={logout}>
-                切换连接
-              </Button>
+              <Dropdown.Button menu={{ items }} onClick={logout}>
+                退出
+                {/* <Button type="link" onClick={logout}>
+                  切换连接
+                </Button> */}
+              </Dropdown.Button>
             </Space>
           </Col>
         </Row>
@@ -142,9 +216,9 @@ const Manage = () => {
           <Form
             initialValues={info}
             layout="horizontal"
-            labelCol={{span:4}}
+            labelCol={{ span: 4 }}
             onValuesChange={(v, vs) => {
-              console.log(v,vs)
+              console.log(v, vs);
               Object.assign(info, v);
               useInfo.set(info);
               if (info.isLocal) {
@@ -170,9 +244,9 @@ const Manage = () => {
       <Layout.Content style={{ height: "100%", overflow: "auto" }}>
         <Row style={{ padding: 16, overflow: "hidden" }}>
           <Row gutter={[16, 16]}>
-            <Col {...colSpan}>
-              <ServiceCard></ServiceCard>
-            </Col>
+            {/* <Col {...colSpan} xxl={16}> */}
+            <ServiceCard colSpan={colSpan}></ServiceCard>
+            {/* </Col> */}
             <Col {...colSpan}>
               <ChainCard></ChainCard>
             </Col>
@@ -214,7 +288,18 @@ const Manage = () => {
             </Col>
             <Col span={24}>
               <ProCard boxShadow title="All Config JSON">
-                <pre>{jsonFormat(gostConfig!)}</pre>
+                {/* <pre>{jsonFormat(gostConfig!)}</pre> */}
+                <MonacoEditor
+                  className={"g-boder"}
+                  value={jsonFormat(gostConfig!)}
+                  height={"500"}
+                  language="json"
+                  options={{
+                    // selectOnLineNumbers: true,
+                    minimap: { enabled: false },
+                    readOnly: true,
+                  }}
+                ></MonacoEditor>
               </ProCard>
             </Col>
           </Row>

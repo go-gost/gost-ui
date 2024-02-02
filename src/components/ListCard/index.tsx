@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useState, useMemo, useContext } from "react";
 import { getRESTfulApi } from "../../api";
 import { ProCard } from "@ant-design/pro-components";
-import PublicList from "../List/Public";
+import PublicList, { PublicListProps } from "../List/Public";
 import AddButton from "../Forms/AddButton";
 import { GostCommit } from "../../api/local";
-import { CardCtx, Comm } from "../../uitls/ctx";
-import { UseListData, UseListData1 } from "./hooks";
-import { Modal, notification } from "antd";
+import Ctx, { CardCtx, Comm, commBindEvent } from "../../uitls/ctx";
+import { useListData, useListData1 } from "./hooks";
+import { Button, Input, Modal, Space, notification } from "antd";
 import { getModule } from "../../api/modules";
 import { configEvent } from "../../uitls/events";
+import { CloseOutlined } from "@ant-design/icons";
 
 export type ListCardProps = {
   module?: string;
@@ -21,7 +22,8 @@ export type ListCardProps = {
   localApi?: GostCommit;
   boxShadow?: boolean;
   bordered?: boolean;
-  renderConfig?: (v: any, r: any, i: number) => React.ReactNode;
+  renderConfig?: PublicListProps["renderConfig"];
+  filter?: PublicListProps["filter"];
 };
 
 const ListCard: React.FC<ListCardProps> = (props) => {
@@ -36,33 +38,30 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     rowKey = "name",
     renderConfig,
     localApi,
+    filter,
   } = useMemo(() => {
     return { ...getModule(props.module || "")!, ...props };
   }, [props]);
+  const [keyword, setKeyword] = useState('');
   const _prop = {
     title: subTitle || "",
+    keyword,
     name,
     api,
     keyName,
     rowKey,
     localApi,
     renderConfig,
+    filter,
   };
-  // const [localList, setLocalList] = useState<any[]>([]);
-  // const updateLocalList = useCallback(() => {
-  //   if (!localApi) return;
-  //   localApi.getList().then((data) => {
-  //     // console.log("updateLocalList", data);
-  //     setLocalList(data);
-  //   });
-  // }, [localApi]);
 
-  // useEffect(() => {
-  //   updateLocalList();
-  // }, [updateLocalList]);
-
-  // const { dataSource } = UseListData({ name: keyName, localList });
-  const { dataSource } = UseListData1({ localApi, name: keyName });
+  const { gostConfig, localConfig } = useContext(Ctx);
+  const { dataSource } = useListData1({
+    localApi,
+    name: keyName,
+    gostConfig,
+    localConfig,
+  });
 
   const comm = useMemo<Comm>(() => {
     const addValue = async (servic: any) => {
@@ -139,13 +138,25 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     };
   }, [api, dataSource, localApi, name]);
 
+  useEffect(() => {
+    return commBindEvent(name, comm);
+  }, [comm, name]);
   return (
     <CardCtx.Provider value={{ name, comm }}>
       <ProCard
         boxShadow={boxShadow}
         bordered={bordered}
         title={title}
-        extra={<AddButton {..._prop} />}
+        extra={
+          <Space>
+            <Input.Search allowClear onChange={(e)=>{
+              const value = e.target.value;
+              setKeyword(value);
+            }} size="small"></Input.Search>
+            {/* <Button icon={""} size="small">全屏编辑</Button> */}
+            <AddButton {..._prop} />
+          </Space>
+        }
       >
         <PublicList {..._prop}></PublicList>
       </ProCard>

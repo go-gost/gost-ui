@@ -1,9 +1,11 @@
 import React from "react";
 import { Config } from "../api/types";
+import { configEvent } from "./events";
 
 type GostCtx = {
-  gostConfig?: Partial<Config>;
-  localConfig?: Partial<Config>;
+  gostConfig?: Partial<Config> | null;
+  localConfig?: Partial<Config> | null;
+  isLoading?: boolean;
   logout?: () => void;
 };
 
@@ -26,3 +28,21 @@ export const CardCtx = React.createContext<{
   updateLocalList?: () => void;
   comm?: Comm;
 }>({ localList: [], name: "" });
+
+export const commBindEvent = (name: string, comm: Comm) => {
+  const eventName = `${name}:getComm`;
+  const onEvent = (callback: (comm: Comm) => void) => {
+    callback(comm);
+  };
+  configEvent.on(eventName, onEvent);
+  return () => {
+    configEvent.off(eventName, onEvent);
+  };
+};
+
+export const getCommByName = (name: string) => {
+  return new Promise<Comm>((resolve, reject) => {
+    const eventName = `${name}:getComm`;
+    configEvent.emit(eventName, resolve);
+  });
+};

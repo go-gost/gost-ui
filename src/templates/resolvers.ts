@@ -1,4 +1,6 @@
 import { getByName } from "./default";
+import { getPluginTemplate } from "./otherOrigin";
+import { Template } from "./type";
 
 const def = getByName("resolvers");
 export default [
@@ -50,4 +52,8 @@ export default [
 //         ]
 //       }`,
 //   },
-];
+    {
+      label: "插件",
+      json: getPluginTemplate("resolver"),
+    },
+] as Template[];

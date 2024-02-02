@@ -3,6 +3,7 @@ import axios from "axios";
 import qs from "qs";
 import { message } from "antd";
 import { ServerComm } from "../api/local";
+import { Config } from "../api/types";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
 
@@ -25,6 +26,8 @@ Object.defineProperty(window, gostServerKey, {
   get: useInfo.get,
   set: useInfo.set,
 });
+export const useServerConfig = getUseValue<Partial<Config> | null>()
+export const useLocalConfig = getUseValue<Partial<Config> | null>()
 
 export const getInfo = (): GostApiConfig | null => useInfo.get();
 

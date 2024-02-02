@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { ConfigProvider, theme } from "antd";
-import Ctx from "./uitls/ctx";
-import { init, logout, useInfo } from "./uitls/server";
+import { ConfigProvider, message, theme } from "antd";
+import {
+  init,
+  logout,
+  useInfo,
+  useServerConfig,
+  useLocalConfig,
+} from "./uitls/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
 import "./App.css";
@@ -10,30 +15,46 @@ import { configEvent } from "./uitls/events";
 import zhCN from "antd/locale/zh_CN";
 import Manage from "./Pages/Manage";
 import { ServerComm } from "./api/local";
+import Ctx from "./uitls/ctx";
 
 function App() {
   const info = useInfo();
-  const [gostConfig, setGostConfig] = useState<any>(null);
-  const [localConfig, setLocalConfig] = useState<any>(null);
+  // const [gostConfig, setGostConfig] = useState<any>(null);
+  // const [localConfig, setLocalConfig] = useState<any>(null);
+  const gostConfig = useServerConfig();
+  const localConfig = useLocalConfig();
   const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
+  const [serverLoading, setServerLoading] = useState<any>(false);
+  const [localLoading, setLocalLoading] = useState<any>(false);
   const [isDark, setIsDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches
   );
-
+  const isLoading = useMemo(
+    () => serverLoading || localLoading,
+    [serverLoading, localLoading]
+  );
   const slef = useRef({
     update: async () => {
-      // console.log("update");
-      const [l1, l2] = await Promise.all([
-        API.getConfig(),
-        slef.current.updateLocalConfig(useInfo.get()?.addr),
-      ]);
-      setGostConfig(l1);
-      setLocalConfig(l2);
-      return [l1, l2];
+      try {
+        setServerLoading(true);
+        setLocalLoading(true);
+        const [l1, l2] = await Promise.all([
+          API.getConfig(),
+          slef.current.updateLocalConfig(useInfo.get()?.addr),
+        ]);
+        useServerConfig.set(l1 as any);
+        useLocalConfig.set(l2);
+        return [l1, l2];  
+      } finally {
+        setServerLoading(false);
+        setLocalLoading(false);
+      }
     },
-    updateLocalConfig: (key?: string) => {
-      if (!key) setLocalConfig(null);
-      return ServerComm.getAllCacheConfig(key).then((data) => {
+    updateLocalConfig: async (key?: string) => {
+      try {
+        if (!key) useLocalConfig.set(null);
+        setLocalLoading(true);
+        const data = await ServerComm.getAllCacheConfig(key);
         const localConfig: any = {};
         data.forEach((item: any) => {
           const { _type_ } = item;
@@ -42,9 +63,10 @@ function App() {
             : (localConfig[_type_] = []);
           list.push(item);
         });
-        // setLocalConfig(localConfig);
         return localConfig;
-      });
+      } finally {
+        setLocalLoading(false);
+      }
     },
     defaultTitle: document.title,
   });
@@ -52,13 +74,11 @@ function App() {
   useEffect(() => {
     init();
     const apiUpdate = async (reqConfig: any) => {
-      // console.log("reqConfig", reqConfig);
-      if (reqConfig.url === API.apis.config) return;
-      return setGostConfig(await API.getConfig());
+      if (reqConfig?.url === API.apis.config) return;
+      return useServerConfig.set((await API.getConfig()) as any);
     };
     const localUpdate = async () => {
-      // console.log("localUpdate");
-      return setLocalConfig(
+      return useLocalConfig.set(
         await slef.current.updateLocalConfig(useInfo.get()?.addr)
       );
     };
@@ -82,20 +102,21 @@ function App() {
   useEffect(() => {
     if (info) {
       slef.current.update().then(([data]) => {
-        setGostConfig(data);
+        // setGostConfig(data);
+        useServerConfig.set(data);
         document.title = info.addr.replace(/^(https?:)?\/\//, "");
       });
     } else {
       document.title = slef.current.defaultTitle;
     }
   }, [info]);
-  
+
   return (
     <Ctx.Provider
       value={{
         gostConfig,
         localConfig,
-        logout,
+        isLoading,
       }}
     >
       <ConfigProvider

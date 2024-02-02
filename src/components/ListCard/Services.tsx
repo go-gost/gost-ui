@@ -5,8 +5,10 @@ import qs from "qs";
 import ListCard from ".";
 import { useContext } from "react";
 import Ctx from "../../uitls/ctx";
-import viewService from "../viewer/services";
+import viewService, { ViewService } from "../viewer/services";
 import { getModule } from "../../api/modules";
+import { useServerConfig } from "../../uitls/server";
+import { Col } from "antd";
 
 // const record = (value: any, record: ServiceConfig, index: number) => {
 //   const { handler, listener, addr, forwarder } = record;
@@ -24,15 +26,39 @@ import { getModule } from "../../api/modules";
 //     metadata ? "?" + metadata : ""
 //   }`;
 // };
-const ServiceCard: React.FC = (props) => {
-  const { gostConfig } = useContext(Ctx);
+const ServiceCard: React.FC<any> = (props) => {
+  const { colSpan } = props;
+  const gostConfig = useServerConfig();
   const _prop = {
     // ...getModule('services'),
-    module: 'service',
+    module: "service",
+    // 定义渲染
     renderConfig: (value: any, record: ServiceConfig, index: number) => {
-      return viewService.call(gostConfig!, record);
+      // return viewService.call(gostConfig!, record);
+      return <ViewService {...record} />;
+    },
+    // 定义筛选
+    filter: (item: ServiceConfig, keyWord: string) => {
+      const { name, addr, handler, listener } = item;
+
+      function find(value?: string) {
+        const v = value?.toLowerCase();
+        if (v) {
+          return v.indexOf(keyWord) !== -1;
+        } else {
+          return false;
+        }
+      }
+
+      return (
+        find(name) || find(addr) || find(handler?.type) || find(listener?.type)
+      );
     },
   };
-  return <ListCard {..._prop} />;
+  return (
+    <Col {...colSpan} xxl={16}>
+      <ListCard {..._prop} />
+    </Col>
+  );
 };
 export default ServiceCard;

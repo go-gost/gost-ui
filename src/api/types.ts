@@ -105,7 +105,7 @@ export type ForwarderConfig = {
   nodes: ForwardNodeConfig[];
   selector: SelectorConfig;
   //   description: "DEPRECATED by nodes since beta.4";
-  targets: string[];
+  targets?: string[];
 };
 export type HTTPLoader = {
   timeout: Duration;

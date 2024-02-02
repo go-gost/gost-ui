@@ -1,3 +1,5 @@
+import { Template } from "./type";
+
 export const getFileTemplate = (name: string) => {
   return `{
     "name": "${name}-0",
@@ -30,6 +32,19 @@ export const getHttpTemplate = (name: string) => {
   }`;
 };
 
+export const getPluginTemplate = (name: string) => {
+  return `{
+    "name": "${name}-0",
+    "plugin": {
+      "type": "grpc",
+      // "type": "http",
+      "addr": "127.0.0.1:8000",
+      "token": "gost",
+      // "tls": {}
+    }
+  }`;
+}
+
 export const getOtherAll = (
   name: string,
   docUrl: string = "",
@@ -49,5 +64,11 @@ export const getOtherAll = (
       label: "HTTP",
       json: doc + getHttpTemplate(name),
     },
-  ];
+    {
+      label: "插件",
+      json: doc + getPluginTemplate(name),
+    },
+  ] as Template[];
 };
+
+
