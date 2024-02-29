@@ -138,7 +138,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
     <div style={{ height: 348, overflow: "auto" }}>
       <Table
         rowKey={(obj) => obj._id_ || obj.name}
-        scroll={{ y: 246 }}
+        scroll={{ y: 290 }}
         size="small"
         dataSource={showList}
         columns={[
@@ -275,6 +275,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
             },
           },
         ]}
+        pagination={false}
       ></Table>
     </div>
   );

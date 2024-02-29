@@ -8,7 +8,8 @@ import {
 import { Button, Dropdown, Form, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { jsonFormat, jsonStringFormat, jsonParse } from "../../uitls";
-import { MonacoEditor } from "../../uitls/userMonacoWorker";
+import * as monaco from "monaco-editor";
+import { MonacoEditor, getModel, model, modelUri } from "../../uitls/userMonacoWorker";
 import { Template } from "../../templates";
 import { render } from "react-dom";
 import { useServerConfig } from "../../uitls/server";
@@ -92,6 +93,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
         formRef={formRef}
         modalProps={{
           destroyOnClose: true,
+          maskClosable: false,
         }}
       >
         {hasTemplate ? (
@@ -193,7 +195,12 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
               // selectOnLineNumbers: true,
               minimap: { enabled: false },
               // readOnly: readOnly,
+              // json 数据格式测试
+              // model: monaco.editor.createModel('', "json", modelUri)
+              // model: getModel('')
+              // model: model
             }}
+            
           ></MonacoEditor>
         </Form.Item>
       </ModalForm>
