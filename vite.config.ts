@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }) => {
         output: {
           // manualChunks 配置
           manualChunks: {
-            monaco: ["monaco-editor"],
+            // monaco: ["monaco-editor"],
             antd: ["antd"],
           },
         },

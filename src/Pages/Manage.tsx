@@ -21,8 +21,7 @@ import {
   useServerConfig,
 } from "../uitls/server";
 import { download, jsonFormat } from "../uitls";
-import { MonacoEditor } from "../uitls/userMonacoWorker";
-import Ctx from "../uitls/ctx";
+import { CodeEditor } from "../uitls/useMonacoEdit";
 import * as API from "../api";
 import ListCard, { ProCard } from "../components/ListCard";
 import ChainCard from "../components/ListCard/Chains";
@@ -291,17 +290,17 @@ const Manage = () => {
             <Col span={24}>
               <ProCard boxShadow title="All Config JSON">
                 {/* <pre>{jsonFormat(gostConfig!)}</pre> */}
-                <MonacoEditor
+                <CodeEditor
                   className={"g-boder"}
                   value={jsonFormat(gostConfig!)}
-                  height={"500"}
+                  height={500}
                   language="json"
                   options={{
                     // selectOnLineNumbers: true,
                     minimap: { enabled: false },
                     readOnly: true,
                   }}
-                ></MonacoEditor>
+                ></CodeEditor>
               </ProCard>
             </Col>
           </Row>

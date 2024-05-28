@@ -3,12 +3,11 @@ import ReactDOM from "react-dom/client";
 import { Button, Dropdown, Form, FormInstance, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../uitls";
-import * as monaco from "monaco-editor";
-import { MonacoEditor, getModel, model, modelUri } from "../../uitls/userMonacoWorker";
 import { Template } from "../../templates";
 // import { render } from "react-dom";
 // import { useServerConfig } from "../../uitls/server";
 import ModalForm, { ModalFormProps } from "../ModalForm";
+import { CodeEditor } from "../../uitls/useMonacoEdit";
 
 const template2menu: any = (template: Template) => {
   const { children, ...other } = template;
@@ -180,21 +179,20 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
             },
           ]}
         >
-          <MonacoEditor
+          <CodeEditor
             className={"g-boder"}
             height={300}
             language="json"
             options={{
-              // selectOnLineNumbers: true,
               minimap: { enabled: false },
-              // readOnly: readOnly,
-              // json 数据格式测试
-              // model: monaco.editor.createModel('', "json", modelUri)
-              // model: getModel('')
-              // model: model
-            }}
-            
-          ></MonacoEditor>
+            }} />
+          {/* <MonacoEditor
+            className={"g-boder"}
+            height={300}
+            language="json"
+            options={{
+              minimap: { enabled: false },
+            }} /> */}
         </Form.Item>
       </ModalForm>
     </>
