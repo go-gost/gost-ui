@@ -1,132 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  BetaSchemaForm,
-  ProForm,
-  LoginForm,
-  ProFormText,
-  ProFormCheckbox,
-} from "@ant-design/pro-components";
-import type {
-  ProFormColumnsType,
-  ProFormLayoutType,
-} from "@ant-design/pro-components";
-import {
-  DeleteOutlined,
-  GlobalOutlined,
-  LockOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Checkbox, Col, Flex, Form, Row, Space } from "antd";
-import {
-  GostApiConfig,
-  getLocalServers,
-  login,
-  deleteLocal,
-} from "../uitls/server";
-
-type DataItem = { name: string; state: string };
-const columns: ProFormColumnsType<DataItem>[] = [
-  {
-    title: "gost API 地址",
-    dataIndex: "addr",
-    valueType: "text",
-  },
-  {
-    title: "usrname",
-    dataIndex: "addr",
-    valueType: "text",
-  },
-  {
-    title: "password",
-    dataIndex: "addr",
-    valueType: "password",
-  },
-];
-
-const LocalServers = () => {
-  const [list, setList] = useState<GostApiConfig[]>();
-  // const [local, setLocal] = useState<Record<string, GostApiConfig>>();
-
-  const updateList = useCallback(async () => {
-    return getLocalServers()
-      .then((local) => {
-      
-        return local
-          .sort((a, b) => {
-            const t1 = a.time || 0;
-            const t2 = b.time || 0;
-            return t2 - t1;
-          });
-      })
-      .then((list) => setList(list));
-  }, []);
-  useEffect(() => {
-    updateList();
-    // getList().then(list=>setList(list))
-  }, []);
-
-  return (
-    <>
-      {list && list?.length > 0 ? (
-        <Space direction="vertical" style={{ display: "flex" }}>
-          <div>快速连接</div>
-          <Row gutter={10}>
-            {list.map((item) => {
-              return (
-                <Col
-                  key={item.addr}
-                  span={12}
-                  title={item.addr}
-                  style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  <Flex gap={5} style={{ overflow: "hidden" }}>
-                    <a
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        flex: "auto",
-                      }}
-                      href={`?use=${item.addr}`}
-                    >
-                      {item.addr}
-                    </a>
-                    <DeleteOutlined
-                      style={{ color: "red" }}
-                      onClick={async () => {
-                        await deleteLocal(item.addr);
-                        updateList();
-                      }}
-                    />
-                  </Flex>
-                </Col>
-              );
-            })}
-          </Row>
-        </Space>
-      ) : null}
-    </>
-  );
-};
+import React from "react";
+import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Form, Input } from "antd";
+import { login } from "../uitls/server";
+import LocalServers from "../components/LocalServers";
 
 const Home: React.FC = () => {
   return (
-    <LoginForm
-      containerStyle={{ boxSizing: "border-box" }}
-      title="GOST API Manage"
-      subTitle="首先连接API服务"
+    <Form
+      className="home-form"
+      size="large"
       layout="horizontal"
-      submitter={{
-        searchConfig: { submitText: "连接" },
+      initialValues={{
+        baseURL: "http://",
+        save: true,
       }}
       onFinish={(value) => {
         let addr: string = value.baseURL;
         if (!/^(https?:)?\/\//.test(addr)) {
           addr = `${location.protocol}//` + addr;
-        }else if(/^\/\//.test(addr)){
+        } else if (/^\/\//.test(addr)) {
           addr = `${location.protocol}` + addr;
         }
         return login(
@@ -140,40 +33,56 @@ const Home: React.FC = () => {
           value.save
         );
       }}
-      actions={<LocalServers></LocalServers>}
     >
-      <ProFormText
+      <h1>GOST API Manage</h1>
+      <h2>首先连接API服务</h2>
+      <Form.Item
         name="baseURL"
-        fieldProps={{
-          size: "large",
-          prefix: <GlobalOutlined className={"prefixIcon"} />,
-        }}
-        placeholder={"API baseURL"}
         rules={[
           {
             required: true,
             message: "请输入API地址",
           },
+          {
+            validator(rule, value, callback) {
+              if (value === "http://") {
+                callback("请输入API地址");
+              }
+              callback();
+            },
+          },
+          // {
+          //   type:'url'
+          // }
         ]}
-      />
-      <ProFormText
-        name="username"
-        fieldProps={{
-          size: "large",
-          prefix: <UserOutlined className={"prefixIcon"} />,
-        }}
-        placeholder={"username"}
-      />
-      <ProFormText.Password
-        name="password"
-        fieldProps={{
-          size: "large",
-          prefix: <LockOutlined className={"prefixIcon"} />,
-        }}
-        placeholder={"password"}
-      />
-      <ProFormCheckbox labelAlign="right" label="保存到本地" name="save" />
-    </LoginForm>
+      >
+        <Input
+          placeholder="API baseURL"
+          prefix={<GlobalOutlined className={"prefixIcon"} />}
+        ></Input>
+      </Form.Item>
+      <Form.Item name="username">
+        <Input
+          placeholder="username"
+          prefix={<UserOutlined className={"prefixIcon"} />}
+        ></Input>
+      </Form.Item>
+      <Form.Item name="password">
+        <Input.Password
+          placeholder="password"
+          prefix={<LockOutlined className={"prefixIcon"} />}
+        ></Input.Password>
+      </Form.Item>
+      <Form.Item name="save" valuePropName="checked">
+        <Checkbox>保存到本地</Checkbox>
+      </Form.Item>
+      <Form.Item noStyle style={{ marginBottom: "1em" }}>
+        <Button block type="primary" htmlType="submit">
+          链接
+        </Button>
+      </Form.Item>
+      <LocalServers></LocalServers>
+    </Form>
   );
 };
 

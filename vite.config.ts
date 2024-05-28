@@ -6,7 +6,9 @@ import { analyzer } from "vite-bundle-analyzer";
 export default defineConfig(({ command, mode }) => {
   const config: UserConfig = {
     base: "./",
-    plugins: [react()],
+    plugins: [
+      react()
+    ],
   };
 
   if (mode === "development") {
@@ -21,8 +23,6 @@ export default defineConfig(({ command, mode }) => {
           manualChunks: {
             monaco: ["monaco-editor"],
             antd: ["antd"],
-            // 将组件库的代码打包
-            "ant-design": ["@ant-design/icons", "@ant-design/pro-components"],
           },
         },
       },
@@ -30,8 +30,8 @@ export default defineConfig(({ command, mode }) => {
   }
 
   if (mode === "analyzer") {
-    config.plugins.unshift(analyzer() as any);
-    config.build.sourcemap="hidden";
+    config.plugins.push(analyzer());
+    config.build.sourcemap = "hidden";
   }
 
   return config;

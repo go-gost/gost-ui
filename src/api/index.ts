@@ -15,7 +15,9 @@ export const apis = {
   hops: "/config/hops",
   hosts: "/config/hosts",
   ingresses: "/config/ingresses",
+  observers: "/config/observers",
   resolvers: "/config/resolvers",
+  sds: "/config/sds",
   services: "/config/services",
 };
 
@@ -42,6 +44,8 @@ export const hosts = getRESTfulApi<Gost.HostsConfig>(apis["hosts"]);
 export const ingresses = getRESTfulApi<Gost.IngressConfig>(apis["ingresses"]);
 export const resolvers = getRESTfulApi<Gost.ResolverConfig>(apis["resolvers"]);
 export const services = getRESTfulApi<Gost.ServiceConfig>(apis["services"]);
+export const sds = getRESTfulApi<Gost.ServiceConfig>(apis["sds"]);
+export const observers = getRESTfulApi<Gost.ServiceConfig>(apis["observers"]);
 
 // 获取当前config
 export const getConfig = (format?: Format) => require.get(apis.config);

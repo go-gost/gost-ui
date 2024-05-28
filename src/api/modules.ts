@@ -95,6 +95,18 @@ const modules: Module[] = [
     // localApi: (LocalApi as any)['services'],
     // localApi: (LocalApi as any)['services'],
   },
+  {
+    name: "sd",
+    title: "服务发现(SD)",
+    subTitle: "服务发现",
+    ...getAttr("sds"),
+  },
+  {
+    name: "observer",
+    title: "观测器(Observer)",
+    subTitle: "观测器",
+    ...getAttr("observers"),
+  },
 ];
 
 export const getModule = (name: string) =>

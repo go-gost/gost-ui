@@ -1,3 +1,12 @@
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  align-items: stretch;
+}
+
 #root {
   width: 100%;
 }
@@ -13,3 +22,28 @@
   cursor: pointer;
 }
 
+.antd-cord-boxShadow {
+  box-shadow: 0 1px 2px -2px #00000029,0 3px 6px #0000001f,0 5px 12px 4px #00000017;
+  border-color: transparent;
+}
+
+.home-form {
+  width: 380px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 15px;
+  margin: 0 auto;
+}
+.home-form h1 {
+  text-align: center;
+  font-size: 30px;
+  margin: .5em 0 0 0;
+}
+.home-form h2 {
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.8;
+  padding: 0 0 1em 0;
+  margin: 0;
+  font-weight: normal;
+}

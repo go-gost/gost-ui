@@ -12,6 +12,8 @@ import climiters from "./climiters";
 import limiters from "./limiters";
 import rlimiters from "./rlimiters";
 import resolvers from "./resolvers";
+import sds from "./sds";
+import observers from "./observers";
 import { Template } from "./type";
 
 export type { Template };
@@ -33,6 +35,8 @@ export default {
   ingresses: ingresses,
   resolvers: resolvers,
   routers: routers,
+  sds: sds,
+  observers: observers,
 
   services: services,
 } as Record<string, Template[]>;

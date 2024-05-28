@@ -12,7 +12,7 @@ const defaultTemplates = `{
             // "resolver": "resolver-0",
             // "hosts": "hosts-0",
             "handler": {
-                "type": "http",
+                "type": "auto",
                 // "auth": {
                 //     "username": "gost",
                 //     "password": "gost"
@@ -32,7 +32,7 @@ const defaultTemplates = `{
                 //     "password": "pass"
                 // },
                 // "auther": "auther-0",
-                "chain": "chain-0",
+                // "chain": "chain-0",
                 // "tls": {
                 //     "certFile": "cert.pem",
                 //     "keyFile": "key.pem",

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { ConfigProvider, message, theme } from "antd";
 import {
   init,
@@ -13,9 +13,10 @@ import "./App.css";
 import { configEvent } from "./uitls/events";
 
 import zhCN from "antd/locale/zh_CN";
-import Manage from "./Pages/Manage";
 import { ServerComm } from "./api/local";
 import Ctx from "./uitls/ctx";
+
+const Manage = React.lazy(() => import("./Pages/Manage"));
 
 function App() {
   const info = useInfo();
@@ -44,7 +45,7 @@ function App() {
         ]);
         useServerConfig.set(l1 as any);
         useLocalConfig.set(l2);
-        return [l1, l2];  
+        return [l1, l2];
       } finally {
         setServerLoading(false);
         setLocalLoading(false);
@@ -123,7 +124,9 @@ function App() {
         theme={{ algorithm: isDark ? theme.darkAlgorithm : undefined }}
         locale={zhCN}
       >
-        {info ? <Manage /> : <Home />}
+        <React.Suspense fallback="loading...">
+          {info ? <Manage /> : <Home />}
+        </React.Suspense>
       </ConfigProvider>
     </Ctx.Provider>
   );

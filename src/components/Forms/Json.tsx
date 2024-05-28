@@ -1,18 +1,14 @@
 import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  ModalForm,
-  ProFormInstance,
-  ModalFormProps,
-} from "@ant-design/pro-components";
-import { Button, Dropdown, Form, Space } from "antd";
+import { Button, Dropdown, Form, FormInstance, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { jsonFormat, jsonStringFormat, jsonParse } from "../../uitls";
+import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../uitls";
 import * as monaco from "monaco-editor";
 import { MonacoEditor, getModel, model, modelUri } from "../../uitls/userMonacoWorker";
 import { Template } from "../../templates";
-import { render } from "react-dom";
-import { useServerConfig } from "../../uitls/server";
+// import { render } from "react-dom";
+// import { useServerConfig } from "../../uitls/server";
+import ModalForm, { ModalFormProps } from "../ModalForm";
 
 const template2menu: any = (template: Template) => {
   const { children, ...other } = template;
@@ -52,17 +48,14 @@ type JsonFromProps = ModalFormProps & {
 
 const JsonForm: React.FC<JsonFromProps> = (props) => {
   const { templates, ...other } = props;
-  const formRef = useRef<ProFormInstance>();
+  const formRef = useRef<FormInstance<any>>();
   const templateHandle = (json: string) => {
-    let value;
+    let value = json;
     if (props.initialValues?.value) {
-      const _json = jsonParse(json);
       const _old = jsonParse(props.initialValues.value);
-      _json.name = _old.name ? _old.name : _json.name;
-      value = jsonFormat(_json);
-    } else {
-      value = jsonStringFormat(json);
+      value = _old.name ? jsonEdit(json, [{path:'name', value: _old.name}]) : json;
     }
+    value = jsonStringFormat(value);
     formRef.current?.setFieldValue("value", value);
     formRef.current?.validateFields();
   };
@@ -236,8 +229,8 @@ export const showJsonForm = (props: JsonFromProps) => {
   });
 };
 
-export const showUpModelForm = (props: any) => {
-  const { name, root, model } = props;
-};
+// export const showUpModelForm = (props: any) => {
+//   const { name, root, model } = props;
+// };
 
 export default JsonForm;

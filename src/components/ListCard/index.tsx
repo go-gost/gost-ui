@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useMemo, useContext } from "react";
 import { getRESTfulApi } from "../../api";
-import { ProCard } from "@ant-design/pro-components";
+import { Card, CardProps } from "antd";
 import PublicList, { PublicListProps } from "../List/Public";
 import AddButton from "../Forms/AddButton";
 import { GostCommit } from "../../api/local";
@@ -10,6 +10,7 @@ import { Button, Input, Modal, Space, notification } from "antd";
 import { getModule } from "../../api/modules";
 import { configEvent } from "../../uitls/events";
 import { CloseOutlined } from "@ant-design/icons";
+import classnames from "classnames";
 
 export type ListCardProps = {
   module?: string;
@@ -24,6 +25,14 @@ export type ListCardProps = {
   bordered?: boolean;
   renderConfig?: PublicListProps["renderConfig"];
   filter?: PublicListProps["filter"];
+};
+
+export const ProCard = (props: CardProps & { boxShadow?: boolean }) => {
+  const { boxShadow, className, ...other } = props;
+  const _className = classnames(className, {
+    "antd-cord-boxShadow": boxShadow,
+  });
+  return <Card className={_className} {...other}></Card>;
 };
 
 const ListCard: React.FC<ListCardProps> = (props) => {
@@ -42,7 +51,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
   } = useMemo(() => {
     return { ...getModule(props.module || "")!, ...props };
   }, [props]);
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState("");
   const _prop = {
     title: subTitle || "",
     keyword,
@@ -149,10 +158,14 @@ const ListCard: React.FC<ListCardProps> = (props) => {
         title={title}
         extra={
           <Space>
-            <Input.Search allowClear onChange={(e)=>{
-              const value = e.target.value;
-              setKeyword(value);
-            }} size="small"></Input.Search>
+            <Input.Search
+              allowClear
+              onChange={(e) => {
+                const value = e.target.value;
+                setKeyword(value);
+              }}
+              size="small"
+            ></Input.Search>
             {/* <Button icon={""} size="small">全屏编辑</Button> */}
             <AddButton {..._prop} />
           </Space>

@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -31,10 +24,9 @@ import { download, jsonFormat } from "../uitls";
 import { MonacoEditor } from "../uitls/userMonacoWorker";
 import Ctx from "../uitls/ctx";
 import * as API from "../api";
-import ListCard from "../components/ListCard";
+import ListCard, { ProCard } from "../components/ListCard";
 import ChainCard from "../components/ListCard/Chains";
 import ServiceCard from "../components/ListCard/Services";
-import { ProCard } from "@ant-design/pro-components";
 import HopsCard from "../components/ListCard/Hops";
 import { fixOldCacheConfig } from "../api/local";
 import { configEvent } from "../uitls/events";
@@ -167,9 +159,13 @@ const Manage = () => {
           // style={{ padding: "0 15px" }}
         >
           <Col color="">
-            <Button type="link" icon={<ReloadOutlined />} onClick={async () => {
-                  useServerConfig.set((await API.getConfig()) as any)
-            }}>
+            <Button
+              type="link"
+              icon={<ReloadOutlined />}
+              onClick={async () => {
+                useServerConfig.set((await API.getConfig()) as any);
+              }}
+            >
               刷新配置
             </Button>
           </Col>
@@ -229,7 +225,7 @@ const Manage = () => {
             <Form.Item name="autoSave" label="自动保存" valuePropName="checked">
               <Switch />
             </Form.Item>
-            <Form.Item name="saveFormat" label="格式">
+            <Form.Item name="saveFormat" label="格式" initialValue={'json'}>
               <Radio.Group optionType="button" buttonStyle="solid">
                 <Radio value="json">json</Radio>
                 <Radio value="yaml">yaml</Radio>
@@ -271,17 +267,23 @@ const Manage = () => {
             <Col {...colSpan}>
               <ListCard module="resolver" />
             </Col>
+            <Col {...colSpan}>
+              <ListCard module="sd" />
+            </Col>
+            <Col {...colSpan}>
+              <ListCard module="observer" />
+            </Col>
             <Col span={24}>
               <ProCard boxShadow title="限速限流">
                 <Row gutter={[16, 16]}>
                   <Col {...colSpan1}>
-                    <ListCard module="limiter" bordered />
+                    <ListCard module="limiter" bordered boxShadow={false} />
                   </Col>
                   <Col {...colSpan1}>
-                    <ListCard module="rlimiter" bordered />
+                    <ListCard module="rlimiter" bordered boxShadow={false} />
                   </Col>
                   <Col {...colSpan1}>
-                    <ListCard module="climiter" bordered />
+                    <ListCard module="climiter" bordered boxShadow={false} />
                   </Col>
                 </Row>
               </ProCard>

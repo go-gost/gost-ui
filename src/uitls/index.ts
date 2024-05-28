@@ -1,13 +1,26 @@
-import { format, parse, applyEdits } from "jsonc-parser";
+import {
+  format,
+  parse,
+  applyEdits,
+  ModificationOptions,
+  JSONPath,
+  modify,
+  EditResult,
+} from "jsonc-parser";
 
-const localCacheKeys = ['_id_', '_key_', '_type_'];
+const localCacheKeys = ["_id_", "_key_", "_type_"];
+type modify = {
+  path: JSONPath | string;
+  value: any;
+  options?: ModificationOptions;
+};
 
 export const jsonFormat = (json: any) => {
   return JSON.stringify(json, null, 4);
 };
 
 export const jsonFormatValue = (json: any) => {
-  const newJson = {...json};
+  const newJson = { ...json };
   for (const key of localCacheKeys) {
     delete newJson[key];
   }
@@ -29,6 +42,16 @@ export const jsonParse = (str: string) => {
     throw errs[0];
   }
   return obj;
+};
+
+export const jsonEdit = (str: string, edits: modify[]) => {
+  const results:EditResult = [];
+  const run = modify.bind(null,str);
+  edits.forEach(({path,value,options},index)=>{
+    path = Array.isArray(path) ? path : path.split('.');
+    results.push(...run(path,value,options || {}))
+  })
+  return applyEdits(str, results);
 };
 
 export const download = (content: BlobPart, filename: string) => {
