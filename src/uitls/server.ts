@@ -6,6 +6,7 @@ import { ServerComm } from "../api/local";
 import { Config } from "../api/types";
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
+const settingKey = "__SETTINGS__";
 
 export type GostApiConfig = {
   key?: string;
@@ -21,13 +22,34 @@ export type GostApiConfig = {
   isLocal?: boolean | null;
 };
 
+export type Settings = {
+  theme?: "dark" | "light" | 'system';
+};
+
 export const useInfo = getUseValue<GostApiConfig | null>();
 Object.defineProperty(window, gostServerKey, {
   get: useInfo.get,
   set: useInfo.set,
 });
-export const useServerConfig = getUseValue<Partial<Config> | null>()
-export const useLocalConfig = getUseValue<Partial<Config> | null>()
+export const useServerConfig = getUseValue<Partial<Config> | null>();
+export const useLocalConfig = getUseValue<Partial<Config> | null>();
+export const useSettings = getUseValue<Settings>(
+  () => {
+    const json = localStorage.getItem(settingKey) || "{}";
+    try {
+      return JSON.parse(json);
+    } catch (e) {
+      console.error(e);
+      return {};
+    }
+  },
+  (v) => {
+    if (v == null) {
+      localStorage.removeItem(settingKey);
+    }
+    localStorage.setItem(settingKey, JSON.stringify(v));
+  }
+);
 
 export const getInfo = (): GostApiConfig | null => useInfo.get();
 

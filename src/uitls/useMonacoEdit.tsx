@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useBindValue } from "./use";
 import type * as Monaco from "monaco-editor";
 import classnames from "classnames";
+import { useIsDark } from "./useTheme";
 
 (function () {
   const require = (window as any).require;
@@ -70,13 +71,18 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   Monaco.editor.IStandaloneCodeEditor,
   CodeEditorProps
 > = (props, ref) => {
-  const { onChange, options, height, className, theme = "vs", style } = props;
+  const { onChange, options, height, className, theme, style } = props;
   const [language, setLanguage] = useBindValue(props.language, "javascript");
   const [value, setValue] = useBindValue(props.value, props.defaultValue, "");
   const [isReady, setReady] = useState(false);
   const divEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
   const self = useRef<any>({});
+  const isDark = useIsDark();
+  const _theme = useMemo(()=>{
+    if(theme) return theme;
+    return isDark ? 'vs-dark' : 'vs'
+  },[theme, isDark])
 
   React.useImperativeHandle(ref, () => {
     return editor.current!;
@@ -101,7 +107,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
         _editor = editor.current = monaco.editor.create(el, {
           value: value,
           language: language,
-          theme,
+          theme: _theme,
           ...defOptions,
           ...options,
         });

@@ -36,6 +36,7 @@ import {
   SaveOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { ThemeButton } from "../components/Theme";
 
 const colSpan = {
   xs: 24,
@@ -150,7 +151,7 @@ const Manage = () => {
   console.log("gostInfo", info);
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
-      <Layout.Header style={{ color: "#FFF" }}>
+      <Layout.Header style={{ color: "#FFF", paddingInline: 20 }}>
         <Row
           align="middle"
           justify="space-between"
@@ -199,6 +200,7 @@ const Manage = () => {
                   切换连接
                 </Button> */}
               </Dropdown.Button>
+              <ThemeButton size="small"></ThemeButton>
             </Space>
           </Col>
         </Row>
@@ -224,7 +226,7 @@ const Manage = () => {
             <Form.Item name="autoSave" label="自动保存" valuePropName="checked">
               <Switch />
             </Form.Item>
-            <Form.Item name="saveFormat" label="格式" initialValue={'json'}>
+            <Form.Item name="saveFormat" label="格式" initialValue={"json"}>
               <Radio.Group optionType="button" buttonStyle="solid">
                 <Radio value="json">json</Radio>
                 <Radio value="yaml">yaml</Radio>

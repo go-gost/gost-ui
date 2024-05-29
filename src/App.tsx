@@ -15,6 +15,7 @@ import { configEvent } from "./uitls/events";
 import zhCN from "antd/locale/zh_CN";
 import { ServerComm } from "./api/local";
 import Ctx from "./uitls/ctx";
+import { useIsDark } from "./uitls/useTheme";
 
 const Manage = React.lazy(() => import("./Pages/Manage"));
 
@@ -24,12 +25,10 @@ function App() {
   // const [localConfig, setLocalConfig] = useState<any>(null);
   const gostConfig = useServerConfig();
   const localConfig = useLocalConfig();
-  const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
+  const isDark = useIsDark();
+  // const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
   const [serverLoading, setServerLoading] = useState<any>(false);
   const [localLoading, setLocalLoading] = useState<any>(false);
-  const [isDark, setIsDark] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
   const isLoading = useMemo(
     () => serverLoading || localLoading,
     [serverLoading, localLoading]
@@ -84,19 +83,13 @@ function App() {
       );
     };
     const update = slef.current.update;
-    const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
-    const themeChange = (ev: MediaQueryListEvent) => {
-      setIsDark(ev.matches);
-    };
     configEvent.on("apiUpdate", apiUpdate);
     configEvent.on("localUpdate", localUpdate);
     configEvent.on("update", update);
-    matchMedia.addEventListener("change", themeChange);
     return () => {
       configEvent.off("apiUpdate", apiUpdate);
       configEvent.off("localUpdate", localUpdate);
       configEvent.off("update", update);
-      matchMedia.removeEventListener("change", themeChange);
     };
   }, []);
 
@@ -111,7 +104,13 @@ function App() {
       document.title = slef.current.defaultTitle;
     }
   }, [info]);
-
+  useEffect(() => {
+    if(isDark){
+      document.documentElement.classList.add("theme-dark")
+    }else{
+      document.documentElement.classList.remove("theme-dark")
+    }
+  },[isDark])
   return (
     <Ctx.Provider
       value={{

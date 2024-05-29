@@ -10,8 +10,16 @@ body {
 #root {
   width: 100%;
 }
+
+
 .g-boder {
   border: 1px solid #ccc;
+}
+
+:root.theme-dark {
+  .g-boder {
+    border: 1px solid #333;
+  }
 }
 
 .ant-space-item > .ant-tag {
