@@ -22,7 +22,8 @@ export const useIsDark = ()=> {
   const sysIsDark = useSysIsDark();
   const { theme: userTheme } = useSettings();
   const isDark = useMemo(() => {
-    if (userTheme === "system") {
+    console.log('useIsDark')
+    if (!userTheme || userTheme === "system") {
       return sysIsDark;
     } else {
       return userTheme === "dark" ? true : false;

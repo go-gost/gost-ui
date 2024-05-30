@@ -4,10 +4,12 @@
   font-weight: 400;
   color-scheme: light dark;
   font-synthesis: none;
+  background-color: #FFF;
   /* text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%; */
+  transition: all .5s;
 }
 
 :root.theme-dark {
