@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./favicon.ico" />
     <link rel="manifest" href="./manifest.json">
-    <script type="module" crossorigin src="./assets/index-129ee85c.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/antd-18633833.js">
-    <link rel="modulepreload" crossorigin href="./assets/ant-design-4683d1ac.js">
-    <link rel="modulepreload" crossorigin href="./assets/monaco-f04ab9d6.js">
-    <link rel="stylesheet" href="./assets/monaco-26cae40d.css">
-    <link rel="stylesheet" href="./assets/index-f2ed54f5.css">
+    <script id="nonaco" src="//unpkg.com/monaco-editor@0.47.0/min/vs/loader.js"></script>
+    <script>
+      (function(){
+        require.config({ paths: { vs: document.getElementById("nonaco").src.replace(/\/loader\.js/,'') } });
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-b60f8682.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/antd-a6353727.js">
+    <link rel="stylesheet" href="./assets/index-6ab689cb.css">
   </head>
   <body>
     <div id="root"></div>
