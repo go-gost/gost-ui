@@ -141,14 +141,12 @@ const Manage = () => {
       key: "new",
       label: "打开新链接",
       onClick: () => {
-        console.log(location.href);
         window.open(location.href, undefined, "noopener");
       },
     });
     return items;
   }, [locals]);
 
-  console.log("gostInfo", info);
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <Layout.Header style={{ color: "#FFF", paddingInline: 20 }}>
@@ -215,7 +213,6 @@ const Manage = () => {
             layout="horizontal"
             labelCol={{ span: 4 }}
             onValuesChange={(v, vs) => {
-              console.log(v, vs);
               Object.assign(info, v);
               useInfo.set(info);
               if (info.isLocal) {
@@ -238,74 +235,75 @@ const Manage = () => {
           </Form>
         </Modal>
       </Layout.Header>
-      <Layout.Content style={{ height: "100%", overflow: "auto" }}>
-        <Row style={{ padding: 16, overflow: "hidden" }}>
-          <Row gutter={[16, 16]}>
-            {/* <Col {...colSpan} xxl={16}> */}
-            <ServiceCard colSpan={colSpan}></ServiceCard>
-            {/* </Col> */}
-            <Col {...colSpan}>
-              <ChainCard></ChainCard>
-            </Col>
-            <Col {...colSpan}>
-              <HopsCard />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="auther" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="admission" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="bypass" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="host" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="ingress" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="resolver" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="sd" />
-            </Col>
-            <Col {...colSpan}>
-              <ListCard module="observer" />
-            </Col>
-            <Col span={24}>
-              <ProCard boxShadow title="限速限流">
-                <Row gutter={[16, 16]}>
-                  <Col {...colSpan1}>
-                    <ListCard module="limiter" bordered boxShadow={false} />
-                  </Col>
-                  <Col {...colSpan1}>
-                    <ListCard module="rlimiter" bordered boxShadow={false} />
-                  </Col>
-                  <Col {...colSpan1}>
-                    <ListCard module="climiter" bordered boxShadow={false} />
-                  </Col>
-                </Row>
-              </ProCard>
-            </Col>
-            <Col span={24}>
-              <ProCard boxShadow title="All Config JSON">
-                {/* <pre>{jsonFormat(gostConfig!)}</pre> */}
-                <CodeEditor
-                  className={"g-boder"}
-                  value={jsonFormat(gostConfig!)}
-                  height={500}
-                  language="json"
-                  options={{
-                    // selectOnLineNumbers: true,
-                    minimap: { enabled: false },
-                    readOnly: true,
-                  }}
-                ></CodeEditor>
-              </ProCard>
-            </Col>
-          </Row>
+      <Layout.Content style={{ height: "100%", padding: 16, boxSizing:'border-box', overflow: "auto" }}>
+        <Row gutter={[16, 16]} style={{ overflow: "hidden" }}>
+          {/* <Col {...colSpan} xxl={16}> */}
+          <ServiceCard colSpan={colSpan}></ServiceCard>
+          {/* </Col> */}
+          <Col {...colSpan}>
+            <ChainCard></ChainCard>
+          </Col>
+          <Col {...colSpan}>
+            <HopsCard />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="auther" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="admission" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="bypass" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="host" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="ingress" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="resolver" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="sd" />
+          </Col>
+          <Col {...colSpan}>
+            <ListCard module="observer" />
+          </Col>
+          <Col span={24}>
+            <ProCard boxShadow title="限速限流">
+              <Row gutter={[16, 16]}>
+                <Col {...colSpan1}>
+                  <ListCard module="limiter" bordered boxShadow={false} />
+                </Col>
+                <Col {...colSpan1}>
+                  <ListCard module="rlimiter" bordered boxShadow={false} />
+                </Col>
+                <Col {...colSpan1}>
+                  <ListCard module="climiter" bordered boxShadow={false} />
+                </Col>
+              </Row>
+            </ProCard>
+          </Col>
+          <Col span={24}>
+            <ProCard
+              boxShadow
+              title="All Config JSON"
+              styles={{ body: { padding: 20 } }}
+            >
+              <CodeEditor
+                className={"g-boder"}
+                value={jsonFormat(gostConfig!)}
+                height={500}
+                language="json"
+                options={{
+                  // selectOnLineNumbers: true,
+                  minimap: { enabled: false },
+                  readOnly: true,
+                }}
+              ></CodeEditor>
+            </ProCard>
+          </Col>
         </Row>
       </Layout.Content>
     </Layout>

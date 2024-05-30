@@ -38,7 +38,7 @@ export const jsonParse = (str: string) => {
   const errs: any[] = [];
   const obj = parse(str, errs, { allowTrailingComma: true });
   if (errs.length) {
-    console.log(errs);
+    console.error(errs);
     throw errs[0];
   }
   return obj;

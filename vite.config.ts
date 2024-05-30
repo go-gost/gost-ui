@@ -6,9 +6,8 @@ import { analyzer } from "vite-bundle-analyzer";
 export default defineConfig(({ command, mode }) => {
   const config: UserConfig = {
     base: "./",
-    plugins: [
-      react()
-    ],
+    plugins: [react()],
+    define: {},
   };
 
   if (mode === "development") {

@@ -213,7 +213,6 @@ export const showJsonForm = (props: JsonFromProps) => {
   }
 
   function destroy() {
-    console.log("destroy");
     root.unmount();
     document.body.removeChild(container);
   }

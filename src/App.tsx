@@ -105,12 +105,14 @@ function App() {
     }
   }, [info]);
   useEffect(() => {
-    if(isDark){
-      document.documentElement.classList.add("theme-dark")
-    }else{
-      document.documentElement.classList.remove("theme-dark")
+    if (isDark) {
+      document.documentElement.classList.add("theme-dark");
+      (window as any)?.monaco?.editor.setTheme("vs-dark");
+    } else {
+      document.documentElement.classList.remove("theme-dark");
+      (window as any)?.monaco?.editor.setTheme("vs");
     }
-  },[isDark])
+  }, [isDark]);
   return (
     <Ctx.Provider
       value={{
