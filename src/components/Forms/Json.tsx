@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
-import { Button, Dropdown, Form, FormInstance, Space } from "antd";
+import { Button, Dropdown, Form, FormInstance, Space, ConfigProvider } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../uitls";
 import { Template } from "../../templates";
@@ -8,6 +8,8 @@ import { Template } from "../../templates";
 // import { useServerConfig } from "../../uitls/server";
 import ModalForm, { ModalFormProps } from "../ModalForm";
 import { CodeEditor } from "../../uitls/useMonacoEdit";
+import { globalConfig } from "antd/es/config-provider";
+import { HookAPI } from "antd/es/modal/useModal";
 
 const template2menu: any = (template: Template) => {
   const { children, ...other } = template;
@@ -206,9 +208,10 @@ export const showJsonForm = (props: JsonFromProps) => {
   const root = ReactDOM.createRoot(container);
   function render({ ...props }: JsonFromProps) {
     clearTimeout(timeoutId);
+    const config = globalConfig();
     timeoutId = setTimeout(() => {
       document.body.append(container);
-      root.render(<JsonForm {...props} />);
+      root.render(<ConfigProvider theme={config.getTheme()}><JsonForm {...props} /></ConfigProvider>);
     }, 100);
   }
 

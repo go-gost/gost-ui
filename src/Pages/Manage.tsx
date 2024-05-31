@@ -9,7 +9,6 @@ import {
   Modal,
   Radio,
   Row,
-  Select,
   Space,
   Switch,
 } from "antd";
@@ -58,7 +57,6 @@ const Manage = () => {
   const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
   const [locals, setLocals] = useState<any[]>([]);
-
   const ref = useRef<any>({});
 
   const updateList = useCallback(async () => {
@@ -235,7 +233,14 @@ const Manage = () => {
           </Form>
         </Modal>
       </Layout.Header>
-      <Layout.Content style={{ height: "100%", padding: 16, boxSizing:'border-box', overflow: "auto" }}>
+      <Layout.Content
+        style={{
+          height: "100%",
+          padding: 16,
+          boxSizing: "border-box",
+          overflow: "auto",
+        }}
+      >
         <Row gutter={[16, 16]} style={{ overflow: "hidden" }}>
           {/* <Col {...colSpan} xxl={16}> */}
           <ServiceCard colSpan={colSpan}></ServiceCard>

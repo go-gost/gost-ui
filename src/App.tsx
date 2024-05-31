@@ -1,5 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { ConfigProvider, message, theme } from "antd";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+  useContext,
+} from "react";
+import { ConfigProvider, message, theme, App as AntdApp } from "antd";
 import {
   init,
   logout,
@@ -18,6 +25,23 @@ import Ctx from "./uitls/ctx";
 import { useIsDark } from "./uitls/useTheme";
 
 const Manage = React.lazy(() => import("./Pages/Manage"));
+
+const AntdGlobal: React.FC<{ children: React.ReactNode }> = (props) => {
+  const { locale, theme } = useContext(ConfigProvider.ConfigContext);
+  useLayoutEffect(() => {
+    // 处理切换主题后 弹层主题不正常的问题
+    ConfigProvider.config({
+      theme: theme,
+      holderRender: (children) => (
+        <ConfigProvider theme={theme}>
+          {children}
+        </ConfigProvider>
+      ),
+    });
+  }, [locale, theme]);
+
+  return <AntdApp>{props.children}</AntdApp>;
+};
 
 function App() {
   const info = useInfo();
@@ -125,9 +149,11 @@ function App() {
         theme={{ algorithm: isDark ? theme.darkAlgorithm : undefined }}
         locale={zhCN}
       >
-        <React.Suspense fallback="loading...">
-          {info ? <Manage /> : <Home />}
-        </React.Suspense>
+        <AntdGlobal>
+          <React.Suspense fallback="loading...">
+            {info ? <Manage /> : <Home />}
+          </React.Suspense>
+        </AntdGlobal>
       </ConfigProvider>
     </Ctx.Provider>
   );

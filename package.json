@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "init:monaco": "cpx ./node_modules/monaco-editor/min/** ./public/monaco-editor/min",
-    "prebuild": "npm run init:monaco"
+    "predev": "npm run init:monaco"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

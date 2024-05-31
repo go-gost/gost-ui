@@ -5,10 +5,10 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { Button, Popconfirm, Space, Table } from "antd";
+import { Button, Popconfirm, Space, Table, App } from "antd";
 import { red, green } from "@ant-design/colors";
 import { getRESTfulApi } from "../../api";
-import JsonForm, { showJsonForm } from "../Forms/Json";
+import { showJsonForm } from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import {
   CheckCircleOutlined,
@@ -17,7 +17,7 @@ import {
   EditOutlined,
   StopOutlined,
 } from "@ant-design/icons";
-import { GostCommit, fixOldCacheConfig } from "../../api/local";
+import { GostCommit } from "../../api/local";
 import Ctx, { CardCtx } from "../../uitls/ctx";
 import { useListData1, UseTemplates } from "../ListCard/hooks";
 import { configEvent } from "../../uitls/events";
@@ -31,7 +31,7 @@ export type PublicListProps = {
   rowKey?: string;
   keyword?: string;
   renderConfig?: (v: any, r: any, i: number) => React.ReactNode;
-  filter?:  (item: any, keyord: string) => boolean;
+  filter?: (item: any, keyord: string) => boolean;
 };
 
 export const UpdateCtx = React.createContext<{ update?: (v?: any) => any }>({});
@@ -55,7 +55,6 @@ const PublicList: React.FC<PublicListProps> = (props) => {
     keyword,
     renderConfig = defaultRenderConfig,
     filter = defFilter,
-
   } = props;
   const { localList, comm } = useContext(CardCtx);
   const { gostConfig, localConfig } = useContext(Ctx);
@@ -66,6 +65,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
     localConfig,
   });
   const templates = UseTemplates({ name: keyName });
+  const { modal, message, notification } = App.useApp();
   const {
     deleteValue,
     updateValue,
@@ -172,7 +172,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
             render: (value, record, index) => {
               // console.log("render", record);
               const isEnable = dataList.includes(record);
-              const content = {...record};
+              const content = { ...record };
               delete content.status;
               return (
                 <Space size={2}>
