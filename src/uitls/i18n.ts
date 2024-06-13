@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { isValidElement } from "react";
 import en from '../i18n/en.json';
-import zh from '../i18n/en.json';
+import zh from '../i18n/zh.json';
 // const en = await import("../i18n/en.json");
 // const zh = await import("../i18n/zh.json");
 const fallbackLng = "en";
