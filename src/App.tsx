@@ -20,9 +20,12 @@ import "./App.css";
 import { configEvent } from "./uitls/events";
 
 import zhCN from "antd/locale/zh_CN";
+import enGB from "antd/locale/en_GB";
 import { ServerComm } from "./api/local";
 import Ctx from "./uitls/ctx";
 import { useIsDark } from "./uitls/useTheme";
+import './uitls/i18n.ts';
+import { useTranslation } from "react-i18next";
 
 const Manage = React.lazy(() => import("./Pages/Manage"));
 
@@ -45,6 +48,7 @@ const AntdGlobal: React.FC<{ children: React.ReactNode }> = (props) => {
 
 function App() {
   const info = useInfo();
+  const { t, i18n } = useTranslation();
   // const [gostConfig, setGostConfig] = useState<any>(null);
   // const [localConfig, setLocalConfig] = useState<any>(null);
   const gostConfig = useServerConfig();
@@ -53,10 +57,12 @@ function App() {
   // const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
   const [serverLoading, setServerLoading] = useState<any>(false);
   const [localLoading, setLocalLoading] = useState<any>(false);
+  const [locale, setLocale] = useState<any>(zhCN);
   const isLoading = useMemo(
     () => serverLoading || localLoading,
     [serverLoading, localLoading]
   );
+
   const slef = useRef({
     update: async () => {
       try {
@@ -137,6 +143,12 @@ function App() {
       (window as any)?.monaco?.editor.setTheme("vs");
     }
   }, [isDark]);
+  
+  useEffect(() => {
+    const lang = i18n.resolvedLanguage;
+    setLocale(lang === 'zh' ? zhCN : enGB);
+  },[i18n.resolvedLanguage])
+
   return (
     <Ctx.Provider
       value={{
@@ -147,7 +159,7 @@ function App() {
     >
       <ConfigProvider
         theme={{ algorithm: isDark ? theme.darkAlgorithm : undefined }}
-        locale={zhCN}
+        locale={locale}
       >
         <AntdGlobal>
           <React.Suspense fallback="loading...">

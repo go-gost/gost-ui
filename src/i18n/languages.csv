@@ -1,0 +1,80 @@
+key,zh,en
+language,简体中文,English
+base.title,GOST API Manage,GOST API Manage
+base.description,连接API服务,Connecting to API Services
+base.form.username,用户名,Username
+base.form.password,密码,Password
+base.form.local,保存到本地,Save to local
+base.form.name,名称,Name
+base.form.details,详情,Details
+base.cmd.connect,连接,Connect
+base.cmd.controls,操作,Operation
+base.cmd.enabled,启用,Enabled
+base.cmd.disable,禁用,Disable
+base.cmd.copy,复制,Copy
+base.cmd.edit,修改,Edit
+base.cmd.del,删除,Delete
+text.warn,警告,Warning
+text.deleteing,确定要删除吗？,Are you sure you want to delete?
+text.doubleClickEdit,双击修改,Double click to modify
+modules.admission.title,准入控制器(Admission),Admission
+modules.admission.subTitle,准入控制器,admission
+modules.auther.title,认证器(Auther),Auther
+modules.auther.subTitle,认证器,auther
+modules.bypass.title,分流器(Bypass),Bypass
+modules.bypass.subTitle,分流器,bypass
+modules.chain.title,转发链(Chain),Chain
+modules.chain.subTitle,转发链,chain
+modules.climiter.title,并发连接数限制,climiter
+modules.climiter.subTitle,,climiter
+modules.limiter.title,流量速率限制,limiter
+modules.limiter.subTitle,,limiter
+modules.rlimiter.title,请求速率限制,rlimiter
+modules.rlimiter.subTitle,,rlimiter
+modules.hop.title,跳跃点(Hop),Hop
+modules.hop.subTitle,跳跃点,hop
+modules.host.title,主机映射器(Hosts),Hosts
+modules.host.subTitle,主机映射器,hosts
+modules.ingress.title,Ingress,Ingress
+modules.ingress.subTitle,Ingress,Ingress
+modules.resolver.title,域名解析器(Resolver),Resolver
+modules.resolver.subTitle,域名解析器,resolver
+modules.service.title,服务(Service),Service
+modules.service.subTitle,服务,service
+modules.sd.title,服务发现(SD),SD
+modules.sd.subTitle,服务发现,SD
+modules.observer.title,观测器(Observer),Observer
+modules.observer.subTitle,观测器,observer
+msg.baseURL.required,请输入API地址,BaseURL cannot be empty
+msg.require,不能为空！,Can not be empty!
+msg.success,操作成功！,Success!
+msg.unknown,出现未知错误！,Unknown error!
+msg.connectionFailed,连接失败！,Connection failed!
+msg.wordWrap,自动换行,Word Wrap
+msg.invalidName,name无效,Invalid name
+msg.autofixName,是否自动分配name？,Whether to automatically assign a name?
+msg.autofix,自动修正提醒,Autofix Reminder
+msg.fixName,新分配 name 为  {{name}},Reassign name to {{name}}
+msg.formatError,{{name}}格式错误!,{{name}}Format error!
+placeholder.baseURL,API baseURL,API baseURL
+placeholder.savePath,默认保存到上下文目录,"By default, it is saved to the context directory."
+home.quickConnect,快速连接,Quick Connect
+manage.cmd.reload,刷新配置,Reload Config
+manage.cmd.save,保存到服务器,Save to server
+manage.cmd.download,下载当前配置,Download Config
+manage.cmd.logout,退出,Logout
+manage.cmd.switch,切换服务,Switch Services
+manage.cmd.new,连接新服务,Connect to new Services
+manage.label.autoSave,自动保存,Autosave
+manage.label.format,格式,Format
+manage.label.path,保存路径,Save path
+manage.label.limit,限速限流,Speed and current limit
+manage.label.allConfig,完整配置,All Config JSON
+title.edit,修改 {{name}},Edit {{name}}
+title.add,添加 {{name}},Add {{name}}
+title.copied,复制自 {{name}},Copied from {{name}}
+template.default,默认,Default
+template.inline,内联,Inline
+terms.template,模板,Template
+terms.forwarder,转发/反代,Forwarder
+terms.key0,远程端口转发,Remote Port Forwarding

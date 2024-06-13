@@ -1,6 +1,6 @@
 export type Template = {
-    label: string;
-    json: string;
-    cli?: string;
-    children?: Template[];
-}
+  label: string | { [key: string]: string };
+  json: string;
+  cli?: string;
+  children?: Template[];
+};

@@ -12,6 +12,7 @@ import { UpdateCtx } from "../List/Public";
 import { Space, Tag, Tooltip } from "antd";
 import { ViewNode } from "./node";
 import { ViewChain } from "./chain";
+import { useTranslation } from "react-i18next";
 
 export default function viewService(
   this: Partial<Config>,
@@ -116,6 +117,8 @@ export const ViewByChain = (props: { chainName: string }) => {
 
 export const ViewService: React.FC<ServiceConfig> = (service) => {
   const { name, addr, handler, listener, forwarder } = service;
+  const { t } = useTranslation();
+
   const type = useMemo(() => {
     const hType = handler?.type;
     const lType = listener?.type;
@@ -132,7 +135,7 @@ export const ViewService: React.FC<ServiceConfig> = (service) => {
           color="#c7e7ff"
           arrow={false}
         >
-          <Tag>转发链</Tag>
+          <Tag>{t("modules.chain.subTitle")}</Tag>
         </Tooltip>
       )}
       {listener.chain && (
@@ -141,7 +144,7 @@ export const ViewService: React.FC<ServiceConfig> = (service) => {
           color="#fff0d7"
           arrow={false}
         >
-          <Tag color="orange">远程端口转发</Tag>
+          <Tag color="orange">{t("terms.key0")}</Tag>
         </Tooltip>
       )}
       {forwarder && (
@@ -150,7 +153,7 @@ export const ViewService: React.FC<ServiceConfig> = (service) => {
           color="#c7e7ff"
           arrow={false}
         >
-          <Tag>转发/反代 节点</Tag>
+          <Tag>{t("terms.forwarder")}</Tag>
         </Tooltip>
       )}
     </Space>

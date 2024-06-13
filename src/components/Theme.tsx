@@ -10,9 +10,9 @@ export const ThemeButton = (props: ButtonProps) => {
   const Icon = isDark ? <MoonOutlined /> : <SunOutlined />;
   return (
     <Button
-      {...props}
       shape="circle"
       icon={Icon}
+      {...props}
       onClick={() => {
         const _settings = { ...settings };
         _settings.theme = isDark ? "light" : "dark";

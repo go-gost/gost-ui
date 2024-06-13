@@ -2,13 +2,14 @@ import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
 
-const def = getByName("ingresses");
+const {def, docUrl, _docUrl }= getByName("ingresses");
+
 export default [
   def
     ? def
     : {
-    label: "内联",
-    json: `{
+    label: { zh: "内联", en: "Inline" },
+    json: _docUrl + `{
         "name": "ingress-0",
         "rules": [
           {
@@ -22,7 +23,7 @@ export default [
         ]
       }`,
   },
-  ...getOtherAll("ingress", "https://gost.run/concepts/ingress/", {
+  ...getOtherAll("ingress", docUrl, {
     redisType: "hash",
   }),
 ] as Template[];

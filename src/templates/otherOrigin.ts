@@ -53,7 +53,7 @@ export const getOtherAll = (
   const doc = docUrl ? `// ${docUrl} \n` : "";
   return [
     {
-      label: "文件",
+      label: "File",
       json: doc + getFileTemplate(name),
     },
     {
@@ -65,7 +65,7 @@ export const getOtherAll = (
       json: doc + getHttpTemplate(name),
     },
     {
-      label: "插件",
+      label: "Plugin",
       json: doc + getPluginTemplate(name),
     },
   ] as Template[];

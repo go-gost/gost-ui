@@ -21,6 +21,7 @@ import { GostCommit } from "../../api/local";
 import Ctx, { CardCtx } from "../../uitls/ctx";
 import { useListData1, UseTemplates } from "../ListCard/hooks";
 import { configEvent } from "../../uitls/events";
+import { useTranslation } from "react-i18next";
 
 export type PublicListProps = {
   name: string;
@@ -56,6 +57,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
     renderConfig = defaultRenderConfig,
     filter = defFilter,
   } = props;
+  const { t } = useTranslation();
   const { localList, comm } = useContext(CardCtx);
   const { gostConfig, localConfig } = useContext(Ctx);
   const { dataList, dataSource } = useListData1({
@@ -116,7 +118,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
         });
       };
       showJsonForm({
-        title: "修改",
+        title: t("base.cmd.edit"),
         initialValues: { value: jsonFormatValue(v) },
         onFinish: async (values: any) => {
           onup(jsonParse(values.value));
@@ -142,9 +144,14 @@ const PublicList: React.FC<PublicListProps> = (props) => {
         size="small"
         dataSource={showList}
         columns={[
-          { title: rowKey, dataIndex: rowKey, ellipsis: true, width: 100 },
           {
-            title: "详情",
+            title: t("base.form.name"),
+            dataIndex: rowKey,
+            ellipsis: true,
+            width: 100,
+          },
+          {
+            title: t("base.form.details"),
             ellipsis: true,
             render: (value, record, index) => {
               const isEnable = dataList.includes(record);
@@ -165,7 +172,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
             },
           },
           {
-            title: "操作",
+            title: t("base.cmd.controls"),
             width: localApi ? 120 : 90,
             align: "right",
             dataIndex: rowKey,
@@ -179,7 +186,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                   {localApi ? (
                     isEnable ? (
                       <Button
-                        title="点击禁用"
+                        title={t("base.cmd.disable")}
                         icon={
                           <CheckCircleOutlined
                             style={{ color: green.primary }}
@@ -195,7 +202,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                       </Button>
                     ) : (
                       <Button
-                        title="点击启用"
+                        title={t("base.cmd.enabled")}
                         type="link"
                         icon={<StopOutlined style={{ color: red.primary }} />}
                         size={"small"}
@@ -208,13 +215,13 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                     )
                   ) : null}
                   <Button
-                    title="修改"
+                    title={t("base.cmd.edit")}
                     icon={<EditOutlined />}
                     type="link"
                     size={"small"}
                     onClick={() => {
                       showJsonForm({
-                        title: `修改 ${value || ""}`,
+                        title: t("title.edit", {name: value || ''}),
                         templates: templates,
                         initialValues: { value: jsonFormatValue(content) },
                         onFinish: async (values: any) => {
@@ -234,13 +241,13 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                     }}
                   />
                   <Button
-                    title="复制"
+                    title={t("base.cmd.copy")}
                     icon={<CopyOutlined />}
                     type="link"
                     size={"small"}
                     onClick={() => {
                       showJsonForm({
-                        title: `复制自 ${value || ""}`,
+                        title: t("title.copied", {name: value || ''}),
                         templates: templates,
                         initialValues: { value: jsonFormatValue(content) },
                         onFinish: async (values: any) => {
@@ -253,8 +260,8 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                     }}
                   />
                   <Popconfirm
-                    title="警告"
-                    description="确定要删除吗？"
+                    title={t("text.warn")}
+                    description={t("text.deleteing")}
                     onConfirm={() => {
                       if (isEnable) {
                         deleteValue(record);
@@ -264,7 +271,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                     }}
                   >
                     <Button
-                      title="删除"
+                      title={t("base.cmd.del")}
                       icon={<DeleteOutlined />}
                       type="link"
                       size={"small"}

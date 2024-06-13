@@ -2,12 +2,16 @@ import * as JSONC from "jsonc-parser";
 import { getByName } from "./default";
 import { Template } from "./type";
 
+const {def, docUrl, _docUrl }= getByName("services");
+
 const getProxyJson = (
   handlerType: string,
   listenerType: string,
   metadata?: object
 ) => {
-  let jsonc = `
+  let jsonc =
+    _docUrl +
+    `
   {
     "name": "service-0",
     "addr": ":1080",
@@ -28,33 +32,21 @@ const getProxyJson = (
     edits.push(...JSONC.modify(jsonc, ["listener", "metadata"], metadata, {}));
     // edits.push(...JSONC.modify(jsonc, ["name"], undefined, {})) // undefined 可删除
     jsonc = JSONC.applyEdits(jsonc, edits);
-    // jsonc = JSONC.applyEdits(
-    //   jsonc,
-    //   JSONC.modify(jsonc, ["metadata"], metadata, {})
-    // );
-    // jsonc = JSONC.applyEdits(
-    //   jsonc,
-    //   JSONC.modify(jsonc, ["handler","metadata"], metadata, {})
-    // );
-    // jsonc = JSONC.applyEdits(
-    //   jsonc,
-    //   JSONC.modify(jsonc, ["listener","metadata"], metadata, {})
-    // );
   }
 
   return jsonc;
 };
 
-const def = getByName("services");
-
 export default [
   def,
   {
-    label: "端口转发",
+    label: { zh: "端口转发", en: "Port Forwarding" },
     cli: "-L tcp://:80/:8080",
-    json: `
+    json:
+      _docUrl +
+      `
       {
-        "name": "service-0", // 服务名称
+        "name": "service-0",
         "addr": ":80",
         "handler": {
           "type": "tcp"
@@ -73,9 +65,11 @@ export default [
       }`,
   },
   {
-    label: "反向代理",
+    label: { zh: "反向代理", en: "Reverse Proxy" },
     cli: "",
-    json: `
+    json:
+      _docUrl +
+      `
       {
         "name": "service-0",
         "addr": ":80",
@@ -104,7 +98,7 @@ export default [
       }`,
   },
   {
-    label: "代理服务",
+    label: { zh: "代理服务", en: "Proxy Service" },
     children: [
       {
         label: "http",
@@ -156,7 +150,7 @@ export default [
             json: getProxyJson("socks5", "tcp"),
           },
           {
-            label: "socks5(支持udp)",
+            label: "socks5(udp)",
             json: getProxyJson("socks5", "tcp", { udp: "true" }),
           },
           {
@@ -168,9 +162,11 @@ export default [
     ],
   },
   {
-    label: "代理转发",
+    label: { zh: "代理转发", en: "Porxy Forwarding" },
     cli: "-L socks5://:1080 -F socks5://xxx.com:1080",
-    json: `
+    json:
+      _docUrl +
+      `
       {
         "name": "service-0",
         "addr": ":1080",

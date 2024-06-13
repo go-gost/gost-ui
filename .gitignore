@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 public/monaco-editor
+src/i18n/*.json

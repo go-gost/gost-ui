@@ -1,15 +1,14 @@
 import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
+const {def, docUrl, _docUrl }= getByName("admissions");
 
-const def = getByName("admissions");
 export default [
   def
     ? def
     : {
-        label: "内联",
-        json: `
-      // https://gost.run/concepts/admission
+        label: { zh: "内联", en: "Inline" },
+        json: _docUrl + `
       {
         "name": "admission-0",
         "matchers": [
@@ -19,5 +18,5 @@ export default [
         ]
       }`,
       },
-  ...getOtherAll("admission", "https://gost.run/concepts/admission"),
+  ...getOtherAll("admission", docUrl),
 ] as Template[];

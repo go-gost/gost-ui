@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Col, Flex, Row, Space } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { GostApiConfig, getLocalServers, deleteLocal } from "../uitls/server";
+import { useTranslation } from "react-i18next";
+
 const LocalServers = () => {
+  const { t } = useTranslation();
   const [list, setList] = useState<GostApiConfig[]>();
   // const [local, setLocal] = useState<Record<string, GostApiConfig>>();
 
@@ -26,7 +29,7 @@ const LocalServers = () => {
     <>
       {list && list?.length > 0 ? (
         <Space direction="vertical" style={{ display: "flex" }}>
-          <div>快速连接</div>
+          <div>{t('home.quickConnect')}</div>
           <Row gutter={10}>
             {list.map((item) => {
               return (

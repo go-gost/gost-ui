@@ -1,13 +1,16 @@
 import { getByName } from "./default";
 import { Template } from "./type";
 
-const def = getByName("chains");
+const {def, docUrl, _docUrl }= getByName("chains");
+
 export default [
   def,
   {
-    label: "典型转发链",
+    label: { zh: "典型转发链", en: "Typical" },
     cli: "",
-    json: `
+    json:
+      _docUrl +
+      `
 {
   "name": "chain-0",
   "hops": [

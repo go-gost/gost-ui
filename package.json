@@ -9,8 +9,12 @@
     "analyzer": "tsc && vite build --mode=analyzer",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "init": "npm run init:monaco && npm run init:i18n",
+    "init:i18n": "node ./script/language.js",
     "init:monaco": "cpx ./node_modules/monaco-editor/min/** ./public/monaco-editor/min",
-    "predev": "npm run init:monaco"
+    "predev": "npm run init",
+    "prebuild": "npm run init:i18n",
+    "preanalyzer": "npm run init:i18n"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -18,6 +22,8 @@
     "axios": "^1.6.0",
     "classnames": "^2.5.1",
     "events": "^3.3.0",
+    "i18next": "^23.11.5",
+    "i18next-browser-languagedetector": "^8.0.0",
     "idb": "^7.1.1",
     "idb-open-plus": "^1.0.0",
     "jsonc-parser": "^3.2.0",
@@ -26,6 +32,7 @@
     "qs": "^6.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.1.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -38,6 +45,7 @@
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
     "cpx2": "^7.0.1",
+    "csv-parse": "^5.5.6",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",

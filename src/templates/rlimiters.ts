@@ -2,14 +2,16 @@ import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
 
-const def = getByName("rlimiter");
+const {def, docUrl, _docUrl }= getByName("rlimiter");
+
 export default [
   def
     ? def
     : {
-        label: "内联",
-        json: `
-    // https://gost.run/concepts/limiter/
+        label: { zh: "内联", en: "Inline" },
+        json:
+          _docUrl +
+          `
     {
       "name": "rlimiter-0",
       "limits": [
@@ -20,7 +22,7 @@ export default [
       ]
     }`,
       },
-  ...getOtherAll("rlimiter", "https://gost.run/concepts/limiter/", {
+  ...getOtherAll("rlimiter", docUrl, {
     redisType: "set",
   }),
 ] as Template[];

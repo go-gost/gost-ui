@@ -2,14 +2,14 @@ import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
 
-const def = getByName("bypasses");
+const {def, docUrl, _docUrl }= getByName("bypasses");
+
 export default [
   def
     ? def
     : {
-        label: "内联",
-        json: `
-      // https://gost.run/concepts/bypass/
+        label: { zh: "内联", en: "Inline" },
+        json: _docUrl + `
       {
         "name": "bypass-0",
         "matchers": [
@@ -21,5 +21,5 @@ export default [
         ]
       }`,
       },
-  ...getOtherAll("bypass", "https://gost.run/concepts/bypass/"),
+  ...getOtherAll("bypass", docUrl),
 ] as Template[];

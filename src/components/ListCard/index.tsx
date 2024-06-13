@@ -11,6 +11,7 @@ import { getModule } from "../../api/modules";
 import { configEvent } from "../../uitls/events";
 import { CloseOutlined } from "@ant-design/icons";
 import classnames from "classnames";
+import { useTranslation } from "react-i18next";
 
 export type ListCardProps = {
   module?: string;
@@ -36,6 +37,7 @@ export const ProCard = (props: CardProps & { boxShadow?: boolean }) => {
 };
 
 const ListCard: React.FC<ListCardProps> = (props) => {
+  const { t } = useTranslation();
   const {
     title,
     subTitle,
@@ -49,7 +51,14 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     localApi,
     filter,
   } = useMemo(() => {
-    return { ...getModule(props.module || "")!, ...props };
+    return {
+      ...getModule(props.module || "")!,
+      ...{
+        title: t(`modules.${props.module}.title`),
+        subTitle: t(`modules.${props.module}.subTitle`),
+      },
+      ...props,
+    };
   }, [props]);
   const [keyword, setKeyword] = useState("");
   const _prop = {
@@ -95,8 +104,8 @@ const ListCard: React.FC<ListCardProps> = (props) => {
         if (hasName()) {
           const confirmed = await new Promise((resolve, reject) => {
             Modal.confirm({
-              title: "name无效",
-              content: "是否自动分配name",
+              title: t("msg.invalidName"),
+              content: t("msg.autofixName"),
               zIndex: 2000,
               onOk: () => resolve(true),
               onCancel: () => resolve(false),
@@ -112,8 +121,8 @@ const ListCard: React.FC<ListCardProps> = (props) => {
         await addValue({ ...json, name: addName });
         json.name !== addName &&
           notification.info({
-            description: `新分配 name 为 "${addName}"`,
-            message: "自动修正提醒",
+            description: t("msg.fixName", { name: addName }),
+            message: t("msg.autofix"),
           });
         update && configEvent.emit("apiUpdate", {});
       },

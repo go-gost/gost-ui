@@ -2,6 +2,7 @@ import axios from "axios";
 import { getInfo } from "./server";
 import { message } from "antd";
 import { configEvent } from "./events";
+import { t } from "i18next";
 
 const require = axios.create();
 require.interceptors.request.use((config) => {
@@ -14,7 +15,7 @@ require.interceptors.response.use(
   (res) => {
     if (res.config.method !== "get" && !(res.config as any)?.noMsg) {
       // configEvent.emit("apiUpdate", res.config);
-      message.success('操作成功！')
+      message.success(t("msg.success"));
     }
     if (res.data) {
       return res.data;
@@ -23,7 +24,7 @@ require.interceptors.response.use(
   },
   (error) => {
     const { response } = error || {};
-    let msg = error.message || "出现未知错误！";
+    let msg = error.message || t("msg.unknown");
     if (response?.data?.msg) {
       msg = response?.data?.msg;
     }

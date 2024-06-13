@@ -36,6 +36,8 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { ThemeButton } from "../components/Theme";
+import { LanguageButton } from "../components/Language";
+import { useTranslation } from "react-i18next";
 
 const colSpan = {
   xs: 24,
@@ -52,6 +54,7 @@ const colSpan1 = {
 
 const Manage = () => {
   const info = useInfo()!;
+  const { t } = useTranslation();
   const gostConfig = useServerConfig();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -128,7 +131,7 @@ const Manage = () => {
     if (locals.length) {
       items.push({
         key: "2",
-        label: " 切换 ",
+        label: t("manage.cmd.switch"),
         children: locals,
       });
       items.push({
@@ -137,13 +140,13 @@ const Manage = () => {
     }
     items.push({
       key: "new",
-      label: "打开新链接",
+      label: t("manage.cmd.new"),
       onClick: () => {
         window.open(location.href, undefined, "noopener");
       },
     });
     return items;
-  }, [locals]);
+  }, [locals, t]);
 
   return (
     <Layout style={{ height: "100vh", overflow: "hidden" }}>
@@ -162,7 +165,7 @@ const Manage = () => {
                 useServerConfig.set((await API.getConfig()) as any);
               }}
             >
-              刷新配置
+              {t("manage.cmd.reload")}
             </Button>
           </Col>
           <Col>{info.addr}</Col>
@@ -174,7 +177,7 @@ const Manage = () => {
                   loading={loading}
                   onClick={() => ref.current?.onSave?.()}
                 >
-                  保存到服务器
+                  {t("manage.cmd.save")}
                 </Button>
                 <Button
                   icon={<SettingOutlined />}
@@ -188,15 +191,13 @@ const Manage = () => {
                   download(jsonFormat(gostConfig!), "gost.json");
                 }}
               >
-                下载当前配置
+                {t("manage.cmd.download")}
               </Button>
               <Dropdown.Button menu={{ items }} onClick={logout}>
-                退出
-                {/* <Button type="link" onClick={logout}>
-                  切换连接
-                </Button> */}
+                {t("manage.cmd.logout")}
               </Dropdown.Button>
-              <ThemeButton size="small"></ThemeButton>
+              <ThemeButton />
+              <LanguageButton />
             </Space>
           </Col>
         </Row>
@@ -218,17 +219,29 @@ const Manage = () => {
               }
             }}
           >
-            <Form.Item name="autoSave" label="自动保存" valuePropName="checked">
+            <Form.Item
+              name="autoSave"
+              label={t("manage.label.autoSave")}
+              valuePropName="checked"
+            >
               <Switch />
             </Form.Item>
-            <Form.Item name="saveFormat" label="格式" initialValue={"json"}>
+            <Form.Item
+              name="saveFormat"
+              label={t("manage.label.format")}
+              initialValue={"json"}
+            >
               <Radio.Group optionType="button" buttonStyle="solid">
                 <Radio value="json">json</Radio>
                 <Radio value="yaml">yaml</Radio>
               </Radio.Group>
             </Form.Item>
-            <Form.Item name="savePath" label="保存路径" trigger="onChange">
-              <Input placeholder="指定保存，默认保存到上下文目录" />
+            <Form.Item
+              name="savePath"
+              label={t("manage.label.path")}
+              trigger="onChange"
+            >
+              <Input placeholder={t("placeholder.savePath")} />
             </Form.Item>
           </Form>
         </Modal>
@@ -276,7 +289,7 @@ const Manage = () => {
             <ListCard module="observer" />
           </Col>
           <Col span={24}>
-            <ProCard boxShadow title="限速限流">
+            <ProCard boxShadow title={t("manage.label.limit")}>
               <Row gutter={[16, 16]}>
                 <Col {...colSpan1}>
                   <ListCard module="limiter" bordered boxShadow={false} />
@@ -293,7 +306,7 @@ const Manage = () => {
           <Col span={24}>
             <ProCard
               boxShadow
-              title="All Config JSON"
+              title={t("manage.label.allConfig")}
               styles={{ body: { padding: 20 } }}
             >
               <CodeEditor

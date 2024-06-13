@@ -2,6 +2,7 @@ import getUseValue from "./getUseValue";
 import axios from "axios";
 import qs from "qs";
 import { message } from "antd";
+import { t } from "i18next";
 import { ServerComm } from "../api/local";
 import { Config } from "../api/types";
 const gostServerKey = "__GOST_SERVER__";
@@ -111,7 +112,7 @@ export const login = async (arg: GostApiConfig, save?: false) => {
   } catch (e: any) {
     if (e === "verify error") {
       logout();
-      message.error(e?.message || "连接失败");
+      message.error(e?.message || t("msg.connectionFailed"));
     }
     throw e;
   }

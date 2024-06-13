@@ -1,6 +1,13 @@
 import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
-import { Button, Dropdown, Form, FormInstance, Space, ConfigProvider } from "antd";
+import {
+  Button,
+  Dropdown,
+  Form,
+  FormInstance,
+  Space,
+  ConfigProvider,
+} from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../uitls";
 import { Template } from "../../templates";
@@ -10,6 +17,8 @@ import ModalForm, { ModalFormProps } from "../ModalForm";
 import { CodeEditor } from "../../uitls/useMonacoEdit";
 import { globalConfig } from "antd/es/config-provider";
 import { HookAPI } from "antd/es/modal/useModal";
+import { useTranslation } from "react-i18next";
+import { getLabel } from "../../uitls/i18n";
 
 const template2menu: any = (template: Template) => {
   const { children, ...other } = template;
@@ -49,12 +58,15 @@ type JsonFromProps = ModalFormProps & {
 
 const JsonForm: React.FC<JsonFromProps> = (props) => {
   const { templates, ...other } = props;
+  const { t } = useTranslation();
   const formRef = useRef<FormInstance<any>>();
   const templateHandle = (json: string) => {
     let value = json;
     if (props.initialValues?.value) {
       const _old = jsonParse(props.initialValues.value);
-      value = _old.name ? jsonEdit(json, [{path:'name', value: _old.name}]) : json;
+      value = _old.name
+        ? jsonEdit(json, [{ path: "name", value: _old.name }])
+        : json;
     }
     value = jsonStringFormat(value);
     formRef.current?.setFieldValue("value", value);
@@ -70,8 +82,10 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
         children: children.map(template2menu),
       };
     } else if (json) {
+      const { label } = other;
       return {
         ...other,
+        label: getLabel(label),
         title: cli,
         onClick: () => templateHandle(json),
       };
@@ -91,8 +105,11 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
         }}
       >
         {hasTemplate ? (
-          <Space size={"small"} style={{ marginBottom: 5 }}>
-            <span>模板:</span>
+          <Space
+            size={"small"}
+            style={{ marginBottom: 5, width: "100%", overflow: "auto" }}
+          >
+            <span>{t("terms.template")}:</span>
             {templates.map((template, index) => {
               if (template.children?.length) {
                 const menu = {
@@ -115,7 +132,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
                       onClick={() => templateHandle(template.json)}
                       menu={menu}
                     >
-                      {template.label}
+                      {getLabel(template.label)}
                     </Dropdown.Button>
                   );
                 } else {
@@ -123,7 +140,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
                     <Dropdown key={index} menu={menu}>
                       <Button size="small">
                         <Space>
-                          {template.label}
+                          {getLabel(template.label)}
                           <DownOutlined />
                         </Space>
                       </Button>
@@ -138,7 +155,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
                     title={template.cli}
                     onClick={() => templateHandle(template.json)}
                   >
-                    <Space>{template.label}</Space>
+                    <Space>{getLabel(template.label)}</Space>
                   </Button>
                 );
               } else {
@@ -147,25 +164,10 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
             })}
           </Space>
         ) : null}
-        {/* <ProFormTextArea
-          fieldProps={{ rows: 8 }}
-          name="value"
-          rules={[
-            { required: true, message: "不能为空" },
-            {
-              validator: (rule, value) => {
-                return new Promise((resolve, reject) => {
-                  if (value) jsonParse(value);
-                  resolve(null);
-                });
-              },
-            },
-          ]}
-        ></ProFormTextArea> */}
         <Form.Item
           name="value"
           rules={[
-            { required: true, message: "不能为空" },
+            { required: true, message: t("msg.require") },
             {
               validator: (rule, value) => {
                 return new Promise((resolve, reject) => {
@@ -175,7 +177,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
                   resolve(null);
                 }).catch((err) => {
                   console.error(err);
-                  throw new Error("json 格式错误");
+                  throw new Error(t("msg.formatError", { name: "JSON" }));
                 });
               },
             },
@@ -187,7 +189,8 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
             language="json"
             options={{
               minimap: { enabled: false },
-            }} />
+            }}
+          />
           {/* <MonacoEditor
             className={"g-boder"}
             height={300}
@@ -211,7 +214,11 @@ export const showJsonForm = (props: JsonFromProps) => {
     const config = globalConfig();
     timeoutId = setTimeout(() => {
       document.body.append(container);
-      root.render(<ConfigProvider theme={config.getTheme()}><JsonForm {...props} /></ConfigProvider>);
+      root.render(
+        <ConfigProvider theme={config.getTheme()}>
+          <JsonForm {...props} />
+        </ConfigProvider>
+      );
     }, 100);
   }
 

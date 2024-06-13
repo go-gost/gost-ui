@@ -6,6 +6,7 @@ import { Space, Tag, Tooltip } from "antd";
 import { showJsonForm } from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import { UpdateCtx } from "../List/Public";
+import { useTranslation } from "react-i18next";
 
 export function viewNode(this: Partial<Config>, data: NodeConfig) {
   const {
@@ -55,6 +56,7 @@ export const ViewNode = ({
   isLink?: boolean;
   upjson?: (newNode: NodeConfig) => void;
 }) => {
+  const { t } = useTranslation();
   const { name } = node;
   const { update } = useContext(UpdateCtx);
   return (
@@ -63,11 +65,11 @@ export const ViewNode = ({
         bordered={false}
         color="green"
         className="editor-json"
-        title="双击修改"
+        title={t("text.doubleClickEdit")}
         onDoubleClick={() => {
           if (!upjson) return;
           showJsonForm({
-            title: "修改",
+            title: t('base.cmd.edit'),
             initialValues: { value: jsonFormatValue(node) },
             onFinish: async (values: any) => {
               upjson(jsonParse(values.value));

@@ -2,14 +2,14 @@ import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
 
-const def = getByName("routers");
+const {def, docUrl, _docUrl }= getByName("routers");
+
 export default [
   def
     ? def
     : {
-    label: "内联",
-    json: `
-      // https://gost.run/concepts/router/
+    label: { zh: "内联", en: "Inline" },
+    json: _docUrl + `
       {
         "name": "router-0",
         "routes": [
@@ -24,5 +24,5 @@ export default [
         ]
       }`,
   },
-  ...getOtherAll("router", "https://gost.run/concepts/router/"),
+  ...getOtherAll("router", docUrl),
 ] as Template[];

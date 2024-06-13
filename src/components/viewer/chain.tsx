@@ -6,6 +6,7 @@ import { showJsonForm } from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import { useContext } from "react";
 import { UpdateCtx } from "../List/Public";
+import { useTranslation } from "react-i18next";
 
 export default function viewChain(this: Partial<Config>, chain: ChainConfig) {
   const { hops } = chain;
@@ -14,6 +15,7 @@ export default function viewChain(this: Partial<Config>, chain: ChainConfig) {
 
 export function ViewHops(props: { hops: HopConfig[]; root: any }) {
   const { update } = useContext(UpdateCtx);
+  const { t } = useTranslation();
   return (
     <Space size={5}>
       {props.hops
@@ -30,10 +32,10 @@ export function ViewHops(props: { hops: HopConfig[]; root: any }) {
                 bordered={false}
                 color="blue"
                 className="editor-json"
-                title="双击修改"
+                title={t("text.doubleClickEdit")}
                 onDoubleClick={() => {
                   showJsonForm({
-                    title: "修改",
+                    title: t('base.cmd.edit'),
                     initialValues: { value: jsonFormatValue(hop) },
                     onFinish: async (values: any) => {
                       props.hops[i] = jsonParse(values.value);

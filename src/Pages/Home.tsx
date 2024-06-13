@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, Space } from "antd";
 import { login } from "../uitls/server";
 import LocalServers from "../components/LocalServers";
 import { ThemeButton } from "../components/Theme";
-
+import { useTranslation, Trans } from 'react-i18next';
+import { LanguageButton } from "../components/Language";
 const Home: React.FC = () => {
+  const { t, i18n } = useTranslation();
   return (
     <>
       <Form
@@ -36,30 +38,27 @@ const Home: React.FC = () => {
           );
         }}
       >
-        <h1>GOST API Manage</h1>
-        <h2>首先连接API服务</h2>
+        <h1>{t('base.title')}</h1>
+        <h2>{t('base.description')}</h2>
         <Form.Item
           name="baseURL"
           rules={[
             {
               required: true,
-              message: "请输入API地址",
+              message: t('msg.baseURL.required'),
             },
             {
               validator(rule, value, callback) {
                 if (value === "http://") {
-                  callback("请输入API地址");
+                  callback(t('msg.baseURL.required'));
                 }
                 callback();
               },
             },
-            // {
-            //   type:'url'
-            // }
           ]}
         >
           <Input
-            placeholder="API baseURL"
+            placeholder={t('placeholder.baseURL')}
             prefix={<GlobalOutlined className={"prefixIcon"} />}
           ></Input>
         </Form.Item>
@@ -76,18 +75,21 @@ const Home: React.FC = () => {
           ></Input.Password>
         </Form.Item>
         <Form.Item name="save" valuePropName="checked">
-          <Checkbox>保存到本地</Checkbox>
+          <Checkbox>{t('base.form.local')}</Checkbox>
         </Form.Item>
         <Form.Item noStyle style={{ marginBottom: "1em" }}>
           <Button block type="primary" htmlType="submit">
-            链接
+            {t('base.cmd.connect')}
           </Button>
         </Form.Item>
         <LocalServers></LocalServers>
       </Form>
-      <ThemeButton
-        style={{ position: "absolute", top: "1em", right: "1em" }}
-      ></ThemeButton>
+      <div style={{ position: "absolute", top: "1em", right: "1em" }}>
+        <Space>
+          <ThemeButton />
+          <LanguageButton />
+        </Space>
+      </div>
     </>
   );
 };

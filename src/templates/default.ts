@@ -1,5 +1,6 @@
 import { findNodeAtLocation, parseTree } from "jsonc-parser";
 import { Template } from "./type";
+
 // 源自 https://gost.run/reference/configuration/file/
 const defaultTemplates = `{
     "services": [
@@ -241,6 +242,29 @@ const defaultTemplates = `{
     }
 }`;
 
+const defaultLabel = {
+  en: "Default",
+  zh: "默认",
+};
+
+const docs: { [key: string]: string } = {
+  admissions: "https://gost.run/concepts/admission/",
+  authers: "https://gost.run/concepts/auth/",
+  bypasses: "https://gost.run/concepts/bypass/",
+  chains: "https://gost.run/concepts/chain/",
+  hops: "https://gost.run/concepts/hop/",
+  hosts: "https://gost.run/concepts/hosts/",
+  ingresses: "https://gost.run/concepts/ingress/",
+  observers: "https://gost.run/concepts/observer/",
+  resolvers: "https://gost.run/concepts/resolver/",
+  limiters: "https://gost.run/concepts/limiter/",
+  rlimiter: "https://gost.run/concepts/limiter/",
+  climiter: "https://gost.run/concepts/limiter/",
+  routers: "https://gost.run/concepts/router/",
+  sds: "https://gost.run/concepts/sd/",
+  services: "https://gost.run/concepts/service/",
+};
+
 const error: any[] = [];
 const tree = parseTree(defaultTemplates, error, { allowTrailingComma: true });
 
@@ -254,15 +278,22 @@ export const getDefaultTempplates = (name: string) => {
   return;
 };
 
-export const getByName = (name: string, label = "默认") => {
+export const getByName = (name: string, label = defaultLabel) => {
   const defT = getDefaultTempplates(name);
-//   console.log("defT", name, defT);
+  const docUrl = docs[name];
+  const _docUrl = "// " + docUrl + "\n";
+  let def;
   if (defT) {
-    return {
+    def = {
       label,
-      json: defT,
+      json: _docUrl + defT,
     } as Template;
   }
+  return {
+    def,
+    docUrl,
+    _docUrl,
+  };
 };
 
 export default defaultTemplates;

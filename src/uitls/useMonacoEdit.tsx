@@ -4,6 +4,7 @@ import type * as Monaco from "monaco-editor";
 import classnames from "classnames";
 import { useIsDark } from "./useTheme";
 import { Input } from "antd";
+import { getI18n, useTranslation } from 'react-i18next';
 
 (function () {
   const require = (window as any).require;
@@ -28,10 +29,14 @@ import { Input } from "antd";
   // const monacoURL = `//unpkg.com/monaco-editor@0.47.0/min/vs`
   // require.config({ paths: { vs: `${monacoURL}` } });
   if (require) {
+    const i18n = getI18n();
+    i18n.on('languageChanged',(event)=>{
+      console.log('languageChanged', event)
+    })
     require.config({
       "vs/nls": {
         availableLanguages: {
-          "*": "zh-cn",
+          "*": i18n.resolvedLanguage === "zh" ? "zh-cn" : "en",
         },
       },
     });
@@ -76,6 +81,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   CodeEditorProps
 > = (props, ref) => {
   const { onChange, options, height, className, theme, style } = props;
+  const { t } = useTranslation();
   const [language, setLanguage] = useBindValue(props.language, "javascript");
   const [value, setValue] = useBindValue(props.value, props.defaultValue, "");
   const [isReady, setReady] = useState(false);
@@ -131,7 +137,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
 
           _editor.addAction({
             id: "my-autoWrap-toggle",
-            label: "切换自动换行",
+            label: t("msg.wordWrap"),
             keybindings: [
               monaco.KeyMod.Alt | monaco.KeyCode.KeyZ,
               // monaco.KeyMod.chord(

@@ -2,13 +2,14 @@ import { getByName } from "./default";
 import { getOtherAll } from "./otherOrigin";
 import { Template } from "./type";
 
-const def = getByName("sds");
+const {def, docUrl, _docUrl }= getByName("sds");
+
 export default [
   def
     ? def
     : {
-    label: "HTTP插件",
-    json: `
+    label: "HTTP Plugin",
+    json: _docUrl + `
       // https://gost.run/concepts/sd/
       {
         "name": "sd-0",
