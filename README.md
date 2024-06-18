@@ -1,26 +1,27 @@
 # GOST V3 API Manage
 
-[gost](https://github.com/go-gost/gost) 官方的 web-ui 还没完成，先弄个简单的用一下，好过在 Postman 上捣腾；  
-纯前端的项目，部署在`github-pages`上, 放心使用;
+## 官方入口
+
+[ui.gost.run](https://ui.gost.run)
 
 ## 使用方式
 
-1. 启动 API 服务
+1. 启动API服务
 
    > `gost -api :18080`
 
 
-2. 打开 web 端管理地址 [点击打开](http://gost.whyoop.com/)
+2. 打开web端管理地址 [点击打开](https://ui.gost.run/)
 
    - API 地址 `http://IP:PORT`， 如果配置了`pathPrefix`，加上`pathPrefix`路径；
    - (如果有) 填写 用户，密码;
    - 点击 `连接` 按钮; 
   
-   ![home](https://gost.whyoop.com/page-home.png)
+   <img src="assets/page-home.png" width="512" />
 
-3. 在管理面板，动态管理 GOST
+3. 在管理面板，动态管理GOST
 
-   ![manage](https://gost.whyoop.com/page-manage.png)
+   <img src="assets/page-manage.png" width="512" />
 
 ## 常见问题
 
