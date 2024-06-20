@@ -8,31 +8,12 @@ import { getI18n, useTranslation } from 'react-i18next';
 
 (function () {
   const require = (window as any).require;
-  // let monacoURL;
-  // const MONACO_URL = import.meta.env.VITE_MONACO_URL || '/monaco-editor';
-  // if(/^(http[s]:)?\/\//.test(MONACO_URL)){
-  //   monacoURL = MONACO_URL + '/min/vs'
-  // }else{
-  //   const baseURL = new URL(import.meta.env.BASE_URL, location.href).href;
-  //   monacoURL = new URL(`${MONACO_URL}/min/vs`, baseURL).href;
-  // }
-
-  // if(import.meta.env.PROD && import.meta.env.VITE_MONACO_URL){
-  //   monacoURL = import.meta.env.VITE_MONACO_URL + '/min/vs';
-  // }else{
-  //   const baseURL = new URL(import.meta.env.BASE_URL, location.href).href;
-  //   monacoURL = new URL("./monaco-editor/min/vs", baseURL).href;
-  // }
-
-  // console.log(`import_meta_env_BASE_URL`, import.meta.env.BASE_URL);
-  // console.log("baseURL", baseURL);
-  // const monacoURL = `//unpkg.com/monaco-editor@0.47.0/min/vs`
-  // require.config({ paths: { vs: `${monacoURL}` } });
   if (require) {
     const i18n = getI18n();
-    i18n.on('languageChanged',(event)=>{
-      console.log('languageChanged', event)
-    })
+    // DOTO: monaco 动态设置语言未实现
+    // i18n.on('languageChanged',(event)=>{
+    //   console.log('languageChanged', event)
+    // })
     require.config({
       "vs/nls": {
         availableLanguages: {

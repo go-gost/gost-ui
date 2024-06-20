@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -38,6 +38,7 @@ import {
 import { ThemeButton } from "../components/Theme";
 import { LanguageButton } from "../components/Language";
 import { useTranslation } from "react-i18next";
+import Ctx from "../uitls/ctx";
 
 const colSpan = {
   xs: 24,
@@ -53,6 +54,7 @@ const colSpan1 = {
 };
 
 const Manage = () => {
+  const { isLoading } = useContext(Ctx);
   const info = useInfo()!;
   const { t } = useTranslation();
   const gostConfig = useServerConfig();
@@ -62,8 +64,8 @@ const Manage = () => {
   const [locals, setLocals] = useState<any[]>([]);
   const ref = useRef<any>({});
 
-  const updateList = useCallback(async () => {
-    return getLocalServers()
+  useEffect(() => {
+    getLocalServers()
       .then((local) => {
         return local.sort((a, b) => {
           const t1 = a.time || 0;
@@ -74,24 +76,21 @@ const Manage = () => {
       .then((list) =>
         setLocals(
           list
-            .filter((item) => {
-              if (item.addr === info.addr) return false;
-              return true;
-            })
+            // .filter((item) => {
+            //   if (item.addr === info.addr) return false;
+            //   return true;
+            // })
             .map((item) => ({
               key: item.addr,
               label: <a href={`./?use=${item.addr}`}>{item.addr}</a>,
-              // onClick: () => {
-              //   window.open(`./?use=${item.addr}`, undefined, "noopener");
-              // },
             }))
         )
       );
-  }, []);
+  }, [info.addr]);
 
   useEffect(() => {
     fixOldCacheConfig().then((up) => {
-      up && configEvent.emit("update");
+      up && configEvent.emit("update", false);
     });
 
     const onSave = (ref.current.onSave = async () => {
@@ -105,24 +104,16 @@ const Manage = () => {
       }
     });
 
-    const update = () => {
-      setIsSaved(false);
-      if (!useInfo.get()?.autoSave) return;
+    const onAutoSave = (autoSave = false) => {
+      if (autoSave) setIsSaved(false);
+      if (!useInfo.get()?.autoSave || !autoSave) return;
       return onSave();
     };
-
-    const onApiUpdate = async (reqConfig: any) => {
-      setIsSaved(false);
-      if (!useInfo.get()?.autoSave) return;
-      if (reqConfig?.url === API.apis.config) return;
-      return onSave();
-    };
-    updateList();
-    configEvent.on("update", update);
-    configEvent.on("apiUpdate", onApiUpdate);
+    configEvent.on("update", onAutoSave);
+    configEvent.on("apiUpdate", onAutoSave);
     return () => {
-      configEvent.off("update", update);
-      configEvent.off("apiUpdate", onApiUpdate);
+      configEvent.off("update", onAutoSave);
+      configEvent.off("apiUpdate", onAutoSave);
     };
   }, []);
 
@@ -160,9 +151,10 @@ const Manage = () => {
           <Col color="">
             <Button
               type="link"
+              loading={isLoading}
               icon={<ReloadOutlined />}
               onClick={async () => {
-                useServerConfig.set((await API.getConfig()) as any);
+                configEvent.emit("update");
               }}
             >
               {t("manage.cmd.reload")}
@@ -193,7 +185,10 @@ const Manage = () => {
               >
                 {t("manage.cmd.download")}
               </Button>
-              <Dropdown.Button menu={{ items }} onClick={logout}>
+              <Dropdown.Button
+                menu={{ activeKey: info.addr, items }}
+                onClick={logout}
+              >
                 {t("manage.cmd.logout")}
               </Dropdown.Button>
               <ThemeButton />

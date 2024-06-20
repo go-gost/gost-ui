@@ -71,7 +71,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
   const {
     deleteValue,
     updateValue,
-    dispatch,
+    disable,
     enable,
     updateLocal,
     deleteLocal,
@@ -195,7 +195,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
                         type="link"
                         size={"small"}
                         onClick={async () => {
-                          await dispatch(record);
+                          await disable(record);
                         }}
                       >
                         {/* 禁用 */}

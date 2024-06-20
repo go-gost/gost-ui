@@ -14,7 +14,6 @@ require.interceptors.request.use((config) => {
 require.interceptors.response.use(
   (res) => {
     if (res.config.method !== "get" && !(res.config as any)?.noMsg) {
-      // configEvent.emit("apiUpdate", res.config);
       message.success(t("msg.success"));
     }
     if (res.data) {

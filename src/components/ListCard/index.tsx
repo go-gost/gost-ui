@@ -88,11 +88,11 @@ const ListCard: React.FC<ListCardProps> = (props) => {
     return {
       updateValue: async (id: string, value: any, update = true) => {
         await api.put(id, value);
-        update && configEvent.emit("apiUpdate", {});
+        update && configEvent.emit("apiUpdate", true);
       },
       deleteValue: async (value: any, update = true) => {
         await api.delete(value.name);
-        update && configEvent.emit("apiUpdate", {});
+        update && configEvent.emit("apiUpdate", true);
       },
       addValue: async (json: any, update = true) => {
         let addName = json.name || `${name}-0`;
@@ -124,20 +124,20 @@ const ListCard: React.FC<ListCardProps> = (props) => {
             description: t("msg.fixName", { name: addName }),
             message: t("msg.autofix"),
           });
-        update && configEvent.emit("apiUpdate", {});
+        update && configEvent.emit("apiUpdate", true);
       },
-      dispatch: async (value: any) => {
+      disable: async (value: any) => {
         if (!localApi) return;
         await api.delete(value.name);
         await localApi.add(value);
-        configEvent.emit("update");
+        configEvent.emit("update", true);
         // updateLocalList?.();
       },
       enable: async (value: any) => {
         if (!localApi) return;
         await api.post(value);
         await localApi.delete(value.name);
-        configEvent.emit("update");
+        configEvent.emit("update", true);
         // updateLocalList?.();
       },
       updateLocal: async (key: string, value: any) => {

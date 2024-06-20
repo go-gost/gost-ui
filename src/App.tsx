@@ -6,9 +6,9 @@ import React, {
   useLayoutEffect,
   useContext,
 } from "react";
-import { ConfigProvider, message, theme, App as AntdApp } from "antd";
+import { ConfigProvider, message, theme, App as AntdApp, Spin } from "antd";
 import {
-  init,
+  userInit,
   logout,
   useInfo,
   useServerConfig,
@@ -24,7 +24,7 @@ import enGB from "antd/locale/en_GB";
 import { ServerComm } from "./api/local";
 import Ctx from "./uitls/ctx";
 import { useIsDark } from "./uitls/useTheme";
-import './uitls/i18n.ts';
+import "./uitls/i18n.ts";
 import { useTranslation } from "react-i18next";
 
 const Manage = React.lazy(() => import("./Pages/Manage"));
@@ -36,9 +36,7 @@ const AntdGlobal: React.FC<{ children: React.ReactNode }> = (props) => {
     ConfigProvider.config({
       theme: theme,
       holderRender: (children) => (
-        <ConfigProvider theme={theme}>
-          {children}
-        </ConfigProvider>
+        <ConfigProvider theme={theme}>{children}</ConfigProvider>
       ),
     });
   }, [locale, theme]);
@@ -55,6 +53,7 @@ function App() {
   const localConfig = useLocalConfig();
   const isDark = useIsDark();
   // const [userTheme, setUserTheme] = useState<any>(null); // 用户主题
+  const [isInit, setIsInit] = useState<any>(false);
   const [serverLoading, setServerLoading] = useState<any>(false);
   const [localLoading, setLocalLoading] = useState<any>(false);
   const [locale, setLocale] = useState<any>(zhCN);
@@ -102,9 +101,9 @@ function App() {
   });
 
   useEffect(() => {
-    init();
-    const apiUpdate = async (reqConfig: any) => {
-      if (reqConfig?.url === API.apis.config) return;
+    userInit().then(() => setIsInit(true));
+    const apiUpdate = async () => {
+      // if (reqConfig?.url === API.apis.config) return;
       return useServerConfig.set((await API.getConfig()) as any);
     };
     const localUpdate = async () => {
@@ -143,11 +142,11 @@ function App() {
       (window as any)?.monaco?.editor.setTheme("vs");
     }
   }, [isDark]);
-  
+
   useEffect(() => {
     const lang = i18n.resolvedLanguage;
-    setLocale(lang === 'zh' ? zhCN : enGB);
-  },[i18n.resolvedLanguage])
+    setLocale(lang === "zh" ? zhCN : enGB);
+  }, [i18n.resolvedLanguage]);
 
   return (
     <Ctx.Provider
@@ -162,8 +161,8 @@ function App() {
         locale={locale}
       >
         <AntdGlobal>
-          <React.Suspense fallback="loading...">
-            {info ? <Manage /> : <Home />}
+          <React.Suspense fallback={<Spin fullscreen size="large" />}>
+            {isInit ? info ? <Manage /> : <Home /> : <Spin fullscreen  size="large" />}
           </React.Suspense>
         </AntdGlobal>
       </ConfigProvider>
