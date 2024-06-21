@@ -4,7 +4,12 @@ import type * as Monaco from "monaco-editor";
 import classnames from "classnames";
 import { useIsDark } from "./useTheme";
 import { Input } from "antd";
-import { getI18n, useTranslation } from 'react-i18next';
+import { getI18n, useTranslation } from "react-i18next";
+
+const langMap: Record<string, string> = {
+  zh: "zh-cn",
+  en: "",
+};
 
 (function () {
   const require = (window as any).require;
@@ -17,7 +22,7 @@ import { getI18n, useTranslation } from 'react-i18next';
     require.config({
       "vs/nls": {
         availableLanguages: {
-          "*": i18n.resolvedLanguage === "zh" ? "zh-cn" : "en",
+          "*": langMap[i18n.resolvedLanguage!] ?? "",
         },
       },
     });
