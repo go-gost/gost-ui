@@ -28,6 +28,7 @@
     "idb": "^7.1.1",
     "idb-open-plus": "^1.0.0",
     "jsonc-parser": "^3.2.0",
+    "less": "^4.2.0",
     "monaco-editor": "^0.39.0",
     "npm": "^10.2.3",
     "qs": "^6.11.2",
