@@ -2,7 +2,7 @@ import { Space, Tag, Tooltip } from "antd";
 import { ChainConfig, Config, HopConfig } from "../../api/types";
 import { ViewHop, viewHops } from "./hop";
 import { RightOutlined } from "@ant-design/icons";
-import { showJsonForm } from "../Forms/Json";
+import JsonForm from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import { useContext } from "react";
 import { UpdateCtx } from "../List/Public";
@@ -34,7 +34,7 @@ export function ViewHops(props: { hops: HopConfig[]; root: any }) {
                 className="editor-json"
                 title={t("text.doubleClickEdit")}
                 onDoubleClick={() => {
-                  showJsonForm({
+                  JsonForm.show({
                     title: t('base.cmd.edit'),
                     initialValues: { value: jsonFormatValue(hop) },
                     onFinish: async (values: any) => {

@@ -20,18 +20,32 @@ const AddButton: React.FC<Props> = (props) => {
   const { comm } = useContext(CardCtx);
   const templates = UseTemplates({ name: keyName! });
 
+  const _props = {
+    title: t("title.add", { name: title }),
+    templates: templates,
+    onFinish: async (values: any) => {
+      const { value } = values;
+      const json = jsonParse(value);
+      await comm!.addValue(json);
+      return true;
+    },
+  };
+
+  // return (
+  //   <JsonForm
+  //     trigger={<Button icon={<PlusOutlined />} size="small" />}
+  //     {..._props}
+  //   ></JsonForm>
+  // );
+  
   return (
-    <JsonForm
-      title={t("title.add", { name: title })}
-      templates={templates}
-      trigger={<Button icon={<PlusOutlined />} size="small" />}
-      onFinish={async (values: any) => {
-        const { value } = values;
-        const json = jsonParse(value);
-        await comm!.addValue(json);
-        return true;
+    <Button
+      icon={<PlusOutlined />}
+      size="small"
+      onClick={() => {
+        JsonForm.show(_props);
       }}
-    ></JsonForm>
+    />
   );
 };
 export default AddButton;

@@ -3,7 +3,7 @@ import { Config, ForwardNodeConfig, NodeConfig } from "../../api/types";
 import { useContext, useMemo } from "react";
 import Ctx, { CardCtx } from "../../uitls/ctx";
 import { Space, Tag, Tooltip } from "antd";
-import { showJsonForm } from "../Forms/Json";
+import JsonForm from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import { UpdateCtx } from "../List/Public";
 import { useTranslation } from "react-i18next";
@@ -62,7 +62,7 @@ export function ViewNode<T extends { name: string; addr: string }>({
       return {
         className: "editor-json",
         onDoubleClick: () => {
-          showJsonForm({
+          JsonForm.show({
             title: t("base.cmd.edit"),
             initialValues: { value: jsonFormatValue(node) },
             onFinish: async (values: any) => {

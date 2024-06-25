@@ -8,7 +8,7 @@ import React, {
 import { Button, Popconfirm, Space, Table, App } from "antd";
 import { red, green } from "@ant-design/colors";
 import { getRESTfulApi } from "../../api";
-import { showJsonForm } from "../Forms/Json";
+import JsonForm from "../Forms/Json";
 import { jsonFormatValue, jsonParse } from "../../uitls";
 import {
   CheckCircleOutlined,
@@ -22,6 +22,7 @@ import Ctx, { CardCtx } from "../../uitls/ctx";
 import { useListData1, UseTemplates } from "../ListCard/hooks";
 import { configEvent } from "../../uitls/events";
 import { useTranslation } from "react-i18next";
+const showJsonForm = JsonForm.show;
 
 export type PublicListProps = {
   name: string;
@@ -135,7 +136,7 @@ const PublicList: React.FC<PublicListProps> = (props) => {
     return () => {
       configEvent.off(`edit:${name}`, onEdit);
     };
-  }, []);
+  }, [name, t, updateLocal, updateValue]);
   return (
     <div style={{ height: 348, overflow: "auto" }}>
       <Table

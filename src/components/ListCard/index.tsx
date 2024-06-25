@@ -59,7 +59,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
       },
       ...props,
     };
-  }, [props]);
+  }, [props, t]);
   const [keyword, setKeyword] = useState("");
   const _prop = {
     title: subTitle || "",
@@ -154,7 +154,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
         // updateLocalList?.();
       },
     };
-  }, [api, dataSource, localApi, name]);
+  }, [api, dataSource, localApi, name, t]);
 
   useEffect(() => {
     return commBindEvent(name, comm);

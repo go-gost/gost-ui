@@ -16,9 +16,9 @@ import { Template } from "../../templates";
 import ModalForm, { ModalFormProps } from "../ModalForm";
 import { CodeEditor } from "../../uitls/useMonacoEdit";
 import { globalConfig } from "antd/es/config-provider";
-import { HookAPI } from "antd/es/modal/useModal";
 import { useTranslation } from "react-i18next";
 import { getLabel } from "../../uitls/i18n";
+import "./index.less";
 
 const template2menu: any = (template: Template) => {
   const { children, ...other } = template;
@@ -36,28 +36,17 @@ const template2menu: any = (template: Template) => {
   }
 };
 
-{
-  /* <Dropdown menu={menuProps}>
-      <Button>
-        <Space>
-          Button
-          <DownOutlined />
-        </Space>
-      </Button>
-    </Dropdown> */
-}
-
-// const TemplateBar = (props: any) => {
-//   const { templates, onhandle } = props;
-//   return <Space></Space>;
-// };
 
 type JsonFromProps = ModalFormProps & {
   templates?: Template[];
 };
 
-const JsonForm: React.FC<JsonFromProps> = (props) => {
-  const { templates, ...other } = props;
+interface Jsonform extends React.FC<JsonFromProps> {
+  show: (props: JsonFromProps) => void;
+}
+
+const JsonForm: Jsonform = (props) => {
+  const { templates, modalProps, ...other } = props;
   const { t } = useTranslation();
   const formRef = useRef<FormInstance<any>>();
   const templateHandle = (json: string) => {
@@ -102,13 +91,11 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
         modalProps={{
           destroyOnClose: true,
           maskClosable: false,
+          ...modalProps,
         }}
       >
         {hasTemplate ? (
-          <Space
-            size={"small"}
-            style={{ marginBottom: 5, width: "100%", overflow: "auto" }}
-          >
+          <Space size={"small"} className="template-box scroll-small">
             <span>{t("terms.template")}:</span>
             {templates.map((template, index) => {
               if (template.children?.length) {
@@ -204,7 +191,7 @@ const JsonForm: React.FC<JsonFromProps> = (props) => {
   );
 };
 
-export const showJsonForm = (props: JsonFromProps) => {
+JsonForm.show = (props: JsonFromProps) => {
   const { onOpenChange, open: propOpen, ...other } = props;
   let timeoutId: ReturnType<typeof setTimeout>;
   const container = document.createDocumentFragment();
@@ -235,9 +222,5 @@ export const showJsonForm = (props: JsonFromProps) => {
     },
   });
 };
-
-// export const showUpModelForm = (props: any) => {
-//   const { name, root, model } = props;
-// };
 
 export default JsonForm;

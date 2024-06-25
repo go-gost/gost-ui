@@ -1,0 +1,120 @@
+@dark-base-color: #242424;
+@light-base-color: #fff;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  background-color: @light-base-color;
+  /* text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%; */
+  transition: all .5s;
+  --scroll-track-color: darken(@light-base-color, 10%);
+  --scroll-thumb-color: darken(@light-base-color, 30%);
+  --scroll-hover-color: darken(@light-base-color, 50%);
+  --scroll-active-color: darken(@light-base-color, 80%);
+  --shadow-color: #000;
+}
+
+:root.theme-dark {
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: @dark-base-color;
+  --scroll-track-color: lighten(@dark-base-color, 10%);
+  --scroll-thumb-color: lighten(@dark-base-color, 30%);
+  --scroll-hover-color: lighten(@dark-base-color, 50%);
+  --scroll-active-color: lighten(@dark-base-color, 80%);
+  --shadow-color: #FFF;
+  // --scrollbar-background-color: #313131;
+  // --scrollbar-background-color: var;
+  // --scrollbar-background-color: #313131;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+.base-scroll(@size:6px) {
+  // ::-webkit-scrollbar {width: 6px;} /* 滚动条 */
+  // ::-webkit-scrollbar-track { background-color: #eee; } /* 滚动条的滑轨背景颜色 */
+  // ::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.2); } /* 滑块颜色 */
+  // ::-webkit-scrollbar-button { background-color: #eee; } /* 滑轨两头的监听按钮颜色 */
+  // ::-webkit-scrollbar-corner { background-color: black; } /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
+  &::-webkit-scrollbar {
+    width: @size;
+    height: @size;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: var(--scroll-track-color);
+    border-radius: (@size / 2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-thumb-color);
+    border-radius: (@size / 2);
+
+    &:hover {
+      background-color: var(--scroll-hover-color);
+    }
+
+    &:active {
+      background-color: var(--scroll-active-color);;
+    }
+  }
+
+  &:hover {
+    &::-webkit-scrollbar {
+      width: @size;
+      height: @size;
+    }
+  }
+}
+
+* {
+  .base-scroll();
+  &.scroll-auto-hide {
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+}
+
+.scroll-small {
+  .base-scroll(4px);
+  &.scroll-auto-hide {
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+}
+
+.ant-table-body {
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+.ant-space-item > .ant-tag {
+  margin-inline-end: inherit;
+}
+
+.ant-tag.editor-json {
+  cursor: pointer;
+}
+
+.antd-cord-boxShadow {
+  box-shadow: 0 1px 2px -2px #00000029,0 3px 6px #0000001f,0 5px 12px 4px #00000017;
+  border-color: transparent;
+}

@@ -249,7 +249,7 @@ const Manage = () => {
           overflow: "auto",
         }}
       >
-        <Row gutter={[16, 16]} style={{ overflow: "hidden" }}>
+        <Row gutter={[16, 16]}>
           {/* <Col {...colSpan} xxl={16}> */}
           <ServiceCard colSpan={colSpan}></ServiceCard>
           {/* </Col> */}
