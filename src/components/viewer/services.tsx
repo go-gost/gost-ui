@@ -1,9 +1,8 @@
 import { useContext, useMemo } from "react";
 import {
-  ChainConfig,
   Config,
+  ForwardNodeConfig,
   ForwarderConfig,
-  NodeConfig,
   ServiceConfig,
 } from "../../api/types";
 import qs from "qs";
@@ -52,10 +51,10 @@ const useGetItem: (
 };
 
 export const ViewForwarder = (forwarder: ForwarderConfig) => {
-  const [itemHop, isEnable] = useGetItem(forwarder.name, "hops");
+  const [itemHop, isEnable] = useGetItem(forwarder.hop, "hops");
   let _hop = forwarder;
   let isLink = false;
-  if (!_hop.nodes) {
+  if (!_hop.nodes || _hop.nodes.length === 0) {
     _hop = itemHop;
     isLink = !!itemHop;
   }
@@ -64,10 +63,10 @@ export const ViewForwarder = (forwarder: ForwarderConfig) => {
   const vNodes = (
     <Space size={5}>
       {nodes.map((node, i) => (
-        <ViewNode
+        <ViewNode<ForwardNodeConfig>
           key={node.name + i}
-          node={node as any}
-          upjson={(newNode: NodeConfig) => (nodes[i] = newNode)}
+          node={node}
+          upjson={(newNode: ForwardNodeConfig) => (nodes[i] = newNode)}
         />
       ))}
     </Space>

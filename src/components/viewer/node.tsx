@@ -1,5 +1,5 @@
 import qs from "qs";
-import { Config, NodeConfig } from "../../api/types";
+import { Config, ForwardNodeConfig, NodeConfig } from "../../api/types";
 import { useContext, useMemo } from "react";
 import Ctx, { CardCtx } from "../../uitls/ctx";
 import { Space, Tag, Tooltip } from "antd";
@@ -22,13 +22,12 @@ export function viewNode(this: Partial<Config>, data: NodeConfig) {
   }`;
 }
 
-const NodeFormat = (props: NodeConfig) => {
-  const {
-    name,
-    addr,
-    connector: { type: connectorType, metadata } = {},
-    dialer: { type: dialerType } = {},
-  } = props;
+const NodeFormat: React.FC<unknown> = (props) => {
+  const { name, addr } = props as { name: string; addr: string };
+  const connectorType = (props as NodeConfig).connector?.type;
+  const dialerType = (props as NodeConfig).dialer?.type;
+  const metadata =
+    (props as NodeConfig).connector?.metadata || (props as NodeConfig).metadata;
   const _metadata = metadata ? qs.stringify(metadata) : "";
   return (
     <Space>
@@ -47,29 +46,24 @@ const NodeFormat = (props: NodeConfig) => {
   );
 };
 
-export const ViewNode = ({
+export function ViewNode<T extends { name: string; addr: string }>({
   node,
   upjson,
-  isLink = false,
 }: {
-  node: NodeConfig;
-  isLink?: boolean;
-  upjson?: (newNode: NodeConfig) => void;
-}) => {
+  node: T;
+  upjson?: (newNode: T) => void;
+}) {
   const { t } = useTranslation();
   const { name } = node;
   const { update } = useContext(UpdateCtx);
-  return (
-    <Tooltip color="#ddffbf" title={<NodeFormat {...node} />}>
-      <Tag
-        bordered={false}
-        color="green"
-        className="editor-json"
-        title={t("text.doubleClickEdit")}
-        onDoubleClick={() => {
-          if (!upjson) return;
+
+  const tagProps = useMemo(() => {
+    if (upjson) {
+      return {
+        className: "editor-json",
+        onDoubleClick: () => {
           showJsonForm({
-            title: t('base.cmd.edit'),
+            title: t("base.cmd.edit"),
             initialValues: { value: jsonFormatValue(node) },
             onFinish: async (values: any) => {
               upjson(jsonParse(values.value));
@@ -77,10 +71,22 @@ export const ViewNode = ({
               return true;
             },
           });
-        }}
+        },
+      };
+    }
+    return {};
+  }, [node, t, update, upjson]);
+
+  return (
+    <Tooltip color="#ddffbf" title={<NodeFormat {...(node as any)} />}>
+      <Tag
+        bordered={false}
+        color="green"
+        title={t("text.doubleClickEdit")}
+        {...tagProps}
       >
         {name}
       </Tag>
     </Tooltip>
   );
-};
+}

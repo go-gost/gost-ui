@@ -60,7 +60,7 @@ export const ViewHop = (props: HopConfig) => {
       >
         <Space size={5}>
           {nodes.map((node, i) => (
-            <ViewNode key={i} node={node} isLink upjson={(newNode: NodeConfig) => (nodes[i] = newNode)} />
+            <ViewNode key={i} node={node} upjson={(newNode: NodeConfig) => (nodes[i] = newNode)} />
           ))}
         </Space>
       </UpdateCtx.Provider>

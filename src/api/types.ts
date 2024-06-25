@@ -1,4 +1,4 @@
-// 从 swagger.yaml 提取;
+// 从 swagger.yaml 提取;(20240624)
 
 export type APIConfig = {
   accesslog: boolean;
@@ -12,9 +12,9 @@ export type AdmissionConfig = {
   http: HTTPLoader;
   matchers: string[];
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
-  //   description: "DEPRECATED by whitelist since beta.4";
   reverse: boolean;
   whitelist: boolean;
 };
@@ -27,6 +27,7 @@ export type AutherConfig = {
   file: FileLoader;
   http: HTTPLoader;
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
 };
@@ -35,14 +36,13 @@ export type BypassConfig = {
   http: HTTPLoader;
   matchers: string[];
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
-  //   description: "DEPRECATED by whitelist since beta.4";
   reverse: boolean;
   whitelist: boolean;
 };
 export type ChainConfig = {
-  // description: 'REMOVED since beta.6\nSelector *SelectorConfig `yaml:",omitempty" json:"selector,omitempty"`';
   hops: HopConfig[];
   metadata: Record<string, any>;
   name: string;
@@ -63,11 +63,15 @@ export type Config = {
   ingresses: IngressConfig[];
   limiters: LimiterConfig[];
   log: LogConfig;
+  loggers: LoggerConfig[];
   metrics: MetricsConfig;
+  observers: ObserverConfig[];
   profiling: ProfilingConfig;
   recorders: RecorderConfig[];
   resolvers: ResolverConfig[];
   rlimiters: LimiterConfig[];
+  routers: RouterConfig[];
+  sds: SDConfig[];
   services: ServiceConfig[];
   tls: TLSConfig;
 };
@@ -83,7 +87,6 @@ export type DialerConfig = {
   tls: TLSConfig;
   type: string;
 };
-// description: "A Duration represents the elapsed time between two instants\nas an int64 nanosecond count. The representation limits the\nlargest representable duration to approximately 290 years.";
 export type Duration = number;
 export type FileLoader = {
   path: string;
@@ -94,22 +97,42 @@ export type FileRecorder = {
 };
 export type ForwardNodeConfig = {
   addr: string;
+  auth: AuthConfig;
   bypass: string;
   bypasses: string[];
+  filter: NodeFilterConfig;
   host: string;
+  http: HTTPNodeConfig;
+  metadata: Record<string, any>;
   name: string;
+  network: string;
+  path: string;
   protocol: string;
+  tls: TLSNodeConfig;
 };
 export type ForwarderConfig = {
+  hop: string;
   name: string;
   nodes: ForwardNodeConfig[];
   selector: SelectorConfig;
-  //   description: "DEPRECATED by nodes since beta.4";
-  targets?: string[];
 };
 export type HTTPLoader = {
   timeout: Duration;
   url: string;
+};
+export type HTTPNodeConfig = {
+  auth: AuthConfig;
+  header: Record<string, string>;
+  host: string;
+  rewrite: HTTPURLRewriteConfig[];
+};
+export type HTTPRecorder = {
+  timeout: Duration;
+  url: string;
+};
+export type HTTPURLRewriteConfig = {
+  Match: string;
+  Replacement: string;
 };
 export type HandlerConfig = {
   auth: AuthConfig;
@@ -117,8 +140,9 @@ export type HandlerConfig = {
   authers: string[];
   chain: string;
   chainGroup: ChainGroupConfig;
-  ingress: string;
+  limiter: string;
   metadata: Record<string, any>;
+  observer: string;
   retries: number;
   tls: TLSConfig;
   type: string;
@@ -126,10 +150,15 @@ export type HandlerConfig = {
 export type HopConfig = {
   bypass: string;
   bypasses: string[];
+  file: FileLoader;
   hosts: string;
+  http: HTTPLoader;
   interface: string;
   name: string;
   nodes: NodeConfig[];
+  plugin: PluginConfig;
+  redis: RedisLoader;
+  reload: Duration;
   resolver: string;
   selector: SelectorConfig;
   sockopts: SockOptsConfig;
@@ -144,6 +173,7 @@ export type HostsConfig = {
   http: HTTPLoader;
   mappings: HostMappingConfig[];
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
 };
@@ -151,6 +181,7 @@ export type IngressConfig = {
   file: FileLoader;
   http: HTTPLoader;
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
   rules: IngressRuleConfig[];
@@ -164,6 +195,7 @@ export type LimiterConfig = {
   http: HTTPLoader;
   limits: string[];
   name: string;
+  plugin: PluginConfig;
   redis: RedisLoader;
   reload: Duration;
 };
@@ -184,26 +216,29 @@ export type LogConfig = {
   rotation: LogRotationConfig;
 };
 export type LogRotationConfig = {
-  // description: "Compress determines if the rotated log files should be compressed\nusing gzip. The default is not to perform compression.";
   compress: boolean;
-  //   description: "LocalTime determines if the time used for formatting the timestamps in\nbackup files is the computer's local time. The default is to use UTC\ntime.";
   localTime: boolean;
-  //   description: "MaxAge is the maximum number of days to retain old log files based on the\ntimestamp encoded in their filename.  Note that a day is defined as 24\nhours and may not exactly correspond to calendar days due to daylight\nsavings, leap seconds, etc. The default is not to remove old log files\nbased on age.";
   maxAge: number;
-  //   description: "MaxBackups is the maximum number of old log files to retain.  The default\nis to retain all old log files (though MaxAge may still cause them to get\ndeleted.)";
   maxBackups: number;
-  //   description: "MaxSize is the maximum size in megabytes of the log file before it gets\nrotated. It defaults to 100 megabytes.";
   maxSize: number;
+};
+export type LoggerConfig = {
+  log: LogConfig;
+  name: string;
 };
 export type MetricsConfig = {
   addr: string;
+  auth: AuthConfig;
+  auther: string;
   path: string;
 };
 export type NameserverConfig = {
   addr: string;
+  async: boolean;
   chain: string;
   clientIP: string;
   hostname: string;
+  only: string;
   prefer: string;
   timeout: Duration;
   ttl: Duration;
@@ -214,24 +249,46 @@ export type NodeConfig = {
   bypasses: string[];
   connector: ConnectorConfig;
   dialer: DialerConfig;
-  host: string;
+  filter: NodeFilterConfig;
   hosts: string;
+  http: HTTPNodeConfig;
   interface: string;
   metadata: Record<string, any>;
   name: string;
-  protocol: string;
+  network: string;
   resolver: string;
   sockopts: SockOptsConfig;
+  tls: TLSNodeConfig;
+};
+export type NodeFilterConfig = {
+  host: string;
+  path: string;
+  protocol: string;
+};
+export type ObserverConfig = {
+  name: string;
+  plugin: PluginConfig;
+};
+export type PluginConfig = {
+  addr: string;
+  timeout: Duration;
+  tls: TLSConfig;
+  token: string;
+  type: string;
 };
 export type ProfilingConfig = {
   addr: string;
 };
 export type RecorderConfig = {
   file: FileRecorder;
+  http: HTTPRecorder;
   name: string;
+  plugin: PluginConfig;
   redis: RedisRecorder;
+  tcp: TCPRecorder;
 };
 export type RecorderObject = {
+  Metadata: Record<string, any>;
   name: string;
   record: string;
 };
@@ -252,6 +309,24 @@ export type RedisRecorder = {
 export type ResolverConfig = {
   name: string;
   nameservers: NameserverConfig[];
+  plugin: PluginConfig;
+};
+export type RouterConfig = {
+  file: FileLoader;
+  http: HTTPLoader;
+  name: string;
+  plugin: PluginConfig;
+  redis: RedisLoader;
+  reload: Duration;
+  routes: RouterRouteConfig[];
+};
+export type RouterRouteConfig = {
+  gateway: string;
+  net: string;
+};
+export type SDConfig = {
+  name: string;
+  plugin: PluginConfig;
 };
 export type SelectorConfig = {
   failTimeout: Duration;
@@ -268,27 +343,62 @@ export type ServiceConfig = {
   forwarder: ForwarderConfig;
   handler: HandlerConfig;
   hosts: string;
-  //   description: "DEPRECATED by metadata.interface since beta.5";
   interface: string;
   limiter: string;
   listener: ListenerConfig;
+  logger: string;
+  loggers: string[];
   metadata: Record<string, any>;
   name: string;
+  observer: string;
   recorders: RecorderObject[];
   resolver: string;
   rlimiter: string;
   sockopts: SockOptsConfig;
+  status: ServiceStatus;
+};
+export type ServiceEvent = {
+  msg: string;
+  time: number;
+};
+export type ServiceStats = {
+  currentConns: number;
+  inputBytes: number;
+  outputBytes: number;
+  totalConns: number;
+  totalErrs: number;
+};
+export type ServiceStatus = {
+  createTime: number;
+  events: ServiceEvent[];
+  state: string;
+  stats: ServiceStats;
 };
 export type SockOptsConfig = {
   mark: number;
+};
+export type TCPRecorder = {
+  addr: string;
+  timeout: Duration;
 };
 export type TLSConfig = {
   caFile: string;
   certFile: string;
   commonName: string;
   keyFile: string;
+  options: TLSOptions;
   organization: string;
   secure: boolean;
   serverName: string;
   validity: Duration;
+};
+export type TLSNodeConfig = {
+  options: TLSOptions;
+  secure: boolean;
+  serverName: string;
+};
+export type TLSOptions = {
+  cipherSuites: string[];
+  maxVersion: string;
+  minVersion: string;
 };
