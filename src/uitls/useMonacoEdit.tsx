@@ -72,7 +72,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   const [value, setValue] = useBindValue(props.value, props.defaultValue, "");
   const [isReady, setReady] = useState(false);
   const divEl = useRef<HTMLDivElement>(null);
-  const editor = useRef<any>(null);
+  const refEditor = useRef<Monaco.editor.IStandaloneCodeEditor>(null);
   const self = useRef<any>({});
   const isDark = useIsDark();
   const _theme = useMemo(() => {
@@ -81,7 +81,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   }, [theme, isDark]);
 
   React.useImperativeHandle(ref, () => {
-    return editor.current!;
+    return refEditor.current!;
   });
 
   React.useImperativeHandle(
@@ -104,7 +104,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
         const devel = divEl.current;
         let _editor: Monaco.editor.IStandaloneCodeEditor;
         monacoIsReady.then(() => {
-          _editor = editor.current = monaco.editor.create(devel, {
+          _editor = (refEditor.current as any) = monaco.editor.create(devel, {
             value: value,
             language: language,
             theme: _theme,
@@ -176,9 +176,16 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   }, [isReady]);
 
   useEffect(() => {
-    if (editor.current) {
-      if (value != editor.current.getValue()) {
-        editor.current.setValue(value);
+    if (refEditor.current) {
+      const editor = refEditor.current;
+      if (value != editor.getValue()) {
+        // editor.setValue(value);
+        // 支持回退
+        editor.executeEdits(null,[{
+          range: editor.getModel()!.getFullModelRange(),
+          text: value,
+          forceMoveMarkers: false,
+        }]);
       }
     }
   }, [value]);
