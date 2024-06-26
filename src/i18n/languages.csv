@@ -14,6 +14,7 @@ base.cmd.disable,禁用,Disable
 base.cmd.copy,复制,Copy
 base.cmd.edit,修改,Edit
 base.cmd.del,删除,Delete
+base.cmd.reset,重置,Reset
 text.warn,警告,Warning
 text.deleteing,确定要删除吗？,Are you sure you want to delete?
 text.doubleClickEdit,双击修改,Double click to modify

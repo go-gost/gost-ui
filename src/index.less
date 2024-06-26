@@ -118,3 +118,30 @@ a:hover {
   box-shadow: 0 1px 2px -2px #00000029,0 3px 6px #0000001f,0 5px 12px 4px #00000017;
   border-color: transparent;
 }
+
+// 用于只展示错误的 Form.Item
+.ant-form-item.form-only-error {
+  .ant-form-item-control-input {
+    min-height:0;
+  }
+}
+
+// 全屏modal
+.ant-modal.full-modal {
+  .ant-modal-content {
+    position: fixed;
+    // inset: 10px;
+    left: 10px;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    .ant-modal-body {
+      flex: 1 100%;
+      &>form {
+        height: 100%;
+      }
+    }
+  }
+}

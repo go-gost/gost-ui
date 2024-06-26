@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Form, Modal } from "antd";
 import type { FormInstance, FormProps, ModalProps } from "antd";
 import { useBindValue } from "../uitls/use";
+import classnames from "classnames";
 
 export type ModalFormProps<T = Record<string, any>> = Omit<
   FormProps<T>,
@@ -39,6 +40,8 @@ export type ModalFormProps<T = Record<string, any>> = Omit<
   width?: ModalProps["width"];
   formRef?: any;
   children?: React.ReactNode;
+  /** @name 是否全屏 */
+  isFull?: boolean;
 };
 
 const ModalForm: React.FC<ModalFormProps> = (props) => {
@@ -52,6 +55,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
     width,
     formRef,
     children,
+    isFull,
     ...other
   } = props;
   const [open, setOpen] = useBindValue(propOpen, false);
@@ -79,8 +83,12 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
   }, [propOnFinish, onCancel]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const _modalProps: ModalProps = useMemo(() => {
+    const className = classnames(modalProps?.className, {
+      'full-modal': isFull
+    })
     return {
       ...modalProps,
+      className,
       onCancel,
       onOk: () => {
         form.submit();
@@ -90,7 +98,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
       title,
       width,
     };
-  }, [afterClose, form, modalProps, onCancel, open, title, width]);
+  }, [afterClose, form, modalProps, onCancel, open, title, width, isFull]);
 
   useEffect(() => {
     if (!formRef) return;
