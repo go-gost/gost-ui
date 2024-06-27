@@ -3,7 +3,7 @@ import { ChainConfig, Config, HopConfig } from "../../api/types";
 import { ViewHop, viewHops } from "./hop";
 import { RightOutlined } from "@ant-design/icons";
 import JsonForm from "../Forms/Json";
-import { jsonFormatValue, jsonParse } from "../../uitls";
+import { jsonFormatValue, jsonParse } from "../../utils";
 import { useContext } from "react";
 import { UpdateCtx } from "../List/Public";
 import { useTranslation } from "react-i18next";

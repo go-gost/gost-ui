@@ -1,7 +1,7 @@
-import Ctx, { CardCtx } from "../../uitls/ctx";
+import Ctx, { CardCtx } from "../../utils/ctx";
 import ConfigTemplates from "../../templates";
 import { useContext, useMemo } from "react";
-import { useLocalConfig, useServerConfig } from "../../uitls/server";
+import { useLocalConfig, useServerConfig } from "../../utils/server";
 
 type UseListDataProps = {
   name: string;

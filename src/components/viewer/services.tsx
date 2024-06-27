@@ -6,7 +6,7 @@ import {
   ServiceConfig,
 } from "../../api/types";
 import qs from "qs";
-import Ctx, { getCommByName } from "../../uitls/ctx";
+import Ctx, { getCommByName } from "../../utils/ctx";
 import { UpdateCtx } from "../List/Public";
 import { Space, Tag, Tooltip } from "antd";
 import { ViewNode } from "./node";

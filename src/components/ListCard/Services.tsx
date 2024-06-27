@@ -4,10 +4,10 @@ import { ServiceConfig } from "../../api/types";
 import qs from "qs";
 import ListCard from ".";
 import { useContext } from "react";
-import Ctx from "../../uitls/ctx";
+import Ctx from "../../utils/ctx";
 import viewService, { ViewService } from "../viewer/services";
 import { getModule } from "../../api/modules";
-import { useServerConfig } from "../../uitls/server";
+import { useServerConfig } from "../../utils/server";
 import { Col } from "antd";
 
 // const record = (value: any, record: ServiceConfig, index: number) => {

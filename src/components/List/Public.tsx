@@ -9,7 +9,7 @@ import { Button, Popconfirm, Space, Table, App } from "antd";
 import { red, green } from "@ant-design/colors";
 import { getRESTfulApi } from "../../api";
 import JsonForm from "../Forms/Json";
-import { jsonFormatValue, jsonParse } from "../../uitls";
+import { jsonFormatValue, jsonParse } from "../../utils";
 import {
   CheckCircleOutlined,
   CopyOutlined,
@@ -18,9 +18,9 @@ import {
   StopOutlined,
 } from "@ant-design/icons";
 import { GostCommit } from "../../api/local";
-import Ctx, { CardCtx } from "../../uitls/ctx";
+import Ctx, { CardCtx } from "../../utils/ctx";
 import { useListData1, UseTemplates } from "../ListCard/hooks";
-import { configEvent } from "../../uitls/events";
+import { configEvent } from "../../utils/events";
 import { useTranslation } from "react-i18next";
 const showJsonForm = JsonForm.show;
 

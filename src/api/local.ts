@@ -1,7 +1,7 @@
 import { getIdb, updatedIdb } from "./db";
 import type * as Gost from "./types";
-import { getInfo } from "../uitls/server";
-import { configEvent } from "../uitls/events";
+import { getInfo } from "../utils/server";
+import { configEvent } from "../utils/events";
 const localCache = "localCache";
 const savedServer = "savedServer";
 

@@ -17,16 +17,16 @@ import {
   ZoomInOutlined,
   ZoomOutOutlined,
 } from "@ant-design/icons";
-import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../uitls";
+import { jsonFormat, jsonStringFormat, jsonParse, jsonEdit } from "../../utils";
 import { Template } from "../../templates";
 // import { render } from "react-dom";
 // import { useServerConfig } from "../../uitls/server";
 import ModalForm, { ModalFormProps } from "../ModalForm";
-import { CodeEditor } from "../../uitls/useMonacoEdit";
 import { globalConfig } from "antd/es/config-provider";
 import { useTranslation } from "react-i18next";
-import { getLabel } from "../../uitls/i18n";
+import { getLabel } from "../../utils/i18n";
 import { v4 as uuid } from "uuid";
+import { CodeEditor } from "../CodeEditor";
 
 const template2data: any = (template: Template) => {
   const { children, label, ...other } = template;
@@ -81,6 +81,7 @@ const JsonForm: Jsonform = (props) => {
   }, [templates]);
 
   const runAction = useCallback((action: string) => {
+    console.log('editorRef', editorRef);
     editorRef.current?.getAction(action)?.run();
   }, []);
   const hasTemplate = templates?.length;

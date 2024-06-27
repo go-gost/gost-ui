@@ -2,7 +2,7 @@
 import React from "react";
 import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Space } from "antd";
-import { login } from "../uitls/server";
+import { login } from "../utils/server";
 import LocalServers from "../components/LocalServers";
 import { ThemeButton } from "../components/Theme";
 import { useTranslation, Trans } from 'react-i18next';

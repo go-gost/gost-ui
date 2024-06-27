@@ -1,4 +1,4 @@
-import require from "../uitls/require";
+import require from "../utils/require";
 import type * as Gost from "./types";
 
 type Format = "json" | "yaml";

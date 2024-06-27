@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Col, Flex, Row, Space } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { GostApiConfig, getLocalServers, deleteLocal } from "../uitls/server";
+import { GostApiConfig, getLocalServers, deleteLocal } from "../utils/server";
 import { useTranslation } from "react-i18next";
 
 const LocalServers = () => {

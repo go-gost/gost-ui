@@ -13,18 +13,18 @@ import {
   useInfo,
   useServerConfig,
   useLocalConfig,
-} from "./uitls/server";
+} from "./utils/server";
 import * as API from "./api";
 import Home from "./Pages/Home";
 import "./App.css";
-import { configEvent } from "./uitls/events";
+import { configEvent } from "./utils/events";
 
 import zhCN from "antd/locale/zh_CN";
 import enGB from "antd/locale/en_GB";
 import { ServerComm } from "./api/local";
-import Ctx from "./uitls/ctx";
-import { useIsDark } from "./uitls/useTheme";
-import "./uitls/i18n.ts";
+import Ctx from "./utils/ctx";
+import { useIsDark } from "./utils/useTheme";
+import "./utils/i18n";
 import { useTranslation } from "react-i18next";
 
 const Manage = React.lazy(() => import("./Pages/Manage"));
@@ -162,7 +162,15 @@ function App() {
       >
         <AntdGlobal>
           <React.Suspense fallback={<Spin fullscreen size="large" />}>
-            {isInit ? info ? <Manage /> : <Home /> : <Spin fullscreen  size="large" />}
+            {isInit ? (
+              info ? (
+                <Manage />
+              ) : (
+                <Home />
+              )
+            ) : (
+              <Spin fullscreen size="large" />
+            )}
           </React.Suspense>
         </AntdGlobal>
       </ConfigProvider>

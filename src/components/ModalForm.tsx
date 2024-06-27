@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Form, Modal } from "antd";
 import type { FormInstance, FormProps, ModalProps } from "antd";
-import { useBindValue } from "../uitls/use";
+import { useBindValue } from "../utils/use";
 import classnames from "classnames";
 
 export type ModalFormProps<T = Record<string, any>> = Omit<

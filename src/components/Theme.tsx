@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, ButtonProps } from "antd";
-import { useIsDark } from "../uitls/useTheme";
-import { useSettings } from "../uitls/server";
+import { useIsDark } from "../utils/useTheme";
+import { useSettings } from "../utils/server";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
 
 export const ThemeButton = (props: ButtonProps) => {

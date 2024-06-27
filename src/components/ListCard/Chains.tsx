@@ -3,7 +3,7 @@ import { ChainConfig } from "../../api/types";
 import ListCard, { ListCardProps } from ".";
 import viewChain, { ViewChain } from "../viewer/chain";
 import { useContext } from "react";
-import Ctx from "../../uitls/ctx";
+import Ctx from "../../utils/ctx";
 
 // const record = (value: any, record: ChainConfig, index: number) => {
 //   const { hops } = record;

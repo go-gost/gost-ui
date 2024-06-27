@@ -18,16 +18,16 @@ import {
   saveLocal,
   useInfo,
   useServerConfig,
-} from "../uitls/server";
-import { download, jsonFormat } from "../uitls";
-import { CodeEditor } from "../uitls/useMonacoEdit";
+} from "../utils/server";
+import { download, jsonFormat } from "../utils";
+import { CodeEditor } from "../components/CodeEditor";
 import * as API from "../api";
 import ListCard, { ProCard } from "../components/ListCard";
 import ChainCard from "../components/ListCard/Chains";
 import ServiceCard from "../components/ListCard/Services";
 import HopsCard from "../components/ListCard/Hops";
 import { fixOldCacheConfig } from "../api/local";
-import { configEvent } from "../uitls/events";
+import { configEvent } from "../utils/events";
 import {
   CheckCircleOutlined,
   DownloadOutlined,
@@ -38,7 +38,7 @@ import {
 import { ThemeButton } from "../components/Theme";
 import { LanguageButton } from "../components/Language";
 import { useTranslation } from "react-i18next";
-import Ctx from "../uitls/ctx";
+import Ctx from "../utils/ctx";
 
 const colSpan = {
   xs: 24,

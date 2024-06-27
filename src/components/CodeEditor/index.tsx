@@ -1,49 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useBindValue } from "./use";
 import type * as Monaco from "monaco-editor";
-import classnames from "classnames";
-import { useIsDark } from "./useTheme";
 import { Input } from "antd";
-import { getI18n, useTranslation } from "react-i18next";
-
-const langMap: Record<string, string> = {
-  zh: "zh-cn",
-  en: "",
-};
-
-(function () {
-  const require = (window as any).require;
-  if (require) {
-    const i18n = getI18n();
-    // DOTO: monaco 动态设置语言未实现
-    // i18n.on('languageChanged',(event)=>{
-    //   console.log('languageChanged', event)
-    // })
-    require.config({
-      "vs/nls": {
-        availableLanguages: {
-          "*": langMap[i18n.resolvedLanguage!] ?? "",
-        },
-      },
-    });
-  }
-  (window as any).monacoIsReady = new Promise((resolve, reject) => {
-    if (!require) return reject("Not loaded monaco loader.js");
-    require(["vs/editor/editor.main"], function () {
-      resolve(monaco);
-    });
-  });
-})();
-
-monacoIsReady.then(() => {
-  // monacoPython.register(); //注册 关键字，内置函数 代码提示 ；
-  monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-    allowComments: true,
-    trailingCommas: "warning",
-    validate: true,
-  });
-  // monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
-});
+import classnames from "classnames";
+import { useTranslation } from "react-i18next";
+import { useBindValue } from "../../utils/use";
+import { useIsDark } from "../../utils/useTheme";
+import "../../utils/useMonacoEdit";
 
 type CodeEditorProps = {
   className?: string;
@@ -71,6 +33,7 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   const [language, setLanguage] = useBindValue(props.language, "javascript");
   const [value, setValue] = useBindValue(props.value, props.defaultValue, "");
   const [isReady, setReady] = useState(false);
+  const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const divEl = useRef<HTMLDivElement>(null);
   const refEditor = useRef<Monaco.editor.IStandaloneCodeEditor>(null);
   const self = useRef<any>({});
@@ -80,18 +43,18 @@ const CodeEditor_: React.ForwardRefRenderFunction<
     return isDark ? "vs-dark" : "vs";
   }, [theme, isDark]);
 
-  React.useImperativeHandle(ref, () => {
-    return refEditor.current!;
-  });
+  React.useImperativeHandle(ref, () => editor!, [editor]);
+  React.useImperativeHandle(refEditor, () => editor!, [editor]);
 
   React.useImperativeHandle(
     self,
     () => {
       return {
         onChange,
+        editor
       };
     },
-    [onChange]
+    [onChange, editor]
   );
   useEffect(() => {
     monacoIsReady.then(() => {
@@ -102,15 +65,14 @@ const CodeEditor_: React.ForwardRefRenderFunction<
     if (isReady) {
       if (divEl.current) {
         const devel = divEl.current;
-        let _editor: Monaco.editor.IStandaloneCodeEditor;
-        monacoIsReady.then(() => {
-          _editor = (refEditor.current as any) = monaco.editor.create(devel, {
+        const _editor: Monaco.editor.IStandaloneCodeEditor = monaco.editor.create(devel, {
             value: value,
             language: language,
             theme: _theme,
             ...defOptions,
             ...options,
           });
+          setEditor(_editor);
           _editor.onDidChangeModelContent(function (event: any) {
             const _value = _editor.getValue();
             setValue(_value);
@@ -154,17 +116,6 @@ const CodeEditor_: React.ForwardRefRenderFunction<
               });
             },
           });
-        });
-        // let xc: any;
-        // const resizeObserver = new ResizeObserver((entries) => {
-        //   // _editor?.layout();
-        //   // console.log("resizeObserver");
-        //   if (xc) clearTimeout(xc);
-        //   xc = setTimeout(() => {
-        //     _editor?.layout();
-        //   }, 100);
-        // });
-        // resizeObserver.observe(el);
         return () => {
           _editor?.dispose?.();
           // resizeObserver.unobserve(el);
@@ -176,16 +127,18 @@ const CodeEditor_: React.ForwardRefRenderFunction<
   }, [isReady]);
 
   useEffect(() => {
-    if (refEditor.current) {
-      const editor = refEditor.current;
+    if (self.current?.editor) {
+      const editor = self.current.editor;
       if (value != editor.getValue()) {
         // editor.setValue(value);
         // 支持回退
-        editor.executeEdits(null,[{
-          range: editor.getModel()!.getFullModelRange(),
-          text: value,
-          forceMoveMarkers: false,
-        }]);
+        editor.executeEdits(null, [
+          {
+            range: editor.getModel()!.getFullModelRange(),
+            text: value,
+            forceMoveMarkers: false,
+          },
+        ]);
       }
     }
   }, [value]);

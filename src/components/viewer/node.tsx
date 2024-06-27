@@ -1,10 +1,10 @@
 import qs from "qs";
 import { Config, ForwardNodeConfig, NodeConfig } from "../../api/types";
 import { useContext, useMemo } from "react";
-import Ctx, { CardCtx } from "../../uitls/ctx";
+import Ctx, { CardCtx } from "../../utils/ctx";
 import { Space, Tag, Tooltip } from "antd";
 import JsonForm from "../Forms/Json";
-import { jsonFormatValue, jsonParse } from "../../uitls";
+import { jsonFormatValue, jsonParse } from "../../utils";
 import { UpdateCtx } from "../List/Public";
 import { useTranslation } from "react-i18next";
 

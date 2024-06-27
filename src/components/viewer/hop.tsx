@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { Config, HopConfig, NodeConfig } from "../../api/types";
 import { viewNode, ViewNode } from "./node";
-import Ctx, { getCommByName } from "../../uitls/ctx";
+import Ctx, { getCommByName } from "../../utils/ctx";
 import { Space, Tag, Tooltip } from "antd";
 import { UpdateCtx } from "../List/Public";
-import { useServerConfig } from "../../uitls/server";
+import { useServerConfig } from "../../utils/server";
 
 export default function viewHop(this: Partial<Config>, hop: HopConfig) {
   let _hop = hop;

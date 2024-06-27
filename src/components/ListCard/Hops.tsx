@@ -3,7 +3,7 @@ import { HopConfig } from "../../api/types";
 import ListCard from ".";
 import viewChain from "../viewer/chain";
 import { useContext } from "react";
-import Ctx from "../../uitls/ctx";
+import Ctx from "../../utils/ctx";
 import {ViewHop} from "../viewer/hop";
 
 const HopsCard: React.FC = (props) => {
