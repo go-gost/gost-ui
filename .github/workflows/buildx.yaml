@@ -8,7 +8,7 @@ on:
     - 'v*'
     
 jobs:
-  build:
+  buildx:
     runs-on: ubuntu-latest
     steps:
     - name: Prepare
@@ -34,8 +34,9 @@ jobs:
         fi
 
         # Set output parameters.
-        echo ::set-output name=tags::${TAGS}
-        echo ::set-output name=docker_image::${DOCKER_IMAGE}
+        echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+        echo "docker_image=${DOCKER_IMAGE}" >> $GITHUB_OUTPUT
+        echo "docker_platforms=linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64" >> $GITHUB_OUTPUT
 
     - name: Environment
       run: |
@@ -44,10 +45,13 @@ jobs:
         echo git_sha=$GITHUB_SHA
         echo image=${{ steps.prepare.outputs.docker_image }}
         echo tags=${{ steps.prepare.outputs.tags }}
+        echo platforms=${{ steps.prepare.outputs.docker_platforms }}
 
-      # https://github.com/actions/checkout
-    - name: Checkout
-      uses: actions/checkout@v4
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     - name: Docker Login
       if: github.event_name != 'pull_request'
@@ -56,13 +60,9 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        context: .
-        file: ./Dockerfile
+        platforms: ${{ steps.prepare.outputs.docker_platforms }}
         push: true
         tags: ${{ steps.prepare.outputs.tags }}
