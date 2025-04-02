@@ -3,7 +3,7 @@ import { EventEmitter as Events } from "events";
 
 type userObject<T = any> = {
   (v?: T): T;
-  set(v: T): void;
+  set(v: T | ((v: T) => T)): void;
   get(): T;
 };
 
@@ -45,8 +45,12 @@ function getUseValue<T>(get?: any, set?: any, defaultValue?: any) {
     }, []);
     return value;
   };
-  useValue.set = (v: T) => {
-    valueEvent.emit("setValue", v);
+  useValue.set = (v: T | ((v: T) => T)) => {
+    let newV = v;
+    if (typeof v === "function") {
+      newV = (v as any)(get?.());
+    }
+    valueEvent.emit("setValue", newV);
   };
   useValue.get = () => {
     return get?.();

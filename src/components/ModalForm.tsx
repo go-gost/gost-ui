@@ -117,7 +117,7 @@ const ModalForm: React.FC<ModalFormProps> = (props) => {
 
   return (
     <>
-      <Modal {..._modalProps}>
+      <Modal mask maskClosable={false} {..._modalProps}>
         <Form form={form} onFinish={onFinish} {...other}>
           {children}
         </Form>
