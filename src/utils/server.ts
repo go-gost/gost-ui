@@ -5,7 +5,13 @@ import { message } from "antd";
 import { t } from "i18next";
 import { ServerComm } from "../api/local";
 import { Config } from "../api/types";
-import { getJsonAtLocalStorage, getJsonAtSessionStorage, setJsonAtLocalStorage, setJsonAtSessionStorage } from "./storage";
+import {
+  getJsonAtLocalStorage,
+  getJsonAtSessionStorage,
+  setJsonAtLocalStorage,
+  setJsonAtSessionStorage,
+} from "./storage";
+import { apis } from "../api";
 
 const gostServerKey = "__GOST_SERVER__";
 const uselocalServerKey = "__USE_SERVER__";
@@ -30,12 +36,12 @@ export type Settings = {
 };
 
 const query = qs.parse(location.search, { ignoreQueryPrefix: true });
-if(query.use) {
+if (query.use) {
   setJsonAtSessionStorage(gostServerKey, null);
   window[uselocalServerKey] = query.use;
 }
 
-let _useInfo: GostApiConfig | null =  getJsonAtSessionStorage(gostServerKey); // 冗余_useInfo
+let _useInfo: GostApiConfig | null = getJsonAtSessionStorage(gostServerKey); // 冗余_useInfo
 export const useInfo = getUseValue<GostApiConfig | null>(
   function get() {
     return _useInfo;
@@ -74,7 +80,7 @@ export const userInit = async () => {
       server.time = Date.now();
       saveLocal(use, server);
       return;
-    }else{
+    } else {
       logout();
     }
   }
@@ -85,8 +91,6 @@ export const userInit = async () => {
     await verify(_useInfo);
     return;
   }
-
-
 
   // 刷新（会话保持）
   // const serverJson = sessionStorage.getItem(gostServerKey);
@@ -109,11 +113,15 @@ export const userInit = async () => {
   //   }
   // }
 };
-
+/**
+ * 验证API授权信息
+ * @param arg
+ * @returns
+ */
 const verify = async (arg: GostApiConfig) => {
-  const baseUrl = arg.addr.replace(/\/+$/, "");
+  const baseUrl = arg.addr.replace(/\/+$/, ""); // 去除尾部斜杠
   return axios
-    .get(baseUrl + "/config", {
+    .get(baseUrl + apis.config, {
       auth: arg.auth,
     })
     .catch((error) => {
@@ -128,7 +136,7 @@ export const login = async (arg: GostApiConfig, save?: false) => {
       arg.isLocal = true;
       useInfo.set(arg);
       await saveLocal(arg.addr, arg);
-    }else{
+    } else {
       useInfo.set(arg);
     }
   } catch (e: any) {

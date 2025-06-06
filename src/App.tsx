@@ -62,14 +62,14 @@ function App() {
     [serverLoading, localLoading]
   );
 
-  const slef = useRef({
+  const events = useRef({
     update: async () => {
       try {
         setServerLoading(true);
         setLocalLoading(true);
         const [l1, l2] = await Promise.all([
           API.getConfig(),
-          slef.current.updateLocalConfig(useInfo.get()?.addr),
+          events.current.updateLocalConfig(useInfo.get()?.addr),
         ]);
         useServerConfig.set(l1 as any);
         useLocalConfig.set(l2);
@@ -101,17 +101,22 @@ function App() {
   });
 
   useEffect(() => {
-    userInit().then(() => setIsInit(true));
+    userInit()
+      .then(null, () => {
+        message.error(t("msg.connectionFailed"));
+        logout();
+      })
+      .finally(() => setIsInit(true));
     const apiUpdate = async () => {
       // if (reqConfig?.url === API.apis.config) return;
       return useServerConfig.set((await API.getConfig()) as any);
     };
     const localUpdate = async () => {
       return useLocalConfig.set(
-        await slef.current.updateLocalConfig(useInfo.get()?.addr)
+        await events.current.updateLocalConfig(useInfo.get()?.addr)
       );
     };
-    const update = slef.current.update;
+    const update = events.current.update;
     configEvent.on("apiUpdate", apiUpdate);
     configEvent.on("localUpdate", localUpdate);
     configEvent.on("update", update);
@@ -123,16 +128,16 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (info) {
-      slef.current.update().then(([data]) => {
+    if (isInit && info) {
+      events.current.update().then(([data]) => {
         // setGostConfig(data);
         useServerConfig.set(data);
         document.title = info.addr.replace(/^(https?:)?\/\//, "");
       });
     } else {
-      document.title = slef.current.defaultTitle;
+      document.title = events.current.defaultTitle;
     }
-  }, [info]);
+  }, [isInit, info]);
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add("theme-dark");
