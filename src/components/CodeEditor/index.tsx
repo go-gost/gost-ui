@@ -51,10 +51,11 @@ const CodeEditor_: React.ForwardRefRenderFunction<
     () => {
       return {
         onChange,
-        editor
+        editor,
+        options,
       };
     },
-    [onChange, editor]
+    [onChange, editor, options]
   );
   useEffect(() => {
     monacoIsReady.then(() => {
@@ -65,57 +66,56 @@ const CodeEditor_: React.ForwardRefRenderFunction<
     if (isReady) {
       if (divEl.current) {
         const devel = divEl.current;
-        const _editor: Monaco.editor.IStandaloneCodeEditor = monaco.editor.create(devel, {
+        const _editor: Monaco.editor.IStandaloneCodeEditor =
+          monaco.editor.create(devel, {
             value: value,
             language: language,
             theme: _theme,
             ...defOptions,
             ...options,
           });
-          setEditor(_editor);
-          _editor.onDidChangeModelContent(function (event: any) {
-            const _value = _editor.getValue();
-            setValue(_value);
-            self.current?.onChange?.(_value);
-          });
+        setEditor(_editor);
+        _editor.onDidChangeModelContent(function (event: any) {
+          const _value = _editor.getValue();
+          setValue(_value);
+          self.current?.onChange?.(_value);
+        });
 
-          _editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyX, (e) => {
-            _editor.getAction("my-autoWrap-toggle")?.run();
-          });
+        _editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyX, (e) => {
+          _editor.getAction("my-autoWrap-toggle")?.run();
+        });
 
-          _editor.addAction({
-            id: "my-autoWrap-toggle",
-            label: t("msg.wordWrap"),
-            keybindings: [
-              monaco.KeyMod.Alt | monaco.KeyCode.KeyZ,
-              // monaco.KeyMod.chord(
-              //   monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
-              //   monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyM
-              // ),
-            ],
+        _editor.addAction({
+          id: "my-autoWrap-toggle",
+          label: t("msg.wordWrap"),
+          keybindings: [
+            monaco.KeyMod.Alt | monaco.KeyCode.KeyZ,
+            // monaco.KeyMod.chord(
+            //   monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
+            //   monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyM
+            // ),
+          ],
 
-            // A precondition for this action.
-            // precondition: null,
+          // A precondition for this action.
+          // precondition: null,
 
-            // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-            // keybindingContext: null,
+          // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+          // keybindingContext: null,
 
-            // contextMenuGroupId: "navigation",
-            // contextMenuOrder: 1.5,
+          // contextMenuGroupId: "navigation",
+          // contextMenuOrder: 1.5,
 
-            // Method that will be executed when the action is triggered.
-            // @param editor The editor instance is passed in as a convenience
-            run: function (ed, arg) {
-              // alert("i'm running => " + ed.getPosition());
-              // console.log("my-autoWrap-toggle", arg);
-              const workWrap = ed.getOption(
-                monaco.editor.EditorOption.wordWrap
-              );
-              ed.updateOptions({
-                wordWrap: workWrap === "on" ? "off" : "on",
-              });
-            },
-          });
+          // Method that will be executed when the action is triggered.
+          // @param editor The editor instance is passed in as a convenience
+          run: function (ed, arg) {
+            // alert("i'm running => " + ed.getPosition());
+            // console.log("my-autoWrap-toggle", arg);
+            const workWrap = ed.getOption(monaco.editor.EditorOption.wordWrap);
+            ed.updateOptions({
+              wordWrap: workWrap === "on" ? "off" : "on",
+            });
+          },
+        });
         return () => {
           _editor?.dispose?.();
           // resizeObserver.unobserve(el);
@@ -130,15 +130,18 @@ const CodeEditor_: React.ForwardRefRenderFunction<
     if (self.current?.editor) {
       const editor = self.current.editor;
       if (value != editor.getValue()) {
-        // editor.setValue(value);
-        // 支持回退
-        editor.executeEdits(null, [
-          {
-            range: editor.getModel()!.getFullModelRange(),
-            text: value,
-            forceMoveMarkers: false,
-          },
-        ]);
+        if(self.current?.options?.readOnly){
+          editor.setValue(value);
+        }else{
+          // 支持回退
+          editor.executeEdits(null, [
+            {
+              range: editor.getModel()!.getFullModelRange(),
+              text: value,
+              forceMoveMarkers: false,
+            },
+          ]);
+        }
       }
     }
   }, [value]);
