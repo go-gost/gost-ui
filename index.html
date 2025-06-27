@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./favicon.ico" />
     <link rel="manifest" href="./manifest.json">
-    <script id="nonaco" src="/monaco-editor/min/vs/loader.js"></script>
+    <script id="nonaco" src="//unpkg.com/monaco-editor@0.47.0/min/vs/loader.js"></script>
     <script>
       (function(){
         require.config({ paths: { vs: document.getElementById("nonaco").src.replace(/\/loader\.js/,'') } });
