@@ -18,14 +18,18 @@ const Home: React.FC = () => {
     const gost_api = search.get("gost_api");
     const user = search.get("user");
     const pass = search.get("pass");
-    if (gost_api && user && pass && !autoLoginRef.current) {
+    if (gost_api && !autoLoginRef.current) {
       autoLoginRef.current = true; // 防止多次触发
       form.setFieldsValue({
         baseURL: gost_api,
-        username: user,
-        password: pass,
         save: true,
       });
+      if(user && pass) {
+        form.setFieldsValue({
+          username: user,
+          password: pass,
+        });
+      }
       // 触发表单提交
       form.submit();
       // 可选：移除 URL 参数，防止敏感信息外泄
