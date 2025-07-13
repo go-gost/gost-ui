@@ -1,17 +1,42 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Space } from "antd";
 import { login } from "../utils/server";
 import LocalServers from "../components/LocalServers";
 import { ThemeButton } from "../components/Theme";
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { LanguageButton } from "../components/Language";
+
 const Home: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const [form] = Form.useForm();
+  const autoLoginRef = useRef(false);
+
+  // 新增：自动从 URL 解析参数并自动登录
+  useEffect(() => {
+    const search = new URLSearchParams(window.location.search);
+    const gost_api = search.get("gost_api");
+    const user = search.get("user");
+    const pass = search.get("pass");
+    if (gost_api && user && pass && !autoLoginRef.current) {
+      autoLoginRef.current = true; // 防止多次触发
+      form.setFieldsValue({
+        baseURL: gost_api,
+        username: user,
+        password: pass,
+        save: true,
+      });
+      // 触发表单提交
+      form.submit();
+      // 可选：移除 URL 参数，防止敏感信息外泄
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, [form]);
+
   return (
     <>
       <Form
+        form={form}
         className="home-form"
         size="large"
         layout="horizontal"
