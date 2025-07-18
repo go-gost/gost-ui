@@ -7,6 +7,7 @@ base.form.password,密码,Password
 base.form.local,保存到本地,Save to local
 base.form.name,名称,Name
 base.form.details,详情,Details
+base.form.status,状态,Status
 base.cmd.connect,连接,Connect
 base.cmd.controls,操作,Operation
 base.cmd.enabled,启用,Enabled

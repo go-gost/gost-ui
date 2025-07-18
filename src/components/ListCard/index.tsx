@@ -12,6 +12,7 @@ import { configEvent } from "../../utils/events";
 import { CloseOutlined } from "@ant-design/icons";
 import classnames from "classnames";
 import { useTranslation } from "react-i18next";
+import getList from "../List";
 
 export type ListCardProps = {
   module?: string;
@@ -159,6 +160,12 @@ const ListCard: React.FC<ListCardProps> = (props) => {
   useEffect(() => {
     return commBindEvent(name, comm);
   }, [comm, name]);
+
+  const List = useMemo(() => {
+    debugger;
+    return getList(props.module!);
+  }, [props.module]);
+
   return (
     <CardCtx.Provider value={{ name, comm }}>
       <ProCard
@@ -180,7 +187,7 @@ const ListCard: React.FC<ListCardProps> = (props) => {
           </Space>
         }
       >
-        <PublicList {..._prop}></PublicList>
+        <List {..._prop}></List>
       </ProCard>
     </CardCtx.Provider>
   );
