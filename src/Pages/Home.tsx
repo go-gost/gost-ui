@@ -1,46 +1,51 @@
-import React, { useEffect, useRef } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect } from "react";
 import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Space } from "antd";
 import { login } from "../utils/server";
 import LocalServers from "../components/LocalServers";
 import { ThemeButton } from "../components/Theme";
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { LanguageButton } from "../components/Language";
-
 const Home: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [form] = Form.useForm();
-  const autoLoginRef = useRef(false);
 
-  // 新增：自动从 URL 解析参数并自动登录
+  // 检查URL参数并自动登录
   useEffect(() => {
-    const search = new URLSearchParams(window.location.search);
-    const gost_api = search.get("gost_api");
-    const user = search.get("user");
-    const pass = search.get("pass");
-    if (gost_api && !autoLoginRef.current) {
-      autoLoginRef.current = true; // 防止多次触发
-      form.setFieldsValue({
-        baseURL: gost_api,
-        save: true,
-      });
-      if(user && pass) {
-        form.setFieldsValue({
-          username: user,
-          password: pass,
-        });
-      }
-      // 触发表单提交
-      form.submit();
-      // 可选：移除 URL 参数，防止敏感信息外泄
-      window.history.replaceState(null, "", window.location.pathname);
-    }
-  }, [form]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const gostApi = urlParams.get('gost_api');
+    const username = urlParams.get('username');
+    const password = urlParams.get('password');
 
+    if (gostApi && username && password) {
+      // 处理地址格式
+      let addr = gostApi;
+      if (!/^(https?:)?\/\//.test(addr)) {
+        addr = `${location.protocol}//` + addr;
+      } else if (/^\/\//.test(addr)) {
+        addr = `${location.protocol}` + addr;
+      }
+
+      // 自动登录
+      login(
+        {
+          addr: addr,
+          auth: {
+            username: username,
+            password: password,
+          },
+        },
+        false
+      );
+      // 清除URL参数
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+
+    }
+  }, []);
   return (
     <>
       <Form
-        form={form}
         className="home-form"
         size="large"
         layout="horizontal"
