@@ -19,6 +19,10 @@
   
    <img src="assets/page-home.png" width="512" />
 
+   url参数自动登陆
+   - `https://ui.gost.run?api=http://xxx.xxx.xxx:123&username=USER&password=PASSWORD`
+   - `https://ui.gost.run?api=http://USER:PASSWORD@xxx.xxx.xxx:123`
+
 3. 在管理面板，动态管理GOST
 
    <img src="assets/page-manage.png" width="512" />

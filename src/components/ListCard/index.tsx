@@ -162,7 +162,6 @@ const ListCard: React.FC<ListCardProps> = (props) => {
   }, [comm, name]);
 
   const List = useMemo(() => {
-    debugger;
     return getList(props.module!);
   }, [props.module]);
 

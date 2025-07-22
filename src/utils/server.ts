@@ -14,20 +14,41 @@ import {
 import { apis } from "../api";
 
 const gostServerKey = "__GOST_SERVER__";
-const uselocalServerKey = "__USE_SERVER__";
+// const uselocalServerKey = "__USE_SERVER__";
 const settingKey = "__SETTINGS__";
 
 export type GostApiConfig = {
   key?: string;
+  /**
+   * 服务器地址
+   */
   addr: string;
+  /**
+   * 认证信息
+   */
   auth?: {
     username: string;
     password: string;
   };
+  /**
+   * 最近登录时间
+   */
   time?: number;
+  /**
+   * 自动保存到服务器(修改配置时)
+   */
   autoSave?: boolean | null;
+  /**
+   * 自动保存的格式
+   */
   saveFormat?: "json" | "yaml";
+  /**
+   * 自动保存的路径
+   */
   savePath?: string | null;
+  /**
+   * 是否是本地保存的服务器信息
+   */
   isLocal?: boolean | null;
 };
 
@@ -35,10 +56,11 @@ export type Settings = {
   theme?: "dark" | "light" | "system";
 };
 
-const query = qs.parse(location.search, { ignoreQueryPrefix: true });
+const query = qs.parse(location.search, { ignoreQueryPrefix: true }) as {
+  [key: string]: string;
+};
 if (query.use) {
   setJsonAtSessionStorage(gostServerKey, null);
-  window[uselocalServerKey] = query.use;
 }
 
 let _useInfo: GostApiConfig | null = getJsonAtSessionStorage(gostServerKey); // 冗余_useInfo
@@ -83,6 +105,27 @@ export const userInit = async () => {
     } else {
       logout();
     }
+  } else if (query.addr || query.api) {
+    // URL参数自动登录
+    const { addr, api, username, password, save } = query;
+    let _addr = api || addr;
+    if (!/^(https?:)?\/\//.test(_addr)) {
+      _addr = `${location.protocol}//` + _addr;
+    } else if (/^\/\//.test(_addr)) {
+      _addr = `${location.protocol}` + _addr;
+    }
+    const url = new URL(_addr);
+    window.history.replaceState(null, "", location.pathname); // 清理url的参数
+    return login(
+      {
+        addr: (url.origin + url.pathname).replace(/\/+$/, ""),
+        auth: {
+          username: username ?? url.username,
+          password: password ?? url.password,
+        },
+      },
+      save == "true" || save == "1"
+    );
   }
 
   // 刷新页面
@@ -129,7 +172,7 @@ const verify = async (arg: GostApiConfig) => {
     });
 };
 
-export const login = async (arg: GostApiConfig, save?: false) => {
+export const login = async (arg: GostApiConfig, save?: boolean) => {
   try {
     await verify(arg);
     if (save) {
