@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import { GlobalOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, Space } from "antd";
 import { login } from "../utils/server";
@@ -9,6 +9,40 @@ import { useTranslation, Trans } from 'react-i18next';
 import { LanguageButton } from "../components/Language";
 const Home: React.FC = () => {
   const { t, i18n } = useTranslation();
+
+  // 检查URL参数并自动登录
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const gostApi = urlParams.get('gost_api');
+    const username = urlParams.get('username');
+    const password = urlParams.get('password');
+
+    if (gostApi && username && password) {
+      // 处理地址格式
+      let addr = gostApi;
+      if (!/^(https?:)?\/\//.test(addr)) {
+        addr = `${location.protocol}//` + addr;
+      } else if (/^\/\//.test(addr)) {
+        addr = `${location.protocol}` + addr;
+      }
+
+      // 自动登录
+      login(
+        {
+          addr: addr,
+          auth: {
+            username: username,
+            password: password,
+          },
+        },
+        false
+      );
+      // 清除URL参数
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+
+    }
+  }, []);
   return (
     <>
       <Form
