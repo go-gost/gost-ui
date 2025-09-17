@@ -108,7 +108,7 @@ export default [
             json: getProxyJson("http", "tcp"),
           },
           {
-            label: "https(http+tsl)",
+            label: "https(http+tls)",
             json: getProxyJson("http", "tls"),
           },
           {
@@ -180,3 +180,4 @@ export default [
       }`,
   },
 ] as Template[];
+
