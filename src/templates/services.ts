@@ -134,7 +134,11 @@ export default [
           },
           {
             label: "relay+wss",
-            json: getProxyJson("relay", "tls"),
+            json: getProxyJson("relay", "wss"),
+          },
+          {
+            label: "relay+mwss",
+            json: getProxyJson("relay", "mwss"),
           },
         ],
       },
@@ -180,4 +184,5 @@ export default [
       }`,
   },
 ] as Template[];
+
 
