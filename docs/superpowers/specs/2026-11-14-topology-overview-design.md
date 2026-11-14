@@ -345,38 +345,18 @@ phase).
 One page, one PR-sized change set on `gost-ui` master; no `x`/`gost` changes.
 `master` push deploys gh-pages, so the push happens only on explicit approval.
 
-## Calls made during the builder check
+## Decisions
 
-A fresh reviewer read the design against the code and raised six gaps. Five were
-settleable here (they are technical, and a wrong guess would have shown up as
-silently-empty cards); they are already folded into the sections above:
-
-1. **Quota has no dashboard series** → quota nodes are status cards fed from
-   `services[].status.quotas[]` in `/config`, not snapshot counters.
-2. **`connects` counts successes only** → all health ratios use
-   `errors / (errors + successes)`, and the node `dead` rule is
-   `errors > 0 && connects === 0` or ratio ≥ 50 %.
-3. **Forwarder nodes had no identity** → `fwd:<service>/<index>`, no counters,
-   and `forwarder.hop` reuses the hop card instead of duplicating it.
-4. **`historySamples` cannot drive a per-edge pulse** (it aggregates all
-   services) → pulses come from diffing `services[name].stats` between polls;
-   `historySamples` stays with the sparklines.
-5. **Shared hops and node ids** → registry hops own their nodes
-   (`node:<hop>/<node>`), so a hop shared by two chains is drawn once with one
-   set of children.
-
-The sixth needed a real choice and became the `target` question below.
-
-## Open questions
-
-- Should the `target` sink be one shared node or one per service? One shared
-  node keeps the canvas small but turns every exit edge into a converging fan;
-  per-service targets are clearer but multiply by service count. Proposal:
-  **one shared** `target`, with the service name on the exit edge label.
-- Should events be drawn on the graph (a flash on the entity named in a new
-  event) instead of only in the table? Proposal: **yes, later** — first
-  iteration keeps events in the table below, since the flash needs its own
-  dedup rules.
+- **One shared `target` node**, with the service name on the exit edge label.
+  (Per-service targets were rejected: they would multiply the node count by the
+  service count for no extra information.)
+- **Events stay in the table below for this phase.** Node flashes need their own
+  dedup rules and are deferred to Phase 7.
+- **One round of builder-check questions.** The six it raised were settled:
+  quota is config-fed, health uses `errors / (errors + successes)`, forwarder
+  nodes are positional (`fwd:<service>/<index>`), pulses diff `services[name]`
+  rather than `history[]`, registry hops own their node ids, and both listener
+  and handler chains are drawn with a stage label.
 
 ## Handoff
 
