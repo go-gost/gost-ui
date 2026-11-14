@@ -25,9 +25,12 @@ require.interceptors.response.use(
     const { response } = error || {};
     let msg = error.message || t("msg.unknown");
     if (response?.data?.msg) {
-      msg = response?.data?.msg;
+      msg = response.data.msg;
     }
-    message.error(msg);
+    // Polled reads opt out: 5 s failures must not toast on every tick.
+    if (!(error?.config as any)?.noMsg) {
+      message.error(msg);
+    }
     throw error;
   }
 );

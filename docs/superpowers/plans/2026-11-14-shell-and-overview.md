@@ -879,12 +879,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: none.
 
 ### Task 5
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/api/dashboard.ts`, `src/api/dashboard.test.ts`, `src/utils/require.ts`.
+- Tests/commands and results: `npx vitest run src/api/dashboard.test.ts` → 1 passed (RED first: unresolved `./dashboard`); `npx tsc --noEmit` → clean; scoped `eslint` → clean.
+- Review findings and fixes: the interceptor's error branch toasted every failed GET regardless of `noMsg`; added the guard so polling stays silent.
+- Deferred items/limitations: the interceptor guard has no unit test (importing antd in node env); covered by the Task 7 manual 404/stale smoke.
 
 ### Task 6
 - Date/status:
