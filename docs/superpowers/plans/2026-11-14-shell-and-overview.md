@@ -871,12 +871,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: none.
 
 ### Task 4
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/components/Overview/status.ts`, `src/components/Overview/status.test.ts`.
+- Tests/commands and results: `npx vitest run src/components/Overview/status.test.ts` → 1 passed (RED first: unresolved `./status`); `npx tsc --noEmit` → clean; scoped `eslint` → clean.
+- Review findings and fixes: none.
+- Deferred items/limitations: none.
 
 ### Task 5
 - Date/status:
