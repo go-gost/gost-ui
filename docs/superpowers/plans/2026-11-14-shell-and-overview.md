@@ -887,12 +887,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: the interceptor guard has no unit test (importing antd in node env); covered by the Task 7 manual 404/stale smoke.
 
 ### Task 6
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/App.tsx`, `src/components/Shell/index.tsx`, `src/components/Sidebar/index.tsx`, `src/Pages/Manage.tsx`, `src/Pages/Overview.tsx` (stub), `src/i18n/languages.csv`.
+- Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → 0 errors, 1 pre-existing `exhaustive-deps` warning in `App.tsx`; `npm run build` → ok (i18n regenerated from the CSV, Overview chunk 0.26 kB, Manage 62 kB, antd 999 kB). Browser smoke (Sider ↔ drawer, theme/language/logout/switch server, config reload/save/download) was not executable here: no browser binary is installed.
+- Review findings and fixes: none.
+- Deferred items/limitations: manual browser smoke is listed in the verification section for the user; `Manage` keeps `useInfo()!` because the shell only mounts it with a session; `Overview` is a temporary `Spin` stub replaced by Task 7; repo lint is red at base (Home.tsx, ModalForm.tsx), so only touched files were linted.
 
 ### Task 7
 - Date/status:

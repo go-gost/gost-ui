@@ -80,3 +80,8 @@ template.inline,内联,Inline
 terms.template,模板,Template
 terms.forwarder,转发/反代,Forwarder
 terms.key0,远程端口转发,Remote Port Forwarding
+nav.menu,菜单,Menu
+nav.config,配置,Config
+nav.overview,总览,Overview
+shell.menu.switch,切换服务,Switch server
+shell.menu.new,新窗口,New window

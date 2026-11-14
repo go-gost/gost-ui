@@ -26,8 +26,7 @@ import Ctx from "./utils/ctx";
 import { useIsDark } from "./utils/useTheme";
 import "./utils/i18n";
 import { useTranslation } from "react-i18next";
-
-const Manage = React.lazy(() => import("./Pages/Manage"));
+import Shell from "./components/Shell";
 
 const AntdGlobal: React.FC<{ children: React.ReactNode }> = (props) => {
   const { locale, theme } = useContext(ConfigProvider.ConfigContext);
@@ -169,7 +168,7 @@ function App() {
           <React.Suspense fallback={<Spin fullscreen size="large" />}>
             {isInit ? (
               info ? (
-                <Manage />
+                <Shell />
               ) : (
                 <Home />
               )
