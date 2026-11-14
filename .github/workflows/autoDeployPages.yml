@@ -19,6 +19,7 @@ jobs:
           node-version: "18.x"
       - run: node -v
       - run: npm install
+      - run: npm test
       - run: npm run build
       - name: Deploy # 部署
         uses: JamesIves/github-pages-deploy-action@v4

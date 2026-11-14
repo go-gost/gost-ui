@@ -1,4 +1,4 @@
-import { Empty, Table, Tag, Typography, type TableColumnsType } from "antd";
+import { Empty, Table, Typography, type TableColumnsType } from "antd";
 import { useTranslation } from "react-i18next";
 import type { ServiceSnapshot, Snapshot } from "../../api/dashboard";
 import {
@@ -7,6 +7,7 @@ import {
   formatCount,
   formatPercent,
 } from "./format";
+import StateTag from "./StateTag";
 
 const Services = ({ snapshot }: { snapshot: Snapshot }) => {
   const { t } = useTranslation();
@@ -27,11 +28,7 @@ const Services = ({ snapshot }: { snapshot: Snapshot }) => {
       dataIndex: "state",
       key: "state",
       width: 96,
-      render: (state: string) => (
-        <Tag color={state === "running" ? "green" : undefined}>
-          {state || "—"}
-        </Tag>
-      ),
+      render: (state: string) => <StateTag state={state} />,
     },
     {
       title: t("overview.services.total"),

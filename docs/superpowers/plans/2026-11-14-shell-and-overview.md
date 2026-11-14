@@ -887,7 +887,7 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: the interceptor guard has no unit test (importing antd in node env); covered by the Task 7 manual 404/stale smoke.
 
 ### Task 6
-- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Date/status: 2026-11-14 — complete (automated gates then; browser smoke executed during Task 10)
 - Repository + commit SHA: gost-ui @ (this commit)
 - Files changed: `src/App.tsx`, `src/components/Shell/index.tsx`, `src/components/Sidebar/index.tsx`, `src/Pages/Manage.tsx`, `src/Pages/Overview.tsx` (stub), `src/i18n/languages.csv`.
 - Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → 0 errors, 1 pre-existing `exhaustive-deps` warning in `App.tsx`; `npm run build` → ok (i18n regenerated from the CSV, Overview chunk 0.26 kB, Manage 62 kB, antd 999 kB). Browser smoke (Sider ↔ drawer, theme/language/logout/switch server, config reload/save/download) was not executable here: no browser binary is installed.
@@ -895,7 +895,7 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: manual browser smoke is listed in the verification section for the user; `Manage` keeps `useInfo()!` because the shell only mounts it with a session; `Overview` is a temporary `Spin` stub replaced by Task 7; repo lint is red at base (Home.tsx, ModalForm.tsx), so only touched files were linted.
 
 ### Task 7
-- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Date/status: 2026-11-14 — complete (automated gates then; browser smoke executed during Task 10)
 - Repository + commit SHA: gost-ui @ (this commit)
 - Files changed: `src/components/Overview/useSnapshot.ts`, `src/components/Overview/Summary.tsx`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
 - Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npm run build` → ok (Overview chunk 3.88 kB); generated `zh.json`/`en.json` contain the new `overview.*`/`shell.*`/`nav.*` keys (checked via node). `npx vitest run` unaffected (13 passing).
@@ -903,7 +903,7 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: polling/visibility behavior and the disabled/unauthorized/stale results have no automated test (no jsdom/RTL) and no browser is available here, so the browser smoke from the plan remains with the user.
 
 ### Task 8
-- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Date/status: 2026-11-14 — complete (automated gates then; browser smoke executed during Task 10)
 - Repository + commit SHA: gost-ui @ (this commit)
 - Files changed: `src/components/Overview/Services.tsx`, `src/components/Overview/Modules.tsx`, `src/components/Overview/modules.ts`, `src/components/Overview/modules.test.ts`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
 - Tests/commands and results: `npx vitest run src/components/Overview/modules.test.ts` → 2 passed (RED first: unresolved `./modules`); `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npm run build` → ok (Overview chunk 8.74 kB); generated i18n contains the new keys.
@@ -911,7 +911,7 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: `npm run lint` is red at base, so lint was scoped to touched files; the 320 px horizontal-scroll check waits for the browser smoke (no browser here).
 
 ### Task 9
-- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Date/status: 2026-11-14 — complete (automated gates then; browser smoke executed during Task 10)
 - Repository + commit SHA: gost-ui @ (this commit)
 - Files changed: `src/components/Overview/Chains.tsx`, `src/components/Overview/Events.tsx`, `src/components/Overview/Sparkline.tsx`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
 - Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npx vitest run` → 16 passed; `npm run build` → ok (Overview chunk 13.48 kB); generated i18n contains the chains/events/history keys.
@@ -919,9 +919,10 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: `npm run lint` is red at base, so lint was scoped; sparkline/chains/events rendering awaits the browser smoke.
 
 ### Task 10
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `.github/workflows/autoDeployPages.yml`, `src/components/Overview/StateTag.tsx` (new), `src/components/Overview/{Services,Modules,Chains}.tsx` (shared state tag), `docs/superpowers/plans/2026-11-14-shell-and-overview.md`.
+- Tests/commands and results: `npm test` → 16 passed; `npx tsc --noEmit` → clean; `npm run build` → ok; scoped `eslint` → clean. `npm run lint` (repo-wide) still fails only on the pre-existing `Home.tsx:1:1` and `ModalForm.tsx:83:33` unused-disable errors plus 12 baseline warnings — unchanged by this plan.
+- Browser smoke (Playwright 1.48 + chromium, `vite preview` on :4173, gost built from this repo's `x` on :18000): default page Config with nav `[Config, Overview]`; sidebar footer has theme, language, Logout, and the API address; theme toggle flips `theme-dark`; language toggle switches `[Config, Overview]` → `[配置, 总览]`; logout returns to the Home connect form with an empty session; Home renders without the shell. Overview against the live API renders summary, services table, and 3 sparklines growing as samples accumulate (3 → 29 points), `Updated` clock ticks, and a blocked API shows the stale alert with **zero** toasts. Against a mocked snapshot (2 services, 5 modules incl. two limiter kinds and an unknown kind, 2 chains, 3 events, 30 history points) every value renders: counts, 20/40 KiB/s, 0.3% error rate, 5.0 ms avg latency, ready/failed tags, limiter `950/1,000` and `90,000,000/120,000,000`, expandable limiter row, newest-first events. 404 → "Dashboard disabled", 401 → "Authentication failed" + Reconnect → Home, both without toasts. 320 px viewport: no page-level horizontal overflow, tables scroll internally, drawer nav works. Dark mode renders correctly. No console/page errors in any run.
+- Review findings and fixes: (1) service states are `ready`/`running`/`failed`/`closed`, so the `running`-only green tag left `ready` grey — replaced the three ad-hoc tags with `StateTag` (ready/running green, failed red); (2) the state column showed a bare `—` with a tag border when a state was absent — now renders plain text `—`.
+- Deferred items/limitations: repo-wide `npm run lint` stays red at base (pre-existing, untouched); navigation is component state (no deep links; reload returns to Config) — deferred to the mobile-redesign phase; Task 6–9 manual smoke was executed here, so their "browser smoke pending" notes are satisfied by this run. The CI step adds `npm test` only; it inherits the pre-existing lint baseline and does not gate on lint.

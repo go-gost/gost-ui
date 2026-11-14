@@ -4,12 +4,12 @@ import {
   Empty,
   Space,
   Table,
-  Tag,
   type TableColumnsType,
 } from "antd";
 import { useTranslation } from "react-i18next";
 import type { ChainSnapshot, Snapshot } from "../../api/dashboard";
 import { formatCount, formatLatency } from "./format";
+import StateTag from "./StateTag";
 
 interface NodeRow {
   key: string;
@@ -73,14 +73,7 @@ const Chains = ({ snapshot }: { snapshot: Snapshot }) => {
       title: t("overview.modules.state"),
       key: "state",
       width: 96,
-      render: (_, row) =>
-        row.state ? (
-          <Tag color={row.state === "running" ? "green" : undefined}>
-            {row.state}
-          </Tag>
-        ) : (
-          "—"
-        ),
+      render: (_, row) => <StateTag state={row.state} />,
     },
     {
       title: t("overview.chains.connects"),

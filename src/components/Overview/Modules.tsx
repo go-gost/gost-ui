@@ -2,13 +2,13 @@ import {
   Descriptions,
   Empty,
   Table,
-  Tag,
   type TableColumnsType,
 } from "antd";
 import { useTranslation } from "react-i18next";
 import type { ModuleSnapshot, Snapshot } from "../../api/dashboard";
 import { formatBytes, formatCount, formatLatency } from "./format";
 import { groupModules } from "./modules";
+import StateTag from "./StateTag";
 
 const Modules = ({ snapshot }: { snapshot: Snapshot }) => {
   const { t } = useTranslation();
@@ -39,14 +39,7 @@ const Modules = ({ snapshot }: { snapshot: Snapshot }) => {
       title: t("overview.modules.state"),
       key: "state",
       width: 96,
-      render: (_, mod) =>
-        mod.state ? (
-          <Tag color={mod.state === "running" ? "green" : undefined}>
-            {mod.state}
-          </Tag>
-        ) : (
-          "—"
-        ),
+      render: (_, mod) => <StateTag state={mod.state} />,
     },
     {
       title: t("overview.modules.calls"),
