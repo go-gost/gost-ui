@@ -895,12 +895,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: manual browser smoke is listed in the verification section for the user; `Manage` keeps `useInfo()!` because the shell only mounts it with a session; `Overview` is a temporary `Spin` stub replaced by Task 7; repo lint is red at base (Home.tsx, ModalForm.tsx), so only touched files were linted.
 
 ### Task 7
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/components/Overview/useSnapshot.ts`, `src/components/Overview/Summary.tsx`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
+- Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npm run build` → ok (Overview chunk 3.88 kB); generated `zh.json`/`en.json` contain the new `overview.*`/`shell.*`/`nav.*` keys (checked via node). `npx vitest run` unaffected (13 passing).
+- Review findings and fixes: none.
+- Deferred items/limitations: polling/visibility behavior and the disabled/unauthorized/stale results have no automated test (no jsdom/RTL) and no browser is available here, so the browser smoke from the plan remains with the user.
 
 ### Task 8
 - Date/status:

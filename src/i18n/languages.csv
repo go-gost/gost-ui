@@ -85,3 +85,20 @@ nav.config,配置,Config
 nav.overview,总览,Overview
 shell.menu.switch,切换服务,Switch server
 shell.menu.new,新窗口,New window
+overview.refresh,刷新,Refresh
+overview.updated,更新于 {{time}},Updated {{time}}
+overview.stale,数据可能已过期：{{error}},Data may be stale: {{error}}
+overview.disabled.title,监控未启用,Dashboard disabled
+overview.disabled.desc,在配置中设置 dashboard.enabled: true 后重载。,Set dashboard.enabled: true in the config and reload.
+overview.unauthorized.title,认证失败,Authentication failed
+overview.unauthorized.desc,连接凭据已失效，请重新连接。,The connection credentials are no longer valid.
+overview.unauthorized.action,重新连接,Reconnect
+overview.summary.uptime,运行时间,Uptime
+overview.summary.services,服务,Services
+overview.summary.conns,当前连接,Current connections
+overview.summary.in,入站速率,Inbound
+overview.summary.out,出站速率,Outbound
+overview.summary.metrics,指标,Metrics
+overview.summary.enabled,已启用,Enabled
+overview.summary.disabled,未启用,Disabled
+overview.summary.interval,采样间隔,Sample interval
