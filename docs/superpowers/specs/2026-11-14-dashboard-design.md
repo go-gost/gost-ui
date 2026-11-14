@@ -9,7 +9,8 @@ Two changes to **gost-ui**, modelled on cuttle's admin layout:
 
 1. Introduce a left navigation shell (persistent sidebar on desktop, drawer on
    mobile) shared by every authenticated page.
-2. Add **Overview** as the first page, rendering `GET /dashboard/snapshot`.
+2. Add **Overview** as a new page, rendering `GET /dashboard/snapshot`. The entry
+   flow is unchanged: users still land on the Config page after connecting.
 
 The existing config page becomes a nav item ("Config"). Theme/language switches
 move from the Manage header into the sidebar footer. The shell is the foundation
@@ -22,7 +23,8 @@ of this phase.
 
 - A `Shell` component: sidebar + header + content, responsive (`Sider` ≥ `lg`,
   `Drawer` < `lg`), usable down to 320 px wide.
-- Nav: **Overview** (default) and **Config**; icons and i18n labels.
+- Nav: **Config** (default, preserving the current landing page) and **Overview**;
+  icons and i18n labels.
 - Sidebar footer: theme toggle, language toggle, logout, connected address.
 - Overview: services, chains, modules, events, history, polling every 5 s with
   hidden-tab pause and clear `loading/live/stale/disabled/unauthorized` states.
@@ -88,14 +90,14 @@ New `src/components/Shell/index.tsx`:
 - Header is sticky, 56 px, and shows the page title; on mobile it also shows the
   hamburger. The connection address moves to the sidebar footer.
 - Content: `padding: 16`, `overflow: auto`, `minWidth: 0`, page fills the height.
-- `Shell` owns `page: 'overview' | 'config'` state (default `overview`) and the
-  drawer open state. No URL changes.
+- `Shell` owns `page: 'config' | 'overview'` state (default `config`, so the
+  landing page is unchanged) and the drawer open state. No URL changes.
 
 `src/nav.ts` (mirrors cuttle's `nav.ts`):
 
 ```ts
-export type Page = "overview" | "config";
-export const NAV_ORDER: readonly Page[] = ["overview", "config"];
+export type Page = "config" | "overview";
+export const NAV_ORDER: readonly Page[] = ["config", "overview"];
 ```
 
 Labels live in i18n (`nav.overview`, `nav.config`); icons live in `Shell`
@@ -192,8 +194,9 @@ Add `nav.*`, `shell.*`, `overview.*` keys to `src/i18n/languages.csv` (zh + en).
 
 ## Open Questions
 
-- Default page `overview` (monitoring first, like cuttle's topology) — confirm.
-- Navigation without a router: no deep links and a reload returns to Overview.
+- Decided: Config is the default page and the first nav item, so the existing
+  entry flow is unchanged; Overview is second.
+- Navigation without a router: no deep links and a reload returns to Config.
   Deferred to the mobile-redesign phase, where URL structure will be revisited.
 - Theme stays a 2-way light/dark toggle; cuttle's 3-way system/light/dark is not
   adopted in this phase.
