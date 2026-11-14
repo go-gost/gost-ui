@@ -1,8 +1,10 @@
-import { Alert, Button, Result, Space, Spin, Typography } from "antd";
+import { Alert, Button, Card, Result, Space, Spin, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { logout } from "../utils/server";
 import { formatClock } from "../components/Overview/format";
+import Modules from "../components/Overview/Modules";
+import Services from "../components/Overview/Services";
 import Summary from "../components/Overview/Summary";
 import { useSnapshot } from "../components/Overview/useSnapshot";
 
@@ -74,7 +76,23 @@ const Overview = () => {
           })}
         </Typography.Text>
       </Space>
-      {snapshot && <Summary snapshot={snapshot} />}
+      {snapshot && (
+        <>
+          <Summary snapshot={snapshot} />
+          <Card
+            title={t("overview.services.title")}
+            styles={{ body: { padding: 8 } }}
+          >
+            <Services snapshot={snapshot} />
+          </Card>
+          <Card
+            title={t("overview.modules.title")}
+            styles={{ body: { padding: 8 } }}
+          >
+            <Modules snapshot={snapshot} />
+          </Card>
+        </>
+      )}
     </Space>
   );
 };

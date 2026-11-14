@@ -102,3 +102,42 @@ overview.summary.metrics,指标,Metrics
 overview.summary.enabled,已启用,Enabled
 overview.summary.disabled,未启用,Disabled
 overview.summary.interval,采样间隔,Sample interval
+overview.services.title,服务,Services
+overview.services.name,名称,Name
+overview.services.state,状态,State
+overview.services.total,累计连接,Total
+overview.services.current,当前连接,Current
+overview.services.in,入站,In
+overview.services.out,出站,Out
+overview.services.errs,错误,Errors
+overview.services.errRate,错误率,Error rate
+overview.modules.title,模块,Modules
+overview.modules.kind,类型,Kind
+overview.modules.name,名称,Name
+overview.modules.service,服务,Service
+overview.modules.state,状态,State
+overview.modules.calls,调用,Calls
+overview.modules.hits,命中,Hits
+overview.modules.misses,未命中,Misses
+overview.modules.errors,错误,Errors
+overview.modules.latency,平均耗时,Avg latency
+overview.modules.limiter,限流,Limiter
+overview.modules.allowed,放行,Allowed
+overview.modules.denied,拒绝,Denied
+overview.modules.waitCalls,等待,Waits
+overview.modules.requested,请求,Requested
+overview.modules.granted,授予,Granted
+overview.modules.cacheHits,缓存命中,Cache hits
+overview.modules.cacheMisses,缓存未命中,Cache misses
+overview.modules.cacheStores,缓存写入,Cache stores
+overview.modules.inBytes,入站字节,In bytes
+overview.modules.outBytes,出站字节,Out bytes
+overview.module.kind.admission,准入,Admission
+overview.module.kind.auther,认证,Auther
+overview.module.kind.bypass,绕过,Bypass
+overview.module.kind.hosts,Hosts,Hosts
+overview.module.kind.resolver,解析器,Resolver
+overview.module.kind.limiter_conn,连接限流,Conn limiter
+overview.module.kind.limiter_rate,速率限流,Rate limiter
+overview.module.kind.limiter_traffic,流量限流,Traffic limiter
+overview.empty,暂无数据,No data

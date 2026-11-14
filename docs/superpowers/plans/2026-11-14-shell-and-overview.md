@@ -903,12 +903,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: polling/visibility behavior and the disabled/unauthorized/stale results have no automated test (no jsdom/RTL) and no browser is available here, so the browser smoke from the plan remains with the user.
 
 ### Task 8
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/components/Overview/Services.tsx`, `src/components/Overview/Modules.tsx`, `src/components/Overview/modules.ts`, `src/components/Overview/modules.test.ts`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
+- Tests/commands and results: `npx vitest run src/components/Overview/modules.test.ts` → 2 passed (RED first: unresolved `./modules`); `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npm run build` → ok (Overview chunk 8.74 kB); generated i18n contains the new keys.
+- Review findings and fixes: unknown module kinds fall back to the raw kind via `defaultValue` instead of showing an i18n key; limiter rows expand only when `stats.limiter` exists.
+- Deferred items/limitations: `npm run lint` is red at base, so lint was scoped to touched files; the 320 px horizontal-scroll check waits for the browser smoke (no browser here).
 
 ### Task 9
 - Date/status:
