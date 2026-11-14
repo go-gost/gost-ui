@@ -855,12 +855,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: repo-wide lint baseline stays red (pre-existing).
 
 ### Task 2
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/components/Overview/format.ts`, `src/components/Overview/format.test.ts`.
+- Tests/commands and results: `npx vitest run src/components/Overview/format.test.ts` → 7 passed (RED first: unresolved `./format`); `npx tsc --noEmit` → clean; scoped `eslint` → clean.
+- Review findings and fixes: none.
+- Deferred items/limitations: none.
 
 ### Task 3
 - Date/status:
