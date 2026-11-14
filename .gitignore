@@ -25,3 +25,4 @@ dist-ssr
 
 public/monaco-editor
 src/i18n/*.json
+.superpowers/

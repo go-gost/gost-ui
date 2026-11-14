@@ -7,6 +7,7 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "analyzer": "tsc && vite build --mode=analyzer",
+    "test": "vitest run",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "init": "npm run init:monaco && npm run init:i18n",
@@ -53,6 +54,7 @@
     "less": "^4.2.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
-    "vite-bundle-analyzer": "^0.9.2"
+    "vite-bundle-analyzer": "^0.9.2",
+    "vitest": "^0.34.6"
   }
 }

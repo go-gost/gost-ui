@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig, UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { analyzer } from "vite-bundle-analyzer";
@@ -8,6 +9,7 @@ export default defineConfig(({ command, mode }) => {
     base: "./",
     plugins: [react()],
     define: {},
+    test: { include: ["src/**/*.test.ts"] },
   };
 
   if (mode === "development") {

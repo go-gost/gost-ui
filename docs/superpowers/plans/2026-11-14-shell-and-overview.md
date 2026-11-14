@@ -847,12 +847,12 @@ git commit -m "ci: run ui tests before build"
 Fill one subsection per task after it is complete, then amend it into that task's commit.
 
 ### Task 1
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `package.json`, `package-lock.json`, `vite.config.ts`, `src/nav.ts`, `src/nav.test.ts`, `.gitignore` (SDD scratch), this plan.
+- Tests/commands and results: `npx vitest run src/nav.test.ts` → 1 passed (RED first: unresolved `./nav`); `npx tsc --noEmit` → clean; `npx eslint src/nav.ts src/nav.test.ts vite.config.ts` → clean.
+- Review findings and fixes: `npm run lint` is red at base (2 unused-disable errors in `Pages/Home.tsx:1:1` and `components/ModalForm.tsx:83:33`, 12 warnings), so the per-task lint gate was scoped to touched files.
+- Deferred items/limitations: repo-wide lint baseline stays red (pre-existing).
 
 ### Task 2
 - Date/status:
