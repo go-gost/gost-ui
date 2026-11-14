@@ -141,3 +141,20 @@ overview.module.kind.limiter_conn,连接限流,Conn limiter
 overview.module.kind.limiter_rate,速率限流,Rate limiter
 overview.module.kind.limiter_traffic,流量限流,Traffic limiter
 overview.empty,暂无数据,No data
+overview.chains.title,转发链,Chains
+overview.chains.connects,连接,Connects
+overview.chains.errors,错误,Errors
+overview.chains.avgConnect,平均连接耗时,Avg connect
+overview.chains.node,节点,Node
+overview.chains.hop,跳,Hop
+overview.events.title,事件,Events
+overview.events.time,时间,Time
+overview.events.level,级别,Level
+overview.events.kind,类型,Kind
+overview.events.name,名称,Name
+overview.events.service,服务,Service
+overview.events.message,消息,Message
+overview.history.title,历史,History
+overview.history.in,入站,Inbound
+overview.history.out,出站,Outbound
+overview.history.conns,连接,Connections

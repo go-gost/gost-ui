@@ -911,12 +911,12 @@ Fill one subsection per task after it is complete, then amend it into that task'
 - Deferred items/limitations: `npm run lint` is red at base, so lint was scoped to touched files; the 320 px horizontal-scroll check waits for the browser smoke (no browser here).
 
 ### Task 9
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-14 — complete (automated gates; browser smoke pending user)
+- Repository + commit SHA: gost-ui @ (this commit)
+- Files changed: `src/components/Overview/Chains.tsx`, `src/components/Overview/Events.tsx`, `src/components/Overview/Sparkline.tsx`, `src/Pages/Overview.tsx`, `src/i18n/languages.csv`.
+- Tests/commands and results: `npx tsc --noEmit` → clean; scoped `eslint` → clean; `npx vitest run` → 16 passed; `npm run build` → ok (Overview chunk 13.48 kB); generated i18n contains the chains/events/history keys.
+- Review findings and fixes: `Sparkline` renders `—` below two points so idle services do not draw a flat line at the top; the chain card uses `chain.nodes` when present and falls back to flattened hops.
+- Deferred items/limitations: `npm run lint` is red at base, so lint was scoped; sparkline/chains/events rendering awaits the browser smoke.
 
 ### Task 10
 - Date/status:

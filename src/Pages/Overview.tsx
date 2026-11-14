@@ -1,16 +1,40 @@
-import { Alert, Button, Card, Result, Space, Spin, Typography } from "antd";
+import { useMemo } from "react";
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Result,
+  Row,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { logout } from "../utils/server";
-import { formatClock } from "../components/Overview/format";
+import {
+  formatBps,
+  formatClock,
+  formatCount,
+} from "../components/Overview/format";
+import { historySamples } from "../components/Overview/history";
+import Chains from "../components/Overview/Chains";
+import Events from "../components/Overview/Events";
 import Modules from "../components/Overview/Modules";
 import Services from "../components/Overview/Services";
+import Sparkline from "../components/Overview/Sparkline";
 import Summary from "../components/Overview/Summary";
 import { useSnapshot } from "../components/Overview/useSnapshot";
 
 const Overview = () => {
   const { t } = useTranslation();
   const { snapshot, phase, error, updatedAt, refresh } = useSnapshot();
+  const samples = useMemo(
+    () => historySamples(snapshot?.history ?? []),
+    [snapshot]
+  );
+  const last = samples[samples.length - 1];
 
   if (phase === "loading" && !snapshot) {
     return (
@@ -79,6 +103,31 @@ const Overview = () => {
       {snapshot && (
         <>
           <Summary snapshot={snapshot} />
+          <Card title={t("overview.history.title")}>
+            <Row gutter={[16, 16]}>
+              <Col xs={24} md={8}>
+                <Typography.Text type="secondary">
+                  {t("overview.history.in")}
+                </Typography.Text>
+                <div>{last ? formatBps(last.inBps) : "—"}</div>
+                <Sparkline values={samples.map((sample) => sample.inBps)} />
+              </Col>
+              <Col xs={24} md={8}>
+                <Typography.Text type="secondary">
+                  {t("overview.history.out")}
+                </Typography.Text>
+                <div>{last ? formatBps(last.outBps) : "—"}</div>
+                <Sparkline values={samples.map((sample) => sample.outBps)} />
+              </Col>
+              <Col xs={24} md={8}>
+                <Typography.Text type="secondary">
+                  {t("overview.history.conns")}
+                </Typography.Text>
+                <div>{last ? formatCount(last.conns) : "—"}</div>
+                <Sparkline values={samples.map((sample) => sample.conns)} />
+              </Col>
+            </Row>
+          </Card>
           <Card
             title={t("overview.services.title")}
             styles={{ body: { padding: 8 } }}
@@ -90,6 +139,18 @@ const Overview = () => {
             styles={{ body: { padding: 8 } }}
           >
             <Modules snapshot={snapshot} />
+          </Card>
+          <Card
+            title={t("overview.chains.title")}
+            styles={{ body: { padding: 8 } }}
+          >
+            <Chains snapshot={snapshot} />
+          </Card>
+          <Card
+            title={t("overview.events.title")}
+            styles={{ body: { padding: 8 } }}
+          >
+            <Events snapshot={snapshot} />
           </Card>
         </>
       )}
