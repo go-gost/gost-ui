@@ -121,3 +121,48 @@ export const getDashboardSnapshot = (signal?: AbortSignal): Promise<Snapshot> =>
     signal,
     noMsg: true,
   } as any) as unknown as Promise<Snapshot>;
+
+export interface PathHop {
+  chain?: string;
+  hop: number;
+  node: string;
+  addr: string;
+  connectMs: number;
+  err?: string;
+}
+
+export interface ConnectionRecord {
+  sid: string;
+  time: string;
+  service: string;
+  clientIP?: string;
+  remoteAddr?: string;
+  bytesIn: number;
+  bytesOut: number;
+  durationMs: number;
+  chain?: string;
+  path?: PathHop[];
+  err?: string;
+  labels?: Record<string, string>;
+}
+
+export interface GetConnectionsParams {
+  service?: string;
+  sid?: string;
+  limit?: number;
+  signal?: AbortSignal;
+}
+
+/** Reads the most recent connections (newest first). */
+export const getDashboardConnections = (
+  params: GetConnectionsParams = {}
+): Promise<ConnectionRecord[]> => {
+  const query: Record<string, string> = { limit: String(params.limit ?? 100) };
+  if (params.service) query.service = params.service;
+  if (params.sid) query.sid = params.sid;
+  return require.get("/dashboard/connections", {
+    params: query,
+    signal: params.signal,
+    noMsg: true,
+  } as any) as unknown as Promise<ConnectionRecord[]>;
+};
