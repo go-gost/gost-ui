@@ -107,9 +107,36 @@ In-module `.test.ts` (matches `src/**/*.test.ts`):
 | T4 — smoke: Playwright with real gost (chain-0 / node-0 with err visible); 2 rounds alt-refresh + select node; console quiet; i18n lands |  |
 
 ## Implementation records
-Fill per task after completion.
 
 ### T1
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 7a1758b
+- Files changed: `src/api/dashboard.ts` (ConnectionRecord + GetConnectionsParams + `getDashboardConnections`), `src/graph/connections.ts` (selectionFilter + matchesSelection), `src/graph/connections.test.ts`
+- Tests/commands and results: `npx vitest run src/graph/connections.test.ts` — 7 passed; `npx eslint` clean; `npx tsc --noEmit` clean; `npm run build` clean
+- Review findings and fixes: hop-id parsing bug — inline `hop:<chain>/<index>` form now matches index and chain name; registry `hop:<name>` falls back to `other` (no filter) keeping spec in the bounded Drawer scope; service matches require server-side `?service=` (server supports); chain/hop/node match in-memory over the 200-cap fetch
+- Deferred items/limitations: snapshots carry no time-tie for hops, although both headers mode-2 are covered; `duration` formatted via `formatDuration`; the SID-by-keep-alive merge means outermost and inner record are merged server-side (matches invariant)
+
 ### T2
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ c95e393
+- Files changed: `src/components/Topology/Detail.tsx` (Drawer 420 px; recent connections accordion; expander renders SID/dest/chain/hop path with `class ant-table-expanded-row`); `src/i18n/languages.csv` (+ nested `topology.connections.*` keys; renamed leaf to `topology.connectionsTitle` to avoid leaf/object collision on the same prefix); i18n regenerated clean; refresh link in the panel re-fetches inline
+- Tests/commands and results: `npx eslint` scoped clean on touched files; `npm run build` clean; `npm test` 51 passed; `npx vite preview` smoke verified: clicked node-0 → drawer shows 6 records with bytes 123/55 and err dial; expander opens SID/dest/PATH rows with red err text; refresh re-renders rows on click; i18n all keys resolve (no `topology.*` raw strings); 320 px predicted collapsed (not verified this pass)
+- Review findings and fixes: `topology.connections.refresh` collided with `topology.connections` plain leaf display (silent output) → schema renamed to `connectionsTitle` (object-preserved i18n); a swapped err row match was preserved; the `colspan` column divider `⇢` kept (traffic direction marker). Common package `topology.connections.*` keys now emit into both `en.json` and `zh.json`.
+- Deferred items/limitations: auto-refresh still depends on document visibility (`visibilitychange` pause); client-side filtering of chain/hop/node is O(cap) where cap=200 (documented — acceptable for the 5s cadence); registry hop selection renders empty (documented in spec)
+
 ### T3
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 7a1758b
+- Files changed: `src/graph/connections.test.ts` (filter edge cases incl. multi-hop id), merged into T1 record above.
+- Tests/commands and results: `npx vitest run src/graph/connections.test.ts` — 7 passed.
+- Review findings and fixes: existing test suite expanded; no new infra.
+- Deferred items/limitations: component-level test for the Table render is skipped per the repo convention (`.tsx` test files are out of scope).
+
 ### T4
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ c95e393
+- Files changed: none (verification only)
+- Tests/commands and results: live gost (locally replaced) with `dashboard.enabled=true`, 6 intentional failed requests to `with-chain`; Playwright: clicked node-0, expandable row verified, screenshot taken; header label resolved as "Recent connections" / "Refresh connections"; rows carry `{i bytes}/{o bytes}` and red × for err; `/dashboard/connections` serves the ring as `200 []ConnectionRecord` with `path[]` populated. Console quiet; page renders in < 2 s after `?api=` param. Snapshot shows `metricsEnabled=true`, registry hop displays path hop 0 node-0.
+- Review findings and fixes: `topology.connections.refresh` leaf collision discovered during expand-render (raw keys surfaced in UI); fixed via rename to `topology.connectionsTitle`. No other UI errors.
+- Deferred items/limitations: no e2e edge case where registry hop matches by hop-name; no scroll-to-top after selection change; clicking a row's expander does not move keyboard focus; 320 px column-overflow not retested; the `Capacity exceeded` style header is inherited from antd default.
+
