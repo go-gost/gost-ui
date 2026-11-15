@@ -25,9 +25,13 @@ Tailored to current panel UX — Drawer 360 px wide:
 - Nodes (registry + inline): client-side filter against `record.path[]`.
   `PathHop.node === nodeName`. The service matching is also checked for the
   direct-exit case, where `path` is null but `record.service` exists.
-- Hops: same shape; matched by `record.path[].hop === hopIndex` where
-  `hopIndex` is the position in the hop array (0-based, same index the
-  collector records — the spec's golden tests confirm hop order == dial order).
+- Hops: matched by `record.path[].hop === hopIndex` where `hopIndex` is
+  the position in the hop array (0-based, same index the collector records —
+  the spec's golden tests confirm hop order == dial order). Inline hop ids
+  encode it (`hop:chain-0/0`). **Registry hop limitation**: the panel cannot
+  match `hop:hop-0` to an index without the chain lookup; for registry hops
+  it renders "no records" — chain-level matches still work via the parent
+  chain node.
 
 Targets:
 - Each row: timestamp (HH:mm:ss), source ↔ dest (dst is the resolved dest),
