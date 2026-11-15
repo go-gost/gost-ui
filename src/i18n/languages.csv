@@ -184,3 +184,13 @@ topology.detail.stage,阶段,Stage
 topology.detail.counters,计数,Counters
 topology.detail.config,配置,Config
 topology.detailsLabel,详情,Details
+topology.connections,最近连接,Recent connections
+topology.connections.empty,暂无连接记录,No recent connections
+topology.connections.refresh,刷新,Refresh connections
+topology.connections.sid,SID,SID
+topology.connections.time,时间,Time
+topology.connections.bytes,字节数,Bytes
+topology.connections.dur,耗时,Duration
+topology.connections.err,错误,Error
+topology.connections.errRow,带错误的连接,Connection with errors
+topology.retry,重试,Retry
