@@ -152,6 +152,13 @@ const Overview = () => {
           <Switch checked={showDetails} onChange={setShowDetails} size="small" />
         </Space>
       </Space>
+      {snapshot && !snapshot.metricsEnabled && (
+        <Alert
+          type="info"
+          showIcon
+          message={t("topology.metrics.disabled")}
+        />
+      )}
       {cfg ? (
         <Card
           title={t("topology.graph")}
@@ -178,7 +185,7 @@ const Overview = () => {
           items={[
             {
               key: "details",
-              label: t("topology.details"),
+              label: t("topology.detailsLabel"),
               children: (
                 <>
                   <Summary snapshot={snapshot} />
