@@ -87,15 +87,16 @@ From `GET /dashboard/snapshot`:
 | `chains[name]` | chain node connects/errors/avg latency; `nodes[]` per node name |
 | `history[]` | pulse trigger (byte deltas) + the existing sparklines |
 
-Known gaps, accepted and shown as `—`:
+Known gaps, accepted and shown as `—` (all of these are fixed by the
+connection-history backend phase, so they apply only before it lands; after it
+lands, hops carry counters and no metrics flag is required):
 
-- `ChainSnapshot.Hops` is never populated; hop nodes show no counters.
-- Chain/node stats come from Prometheus, so they are empty unless
-  `metrics.addr` is configured (`snapshot.metricsEnabled`). The graph shows a
-  hint in that case.
-- Chain/node labels are node **names** from metric labels; two hops declaring
-  the same node name collapse into one series (pre-existing backend
-  limitation, not introduced here).
+- `ChainSnapshot.Hops` must be populated (the backend phase fills it from the
+  in-process chain collector); hop nodes will show counters.
+- Chain/node stats must come from the in-process collector, not Prometheus, so
+  they do not depend on a metrics service (`snapshot.metricsEnabled`).
+- Chain/node labels stay node **names**; two hops declaring the same node name
+  collapse into one series (unchanged).
 
 ### What the read model actually contains (verified during builder check)
 
@@ -221,9 +222,10 @@ different labels.
   hit/miss/store for resolvers.
 - `limiter_conn` / `limiter_rate` / `limiter_traffic`: allowed, denied from the
   limiter aggregate; `requested`/`granted` for the rate limiter.
-- `chain`: connects, errors, avg connect (Prometheus; `—` without metrics).
-- `hop`: no counters exist (`ChainSnapshot.Hops` is never populated) → shows
-  its node count only, and never carries a health badge.
+- `chain`: connects, errors, avg connect — in-process chain counters (always
+  present when the dashboard is enabled).
+- `hop`: per-hop counters from the direct chain collection (same connect/error
+  fields as node rows), populated by the connection-history backend phase.
 - `node`: connects, errors, avg connect from the chain snapshot's node row.
 
 ### Quota nodes
@@ -292,7 +294,7 @@ numerator/denominator.
 
 `src/Pages/Overview.tsx` becomes:
 
-1. Toolbar: refresh, updated-at, chain/metrics hints, `reset layout`,
+1. Toolbar: refresh, updated-at, direct-collection hints, `reset layout`,
    `collapse tables`.
 2. `<TopologyGraph>` filling the remaining height (`min-height: 60vh`).
 3. Detail drawer (right on desktop, bottom sheet < `md`) for the selected node
