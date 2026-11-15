@@ -51,6 +51,33 @@ export type ChainGroupConfig = {
   chains: string[];
   selector: SelectorConfig;
 };
+export type QuotaConfig = {
+  name: string;
+  limit: string;
+  startsAt: string;
+  expiresAt: string;
+  direction: string;
+  flush: string;
+  store: QuotaStoreConfig;
+  status: QuotaStatus;
+};
+
+export type QuotaStatus = {
+  used: number;
+  limit: number;
+  blocked: boolean;
+  expired: boolean;
+  startsAt: number;
+  expiresAt: number;
+};
+
+export type QuotaStoreConfig = {
+  type: string;
+  file: FileLoader;
+  redis: RedisLoader;
+  http: HTTPLoader;
+};
+
 export type Config = {
   admissions: AdmissionConfig[];
   api: APIConfig;
@@ -65,8 +92,10 @@ export type Config = {
   log: LogConfig;
   loggers: LoggerConfig[];
   metrics: MetricsConfig;
+  nodes: NodeConfig[];
   observers: ObserverConfig[];
   profiling: ProfilingConfig;
+  quotas: QuotaConfig[];
   recorders: RecorderConfig[];
   resolvers: ResolverConfig[];
   rlimiters: LimiterConfig[];

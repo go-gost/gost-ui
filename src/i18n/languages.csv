@@ -158,3 +158,29 @@ overview.history.title,历史,History
 overview.history.in,入站,Inbound
 overview.history.out,出站,Outbound
 overview.history.conns,连接,Connections
+topology.kind.service,服务,Service
+topology.kind.module,模块,Module
+topology.kind.chain,转发链,Chain
+topology.kind.hop,跳,Hop
+topology.kind.node,节点,Node
+topology.kind.target,目标,Target
+topology.kind.unresolved,未解析引用,Unresolved
+topology.stage.listener,监听器,Listener
+topology.stage.handler,处理器,Handler
+topology.mood.dead,不可用,Dead
+topology.mood.error,错误率高,High error rate
+topology.mood.warn,有错误,Errors
+topology.mood.healthy,正常,Healthy
+topology.mood.idle,无流量,No traffic
+topology.empty,暂无可绘制的拓扑,No topology to draw
+topology.metrics.disabled,未启用 metrics，链与节点无连接统计。,metrics is off; chain and node counters are unavailable.
+topology.resetLayout,重置布局,Reset layout
+topology.graph,拓扑图,Topology
+topology.details,详情明细,Details
+topology.details.show,展开明细,Show details
+topology.details.hide,收起明细,Hide details
+topology.detail.services,相关服务,Services
+topology.detail.ref,引用,Reference
+topology.detail.stage,阶段,Stage
+topology.detail.counters,计数,Counters
+topology.detail.config,配置,Config
