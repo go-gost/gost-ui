@@ -15,12 +15,7 @@ import type { Config } from "../../api/types";
 import type { Snapshot } from "../../api/dashboard";
 import { buildGraph, type GraphNode } from "../../graph/build";
 import { layoutGraph } from "../../graph/layout";
-import {
-  clearPositions,
-  loadPositions,
-  mergePositions,
-  savePositions,
-} from "../../graph/positions";
+import { loadPositions, mergePositions, savePositions } from "../../graph/positions";
 import { flowDuration, type Activity } from "../../graph/activity";
 import { nodeTypes } from "../../graph/nodes";
 import { edgeTypes } from "../../graph/edges";
@@ -160,6 +155,3 @@ export default function Topology({
   );
 }
 
-export function resetLayout(infoAddr?: string) {
-  clearPositions(infoAddr);
-}

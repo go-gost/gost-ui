@@ -1,18 +1,20 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Button,
   Card,
   Col,
+  Collapse,
   Result,
   Row,
   Space,
   Spin,
+  Switch,
   Typography,
 } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { logout } from "../utils/server";
+import { logout, useInfo, useServerConfig } from "../utils/server";
 import {
   formatBps,
   formatClock,
@@ -25,16 +27,55 @@ import Modules from "../components/Overview/Modules";
 import Services from "../components/Overview/Services";
 import Sparkline from "../components/Overview/Sparkline";
 import Summary from "../components/Overview/Summary";
+import Topology, { type Selection } from "../components/Topology";
+import { resetLayout } from "../components/Topology/reset";
+import Detail from "../components/Topology/Detail";
 import { useSnapshot } from "../components/Overview/useSnapshot";
+import {
+  diffActivity,
+  emptyActivity,
+} from "../graph/activity";
+import { buildGraph } from "../graph/build";
+import type { Config } from "../api/types";
 
 const Overview = () => {
   const { t } = useTranslation();
   const { snapshot, phase, error, updatedAt, refresh } = useSnapshot();
+  const info = useInfo();
+  const cfg = useServerConfig() as Config | null;
+
+  const [selection, setSelection] = useState<Selection>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const prevRef = useRef(snapshot);
+  const [activity, setActivity] = useState(() => emptyActivity());
+
+  useEffect(() => {
+    if (!snapshot) return;
+    const prev = prevRef.current ?? null;
+    prevRef.current = snapshot;
+    setActivity((current) => {
+      const next = diffActivity(prev, snapshot, Date.now());
+      // Activity is a point-in-time event; keep daemon cheap.
+      return next.services && Object.keys(next.services).length
+        ? next
+        : Object.keys(next.modules).length
+          ? next
+          : current;
+    });
+  }, [snapshot]);
+
   const samples = useMemo(
     () => historySamples(snapshot?.history ?? []),
     [snapshot]
   );
   const last = samples[samples.length - 1];
+
+  const graphData = useMemo(
+    () => ({ ...buildGraph({ config: cfg ?? emptyConfig, snapshot }), configReady: !!cfg }),
+    [cfg, snapshot]
+  );
+  const topologyNodes = graphData.nodes;
+  const topologyEdges = graphData.edges;
 
   if (phase === "loading" && !snapshot) {
     return (
@@ -99,63 +140,146 @@ const Overview = () => {
               : "—",
           })}
         </Typography.Text>
+        <Button
+          onClick={() => resetLayout(info?.addr)}
+        >
+          {t("topology.resetLayout")}
+        </Button>
+        <Space>
+          <Typography.Text type="secondary">
+            {showDetails ? t("topology.details.hide") : t("topology.details.show")}
+          </Typography.Text>
+          <Switch checked={showDetails} onChange={setShowDetails} size="small" />
+        </Space>
       </Space>
-      {snapshot && (
-        <>
-          <Summary snapshot={snapshot} />
-          <Card title={t("overview.history.title")}>
-            <Row gutter={[16, 16]}>
-              <Col xs={24} md={8}>
-                <Typography.Text type="secondary">
-                  {t("overview.history.in")}
-                </Typography.Text>
-                <div>{last ? formatBps(last.inBps) : "—"}</div>
-                <Sparkline values={samples.map((sample) => sample.inBps)} />
-              </Col>
-              <Col xs={24} md={8}>
-                <Typography.Text type="secondary">
-                  {t("overview.history.out")}
-                </Typography.Text>
-                <div>{last ? formatBps(last.outBps) : "—"}</div>
-                <Sparkline values={samples.map((sample) => sample.outBps)} />
-              </Col>
-              <Col xs={24} md={8}>
-                <Typography.Text type="secondary">
-                  {t("overview.history.conns")}
-                </Typography.Text>
-                <div>{last ? formatCount(last.conns) : "—"}</div>
-                <Sparkline values={samples.map((sample) => sample.conns)} />
-              </Col>
-            </Row>
-          </Card>
-          <Card
-            title={t("overview.services.title")}
-            styles={{ body: { padding: 8 } }}
-          >
-            <Services snapshot={snapshot} />
-          </Card>
-          <Card
-            title={t("overview.modules.title")}
-            styles={{ body: { padding: 8 } }}
-          >
-            <Modules snapshot={snapshot} />
-          </Card>
-          <Card
-            title={t("overview.chains.title")}
-            styles={{ body: { padding: 8 } }}
-          >
-            <Chains snapshot={snapshot} />
-          </Card>
-          <Card
-            title={t("overview.events.title")}
-            styles={{ body: { padding: 8 } }}
-          >
-            <Events snapshot={snapshot} />
-          </Card>
-        </>
+      {cfg ? (
+        <Card
+          title={t("topology.graph")}
+          styles={{ body: { padding: 0, height: "clamp(420px, 62vh, 900px)" } }}
+        >
+          <Topology
+            config={cfg}
+            snapshot={snapshot}
+            activity={activity}
+            selection={selection}
+            infoAddr={info?.addr}
+            onSelect={setSelection}
+          />
+        </Card>
+      ) : (
+        <Card>
+          <Spin />
+        </Card>
       )}
+      {snapshot && (
+        <Collapse
+          activeKey={showDetails ? ["details"] : []}
+          onChange={(key) => setShowDetails(key.length > 0)}
+          items={[
+            {
+              key: "details",
+              label: t("topology.details"),
+              children: (
+                <>
+                  <Summary snapshot={snapshot} />
+                  <Card title={t("overview.history.title")}>
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24} md={8}>
+                        <Typography.Text type="secondary">
+                          {t("overview.history.in")}
+                        </Typography.Text>
+                        <div>{last ? formatBps(last.inBps) : "—"}</div>
+                        <Sparkline
+                          values={samples.map((sample) => sample.inBps)}
+                        />
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Typography.Text type="secondary">
+                          {t("overview.history.out")}
+                        </Typography.Text>
+                        <div>{last ? formatBps(last.outBps) : "—"}</div>
+                        <Sparkline
+                          values={samples.map((sample) => sample.outBps)}
+                        />
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Typography.Text type="secondary">
+                          {t("overview.history.conns")}
+                        </Typography.Text>
+                        <div>{last ? formatCount(last.conns) : "—"}</div>
+                        <Sparkline
+                          values={samples.map((sample) => sample.conns)}
+                        />
+                      </Col>
+                    </Row>
+                  </Card>
+                  <Card
+                    title={t("overview.services.title")}
+                    styles={{ body: { padding: 8 } }}
+                  >
+                    <Services snapshot={snapshot} />
+                  </Card>
+                  <Card
+                    title={t("overview.modules.title")}
+                    styles={{ body: { padding: 8 } }}
+                  >
+                    <Modules snapshot={snapshot} />
+                  </Card>
+                  <Card
+                    title={t("overview.chains.title")}
+                    styles={{ body: { padding: 8 } }}
+                  >
+                    <Chains snapshot={snapshot} />
+                  </Card>
+                  <Card
+                    title={t("overview.events.title")}
+                    styles={{ body: { padding: 8 } }}
+                  >
+                    <Events snapshot={snapshot} />
+                  </Card>
+                </>
+              ),
+            },
+          ]}
+        />
+      )}
+
+      <Detail
+        selection={selection}
+        nodes={topologyNodes}
+        edges={topologyEdges}
+        snapshot={snapshot}
+        onClose={() => setSelection(null)}
+      />
     </Space>
   );
+};
+
+const emptyConfig: Config = {
+  admissions: [],
+  api: {} as Config["api"],
+  authers: [],
+  bypasses: [],
+  chains: [],
+  climiters: [],
+  hops: [],
+  hosts: [],
+  ingresses: [],
+  limiters: [],
+  log: {} as Config["log"],
+  loggers: [],
+  metrics: {} as Config["metrics"],
+  nodes: [],
+  observers: [],
+  profiling: {} as Config["profiling"],
+  quotas: [],
+  recorders: [],
+  resolvers: [],
+  rlimiters: [],
+  routers: [],
+  sds: [],
+  services: [],
+  tls: {} as Config["tls"],
 };
 
 export default Overview;
