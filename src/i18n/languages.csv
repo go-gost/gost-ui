@@ -176,7 +176,6 @@ topology.empty,暂无可绘制的拓扑,No topology to draw
 topology.metrics.disabled,未启用 metrics，链与节点无连接统计。,metrics is off; chain and node counters are unavailable.
 topology.resetLayout,重置布局,Reset layout
 topology.graph,拓扑图,Topology
-topology.details,详情明细,Details
 topology.details.show,展开明细,Show details
 topology.details.hide,收起明细,Hide details
 topology.detail.services,相关服务,Services
@@ -184,3 +183,4 @@ topology.detail.ref,引用,Reference
 topology.detail.stage,阶段,Stage
 topology.detail.counters,计数,Counters
 topology.detail.config,配置,Config
+topology.detailsLabel,详情,Details
