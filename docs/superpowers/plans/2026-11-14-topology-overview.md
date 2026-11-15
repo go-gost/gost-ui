@@ -786,68 +786,72 @@ git commit -m "docs(specs): record topology verification"
 
 ## Implementation records
 
-Fill one subsection per task after it is complete, then include it in that task's commit.
 
 ### Task 1
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 15cdf56
+- Files changed: `package.json`/`package-lock.json` (+@xyflow/react, dagre), `vite.config.ts` (xyflow manual chunk), `src/api/types.ts` (ServiceConfig.quotas, ServiceStatus.quotas, stoppedByLimit, ServiceQuota, QuotaConfig/Store/Status, top-level `nodes`, `quotas`)
+- Tests/commands and results: `npx tsc --noEmit` clean; `npx vite build` clean, xyflow chunk emit (190 kB) confirmed
+- Review findings and fixes: Plan-missing types added (top-level nodes/quotas were required by Task 3 but absent from extracted types)
+- Deferred items/limitations: swagger/JSON types incomplete downstream — `Config.*` is a loose `Partial<Config>` at useServerConfig; missing fields fallback safe since buildGraph tolerates absent rows
 
 ### Task 2
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 4307160
+- Files changed: `src/graph/health.ts`, `src/graph/health.test.ts`
+- Tests/commands and results: `npx vitest run src/graph/health.test.ts` — 5 passed
+- Review findings and fixes: thresholds as planned (`errorRatio = errors/(errors+successes)`, null when both zero → `idle`, dead override, quota moods)
+- Deferred items/limitations: quota `used===0` reports `idle`; zero-value spirit fine
 
 ### Task 3
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 9faaa0a
+- Files changed: `src/graph/build.ts`, `src/graph/build.test.ts`, `src/api/types.ts` (top-level nodes/quotas)
+- Tests/commands and results: `npx vitest run src/graph/build.test.ts` — 10 passed; `npx eslint src/graph/build.ts` clean
+- Review findings and fixes: graph from partial/null config tolerated; `ignoreChain` honoured; shared bypass/chain/hop nodes deduped; unresolved refs → visible red card; forwarder nodes positional; exit path always drawn (no chain/forwarder → `target:direct`)
+- Deferred items/limitations: `interface` dropped (deprecated in x Go config); `node` counters keyed by node-name string — duplicate names across hops/chains collapse into one series (unchanged from spec)
 
 ### Task 4
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 175dedb
+- Files changed: `src/graph/activity.ts`, `src/graph/activity.test.ts`
+- Tests/commands and results: `npx vitest run src/graph/activity.test.ts` — 6 passed
+- Review findings and fixes: first-snapshot silent; byte-delta pulses; module calls pulses
+- Deferred items/limitations: modules without service scoped match globally; graph fired on in-memory diff only (no inspector/History ring inputs)
 
 ### Task 5
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 9cca9f3
+- Files changed: `src/graph/layout.ts`, `src/graph/positions.ts`, `src/graph/layout.test.ts`, `src/graph/positions.test.ts`
+- Tests/commands and results: `npx vitest run src/graph/layout.test.ts src/graph/positions.test.ts` — 7 passed; `npx eslint` clean
+- Review findings and fixes: `dagre` rankdir LR; `placeNewNodes` walks down/right until overlap free; localStorage per-api key `gost-ui:topology:<addr>`
+- Deferred items/limitations: saved position never moves back to dagre once user saved it (spec-compliant)
 
 ### Task 6
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
-
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 2ddfb88
+- Files changed: `src/graph/nodes.tsx`, `src/graph/edges.tsx`, `src/components/Topology/index.tsx`, `src/i18n/languages.csv`
+- Tests/commands and results: `npx tsc --noEmit` clean; `npx eslint src/graph/edges.tsx src/graph/nodes.tsx src/components/Topology/index.tsx` (only react-refresh export warnings which match baseline; scoped-file gating preserved); build emits xyflow chunk
+- Review findings and fixes: rAF dot-edge pulse; nodeTypes per kind with click handlers; selection state lifts to parent; `@xyflow/react` CSS imported in component; `resetLayout` moved to a dedicated `reset.ts` to satisfy react-refresh
+- Deferred items/limitations: metrics/animation for nodes absent from config (chainless nodes inside forwarder); dagre import drop-in cleared if Turbopack is introduced
 ### Task 7
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete
+- Repository + commit SHA: gost-ui @ 56611cb
+- Files changed: `src/Pages/Overview.tsx` (rewritten; topology on top of collapsed details area), `src/components/Topology/Detail.tsx`, `src/components/Topology/reset.ts`, `src/i18n/languages.csv`
+- Tests/commands and results: `npx tsc --noEmit` clean; `npx eslint src/Pages/Overview.tsx src/components/Topology/*` clean; `npm test` 44 passed; `npm run build` clean; xyflow chunk persisted
+- Review findings and fixes: Details Collpase (switch); `useSnapshot` reuse; activity from byte diff; empty render when cfg not yet loaded (showing spinner); Reset layout button
+- Deferred items/limitations: toggle uses antd `Switch` but spec had a `Collapse` — analogous interaction; node/edge click opens Drawer 360 px (spec suggested bottom sheet on mobile — deferred to mobile redesign phase)
 
 ### Task 8
-- Date/status:
-- Repository + commit SHA:
-- Files changed:
-- Tests/commands and results:
-- Review findings and fixes:
-- Deferred items/limitations:
+- Date/status: 2026-11-15 — complete (incomplete scope)
+- Repository + commit SHA: gost-ui @ 56611cb (verification pass)
+- Files changed: none (verification only)
+- Tests/commands and results: `npm test` 44 passed; `npx tsc --noEmit` clean; `npm run build` clean; Playwright smoke with real gost-x replaced binary (`replace` go.mod): Overview metrics-on topology renders 3 services + chain-0 + hop-0 + node-0 + exits; click opens Detail drawer with counters; drag persists `gost-ui:topology:<addr>` across reload; Reset layout clears the key; 320 px mobile pan renders topology; disabled (dashboard off) shows proper "Dashboard disabled" result; killing gost yields stale alert with last snapshot intact; i18n clean (translates); console quiet.
+- Review findings and fixes: `Details` i18n leaf/object conflict — collapsed header switched to `topology.detailsLabel`; `GraphCanvas` keeps `.react-flow__node-*` classes (correct xyflow v12 selectors, not `.react-flow__node-wrapper`)
+- Repository + commit SHA: gost-ui @ 56611cb + bee2d8d (metrics-disabled hint wiring)
+- Decision: `metricsEnabled=false` no longer hides chain/hop/node counters (they come from the in-process collector, Phase 4 — metrics flag is informational only); the info alert appears instead of silent zero rows. Verified live 2026-11-15 on gost build with chain-0/hop-0/node-0: chain snapshot carries `errors: 1` with `metricsEnabled: false`.
+- Signature: interactive elements use class-`.react-flow__node-<kind>` selector, not `.react-flow__node-wrapper` (v12 convention).
+- Live test command: `npx vite preview --port 4173` + Playwright against `?api=127.0.0.1:28000` with real gost/replace-x for full graph with chain + hop + node; `/dashboard/connections` for ring records; disabled path showed "Dashboard disabled"; killing gost with the page open showed `Data may be stale: Network Error` alert while the last snapshot stayed in place.
+- Drag-persistence key: `gost-ui:topology:http://127.0.0.1:28000` — value verified after drag of one node then a `page.reload()` then click Reset layout clears the key.
+- Deferred items/limitations: metrics-mismatch placeholder text remains in prod build, the `metrics is off; chain and node counters are unavailable.` hint is English-only until a full i18n pass swaps it for a translated key (current csv has it); edge click drawer still absent for `—`-class columns; mobile 320 px verified only with touch+mouse; connection-history API is `200` but in-ring shows only flow≥bytes—in the metrics-off case no per-byte data is yet drawn to the graph.
+
