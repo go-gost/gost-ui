@@ -19,9 +19,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@xyflow/react": "^12.12.1",
     "antd": "^5.11.0",
     "axios": "^1.6.0",
     "classnames": "^2.5.1",
+    "dagre": "^0.8.5",
     "events": "^3.3.0",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
@@ -38,6 +40,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.54",
     "@types/events": "^3.0.3",
     "@types/qs": "^6.9.10",
     "@types/react": "^18.2.15",

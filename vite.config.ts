@@ -24,6 +24,7 @@ export default defineConfig(({ command, mode }) => {
           manualChunks: {
             // monaco: ["monaco-editor"],
             antd: ["antd"],
+            xyflow: ["@xyflow/react"],
           },
         },
       },

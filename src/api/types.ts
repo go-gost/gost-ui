@@ -351,6 +351,7 @@ export type ServiceConfig = {
   metadata: Record<string, any>;
   name: string;
   observer: string;
+  quotas: string[];
   recorders: RecorderObject[];
   resolver: string;
   rlimiter: string;
@@ -361,6 +362,18 @@ export type ServiceEvent = {
   msg: string;
   time: number;
 };
+export type ServiceQuota = {
+  name: string;
+  used: number;
+  limit: number;
+  startsAt: number;
+  expiresAt: number;
+  active: boolean;
+  expired: boolean;
+  blocked: boolean;
+  direction: string;
+};
+
 export type ServiceStats = {
   currentConns: number;
   inputBytes: number;
@@ -373,6 +386,8 @@ export type ServiceStatus = {
   events: ServiceEvent[];
   state: string;
   stats: ServiceStats;
+  quotas: ServiceQuota[];
+  stoppedByLimit: boolean;
 };
 export type SockOptsConfig = {
   mark: number;
