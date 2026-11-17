@@ -30,12 +30,16 @@ export function surfaceStyle(kind: NodeKind): CSSProperties {
 }
 
 /** The shell is read-only: keep handles mounted as edge anchors, hide the dots. */
-export function nodeHandleStyle(color: string, surface = ACTIVE_SURFACE): CSSProperties {
+export function nodeHandleStyle(
+  color: string,
+  surface = ACTIVE_SURFACE,
+  editable = false
+): CSSProperties {
   return {
     width: HANDLE_SIZE,
     height: HANDLE_SIZE,
     background: color,
     border: `2px solid ${surface}`,
-    opacity: 0,
+    opacity: editable ? 1 : 0,
   };
 }
