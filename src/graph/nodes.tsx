@@ -29,15 +29,19 @@ const box: React.CSSProperties = {
   border: "1.5px solid",
   padding: "10px 12px",
   fontSize: 12,
-  background: "var(--ant-color-bg-elevated, #fff)",
-  color: "inherit",
+  // React Flow switches these variables with its `colorMode`; antd CSS
+  // variables are not available because cssVar is not enabled globally.
+  background:
+    "var(--xy-node-background-color, var(--xy-node-background-color-default, #fff))",
+  color: "var(--xy-node-color, var(--xy-node-color-default, inherit))",
 };
 
 const handleStyle = (color: string): React.CSSProperties => ({
   width: HANDLE_SIZE,
   height: HANDLE_SIZE,
   background: color,
-  border: "2px solid var(--ant-color-bg-elevated, #fff)",
+  border:
+    "2px solid var(--xy-node-background-color, var(--xy-node-background-color-default, #fff))",
 });
 
 function selectionStyle(
@@ -413,7 +417,8 @@ const UnresolvedNode = ({ data, selected }: NodeProps<GNode>) => {
         ...selectionStyle(selected, "#dc2626"),
         minWidth: 190,
         borderStyle: "dashed",
-        background: "var(--ant-color-error-bg, #fef2f2)",
+        // Translucent so it reads as light pink on white and dark red on dark.
+        background: "rgba(220, 38, 38, 0.12)",
       }}
     >
       <IconBadge color="#dc2626">

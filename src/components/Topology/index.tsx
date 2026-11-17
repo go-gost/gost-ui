@@ -19,6 +19,7 @@ import { loadPositions, mergePositions, savePositions } from "../../graph/positi
 import { flowDuration, type Activity } from "../../graph/activity";
 import { nodeTypes } from "../../graph/nodes";
 import { edgeTypes } from "../../graph/edges";
+import { useIsDark } from "../../utils/useTheme";
 
 export type Selection =
   | { kind: "node"; id: string }
@@ -47,6 +48,7 @@ export default function Topology({
 }: TopologyProps) {
   const [flow, setFlow] = useState<ReactFlowInstance | null>(null);
   const savedRef = useRef(loadPositions(infoAddr));
+  const isDark = useIsDark();
 
   useEffect(() => {
     savedRef.current = loadPositions(infoAddr);
@@ -129,6 +131,7 @@ export default function Topology({
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <ReactFlow
+        colorMode={isDark ? "dark" : "light"}
         nodes={nodes.map((n) => ({
           ...n,
           selected: n.id === selectedNodeId,
