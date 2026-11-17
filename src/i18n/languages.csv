@@ -176,6 +176,9 @@ topology.empty,暂无可绘制的拓扑,No topology to draw
 topology.metrics.disabled,未启用 metrics，链与节点无连接统计。,metrics is off; chain and node counters are unavailable.
 topology.animation,动画,Animation
 topology.graph,拓扑图,Topology
+topology.edit,编辑,Edit
+topology.exitEdit,退出编辑,Exit edit
+topology.editPaused,编辑模式 · 统计已暂停,Edit mode · stats paused
 topology.details.show,展开明细,Show details
 topology.details.hide,收起明细,Hide details
 topology.detail.services,相关服务,Services

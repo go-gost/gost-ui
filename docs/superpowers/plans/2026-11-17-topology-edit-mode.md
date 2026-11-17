@@ -186,7 +186,10 @@ In `Topology`: add `editing: boolean` to props, use `nodesDraggable={editing}` a
 
 `npm test` + `npm run build`; commit.
 
-**Implementation record (fill after task):** date/status, repo + commit SHA, files changed, tests/commands + results, review findings + fixes, deferred items/limitations.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`; commit recorded in the SDD ledger.
+Files: `src/Pages/Overview.tsx` (edit state, toggle button, frozen snapshot, paused tag), `src/components/Topology/index.tsx` (`editing` prop, drag gating, `deleteKeyCode={null}`), `src/i18n/languages.csv` (3 new keys), `mode.test.ts` (3 source-contract tests).
+Tests: 3 tests RED then GREEN; `npm test` 99/99; `npm run build` exit 0.
+Review findings/fixes: none. Deferred: connect/disconnect wiring is Task 5.
 
 ---
 

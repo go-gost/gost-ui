@@ -51,6 +51,7 @@ export interface TopologyProps {
   activity: Activity;
   selection: Selection;
   infoAddr?: string;
+  editing: boolean;
   onSelect: (selection: Selection) => void;
 }
 
@@ -63,6 +64,7 @@ export default function Topology({
   activity,
   selection,
   infoAddr,
+  editing,
   onSelect,
 }: TopologyProps) {
   const [flow, setFlow] = useState<ReactFlowInstance | null>(null);
@@ -246,7 +248,8 @@ export default function Topology({
         fitView={!viewportRef.current}
         fitViewOptions={{ padding: 0.15 }}
         defaultViewport={viewportRef.current ?? undefined}
-        nodesDraggable
+        nodesDraggable={editing}
+        deleteKeyCode={null}
         minZoom={0.2}
         maxZoom={1.75}
         onMoveStart={onMoveStart}

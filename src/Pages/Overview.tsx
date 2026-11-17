@@ -11,9 +11,10 @@ import {
   Space,
   Spin,
   Switch,
+  Tag,
   Typography,
 } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import { EditOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { logout, useInfo, useServerConfig, useSettings } from "../utils/server";
 import {
@@ -37,6 +38,7 @@ import {
 } from "../graph/activity";
 import { buildGraph } from "../graph/build";
 import type { Config } from "../api/types";
+import type { Snapshot } from "../api/dashboard";
 
 const Overview = () => {
   const { t } = useTranslation();
@@ -46,6 +48,8 @@ const Overview = () => {
 
   const [selection, setSelection] = useState<Selection>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editSnapshot, setEditSnapshot] = useState<Snapshot | null>(null);
   const settings = useSettings();
   const animationEnabled = settings?.animation !== false;
   const setAnimationEnabled = (value: boolean) =>
@@ -137,6 +141,17 @@ const Overview = () => {
         />
       )}
       <Space wrap>
+        <Button
+          type={editing ? "primary" : "default"}
+          icon={<EditOutlined />}
+          aria-pressed={editing}
+          onClick={() => {
+            if (!editing) setEditSnapshot(snapshot);
+            setEditing(!editing);
+          }}
+        >
+          {editing ? t("topology.exitEdit") : t("topology.edit")}
+        </Button>
         <Button icon={<ReloadOutlined />} onClick={refresh}>
           {t("overview.refresh")}
         </Button>
@@ -153,17 +168,21 @@ const Overview = () => {
           </Typography.Text>
           <Switch checked={showDetails} onChange={setShowDetails} size="small" />
         </Space>
-        <Space>
-          <Typography.Text type="secondary">
-            {t("topology.animation")}
-          </Typography.Text>
-          <Switch
-            checked={animationEnabled}
-            onChange={setAnimationEnabled}
-            size="small"
-            aria-label={t("topology.animation")}
-          />
-        </Space>
+        {editing ? (
+          <Tag color="orange">{t("topology.editPaused")}</Tag>
+        ) : (
+          <Space>
+            <Typography.Text type="secondary">
+              {t("topology.animation")}
+            </Typography.Text>
+            <Switch
+              checked={animationEnabled}
+              onChange={setAnimationEnabled}
+              size="small"
+              aria-label={t("topology.animation")}
+            />
+          </Space>
+        )}
       </Space>
       {snapshot && !snapshot.metricsEnabled && (
         <Alert
@@ -186,7 +205,8 @@ const Overview = () => {
           >
             <Topology
               config={cfg}
-              snapshot={snapshot}
+              snapshot={editing ? editSnapshot : snapshot}
+              editing={editing}
               activity={activity}
               selection={selection}
               infoAddr={info?.addr}
