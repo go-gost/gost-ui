@@ -40,6 +40,8 @@ export interface GraphNodeData extends Record<string, unknown> {
   dead?: boolean;
   /** Increments on new traffic to restart the one-shot node flash. */
   pulse?: number;
+  /** Edit mode makes the node's handles connectable. */
+  editable?: boolean;
   bytesIn?: number;
   bytesOut?: number;
   conns?: number;

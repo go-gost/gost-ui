@@ -179,6 +179,11 @@ topology.graph,拓扑图,Topology
 topology.edit,编辑,Edit
 topology.exitEdit,退出编辑,Exit edit
 topology.editPaused,编辑模式 · 统计已暂停,Edit mode · stats paused
+topology.editDisconnect,断开,Disconnect
+topology.editReadOnly,这条连线请在配置页修改,Edit this link on the Config page
+topology.editUnsupported,不支持的连线方向,Unsupported connection direction
+topology.editDisconnected,已断开,Disconnected
+topology.editSaved,已保存,Saved
 topology.details.show,展开明细,Show details
 topology.details.hide,收起明细,Hide details
 topology.detail.services,相关服务,Services

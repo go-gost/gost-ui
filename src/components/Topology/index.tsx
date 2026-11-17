@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { message } from "antd";
+import { useTranslation } from "react-i18next";
 import {
   Background,
   Controls,
@@ -8,6 +10,7 @@ import {
   type EdgeMouseHandler,
   type Node,
   type NodeMouseHandler,
+  type OnConnect,
   type OnNodeDrag,
   type OnNodesChange,
   type ReactFlowInstance,
@@ -30,6 +33,8 @@ import {
 import { loadViewport, saveViewport } from "../../graph/viewport";
 import { GRID_COLOR } from "../../graph/nodeSurface";
 import { pulsesByLabel } from "../../graph/nodePulse";
+import { connectLink } from "../../graph/links";
+import { applyLinkChange } from "../../utils/applyLinkChange";
 import {
   applyNodePositionChanges,
   loadPositions,
@@ -74,6 +79,7 @@ export default function Topology({
   const glideRef = useRef<number | null>(null);
   const [layoutNonce, setLayoutNonce] = useState(0);
   const isDark = useIsDark();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setSaved(loadPositions(infoAddr));
@@ -93,7 +99,11 @@ export default function Topology({
       id: n.id,
       type: n.data.kind,
       position: placed[n.id] ?? n.position,
-      data: { ...n.data, pulse: pulses.get(n.data.label) ?? 0 },
+      data: {
+        ...n.data,
+        pulse: pulses.get(n.data.label) ?? 0,
+        editable: editing,
+      },
     }));
 
     const deadServices = new Set(
@@ -158,6 +168,24 @@ export default function Topology({
   const onEdgeClick: EdgeMouseHandler = useCallback(
     (_, edge) => onSelect({ kind: "edge", id: edge.id }),
     [onSelect]
+  );
+
+  const onConnect: OnConnect = useCallback(
+    async ({ source, target }) => {
+      if (!source || !target) return;
+      const change = connectLink(config, source, target);
+      if (!change) {
+        message.warning(t("topology.editUnsupported"));
+        return;
+      }
+      try {
+        await applyLinkChange(change);
+        message.success(t("topology.editSaved"));
+      } catch (err) {
+        message.error(err instanceof Error ? err.message : String(err));
+      }
+    },
+    [config, t]
   );
 
   const cancelGlide = useCallback(() => {
@@ -242,6 +270,7 @@ export default function Topology({
           selected: n.id === selectedNodeId,
         }))}
         onNodesChange={onNodesChange}
+        onConnect={editing ? onConnect : undefined}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}

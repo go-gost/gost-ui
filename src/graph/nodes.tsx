@@ -38,8 +38,8 @@ const box: React.CSSProperties = {
   color: "var(--xy-node-color, var(--xy-node-color-default, inherit))",
 };
 
-const handleStyle = (color: string): React.CSSProperties =>
-  nodeHandleStyle(color);
+const handleStyle = (color: string, editable?: boolean): React.CSSProperties =>
+  nodeHandleStyle(color, ACTIVE_SURFACE, editable);
 
 function selectionStyle(
   selected: boolean | undefined,
@@ -217,8 +217,8 @@ const TargetNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle("#6366f1")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#6366f1", data.editable)}
       />
     </div>
   );
@@ -269,8 +269,8 @@ const ServiceNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="source"
         position={Position.Right}
-        isConnectable={false}
-        style={handleStyle("#0ea5e9")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#0ea5e9", data.editable)}
       />
     </div>
   );
@@ -328,8 +328,8 @@ const ModuleNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle(color)}
+        isConnectable={!!data.editable}
+        style={handleStyle(color, data.editable)}
       />
     </div>
   );
@@ -356,14 +356,14 @@ const ChainNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle("#0891b2")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#0891b2", data.editable)}
       />
       <Handle
         type="source"
         position={Position.Right}
-        isConnectable={false}
-        style={handleStyle("#0891b2")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#0891b2", data.editable)}
       />
     </div>
   );
@@ -387,14 +387,14 @@ const HopNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle("#7c3aed")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#7c3aed", data.editable)}
       />
       <Handle
         type="source"
         position={Position.Right}
-        isConnectable={false}
-        style={handleStyle("#7c3aed")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#7c3aed", data.editable)}
       />
     </div>
   );
@@ -421,14 +421,14 @@ const NodeCard = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle("#0891b2")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#0891b2", data.editable)}
       />
       <Handle
         type="source"
         position={Position.Right}
-        isConnectable={false}
-        style={handleStyle("#0891b2")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#0891b2", data.editable)}
       />
     </div>
   );
@@ -452,8 +452,8 @@ const UnresolvedNode = ({ data, selected }: NodeProps<GNode>) => {
       <Handle
         type="target"
         position={Position.Left}
-        isConnectable={false}
-        style={handleStyle("#dc2626")}
+        isConnectable={!!data.editable}
+        style={handleStyle("#dc2626", data.editable)}
       />
     </div>
   );

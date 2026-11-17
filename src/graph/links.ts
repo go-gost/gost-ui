@@ -31,7 +31,7 @@ export function parseGraphId(id: string): ParsedGraphId | null {
   const kind = id.slice(0, colon);
   const rest = id.slice(colon + 1);
   if (!rest) return null;
-  const slash = rest.indexOf("/");
+  const slash = rest.lastIndexOf("/");
   if (slash === -1) return { kind, name: rest };
   return {
     kind,

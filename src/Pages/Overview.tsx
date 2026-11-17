@@ -31,6 +31,7 @@ import Sparkline from "../components/Overview/Sparkline";
 import Summary from "../components/Overview/Summary";
 import Topology, { type Selection } from "../components/Topology";
 import Detail from "../components/Topology/Detail";
+import EditPanel from "../components/Topology/EditPanel";
 import { useSnapshot } from "../components/Overview/useSnapshot";
 import {
   diffActivity,
@@ -292,13 +293,23 @@ const Overview = () => {
         />
       )}
 
-      <Detail
-        selection={selection}
-        nodes={topologyNodes}
-        edges={topologyEdges}
-        snapshot={snapshot}
-        onClose={() => setSelection(null)}
-      />
+      {editing && cfg ? (
+        <EditPanel
+          selection={selection}
+          nodes={topologyNodes}
+          edges={topologyEdges}
+          config={cfg}
+          onClose={() => setSelection(null)}
+        />
+      ) : (
+        <Detail
+          selection={selection}
+          nodes={topologyNodes}
+          edges={topologyEdges}
+          snapshot={snapshot}
+          onClose={() => setSelection(null)}
+        />
+      )}
     </Space>
   );
 };

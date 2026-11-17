@@ -231,4 +231,8 @@ In `Topology`'s node construction set `data: { ...n.data, pulse: ..., editable: 
 
 `npm test` + `npm run build`; commit. Report that UI interaction was verified only by TypeScript/Vitest/source checks, not a browser.
 
-**Implementation record (fill after task):** date/status, repo + commit SHA, files changed, tests/commands + results, review findings + fixes, deferred items/limitations.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`; commit recorded in the SDD ledger.
+Files: `Topology/index.tsx` (`onConnect`, editable node data), `graph/nodes.tsx` (connectable handles in edit mode), `graph/build.ts` + `graph/links.ts` (`editable` field; `parseGraphId` uses the last slash), new `EditPanel.tsx` and `utils/applyLinkChange.ts`, `Overview.tsx` (panel swap), `i18n/languages.csv`, `mode.test.ts`.
+Tests: the new source-contract test failed first; focused 13/13; `npm test` 100/100; `npm run build` exit 0.
+Rulings: i18n keys are flat (`topology.editDisconnect`, …) because the generator cannot nest under the `topology.edit` leaf; `parseGraphId` splits on the **last** slash so nested inline node ids resolve their terminal name; forwarder `.nodes`-based edges (`fwd:<name>/<i>`) stay read-only because the whitelist maps forwarder edits to `forwarder.hop` only. UI interaction verified only by TypeScript/Vitest/source checks, not a browser.
+Deferred: full node form (addr/connector/dialer) for new `hop→node` links — Task 3 currently appends a minimal `{name}` node.
