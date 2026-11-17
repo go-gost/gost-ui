@@ -1,5 +1,6 @@
 import { beforeEach, expect, test } from "vitest";
 import {
+  applyNodePositionChanges,
   loadPositions,
   mergePositions,
   positionKey,
@@ -32,6 +33,25 @@ test("corrupt storage reads as empty", () => {
   savePositions("x", {});
   localStorage.setItem(positionKey("x"), "not json");
   expect(loadPositions("x")).toEqual({});
+});
+
+test("position changes replace a saved entry without mutating it", () => {
+  const saved = { a: { x: 1, y: 1 }, b: { x: 2, y: 2 } };
+  const next = applyNodePositionChanges(saved, [
+    { type: "position", id: "a", position: { x: 9, y: 9 } } as never,
+    { type: "dimensions", id: "b" } as never,
+  ]);
+  expect(next).toEqual({ a: { x: 9, y: 9 }, b: { x: 2, y: 2 } });
+  expect(saved).toEqual({ a: { x: 1, y: 1 }, b: { x: 2, y: 2 } });
+});
+
+test("non-position changes keep the same saved object", () => {
+  const saved = { a: { x: 1, y: 1 } };
+  expect(
+    applyNodePositionChanges(saved, [
+      { type: "dimensions", id: "a" } as never,
+    ])
+  ).toBe(saved);
 });
 
 test("merge keeps saved entries and adds new ones", () => {

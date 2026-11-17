@@ -31,6 +31,26 @@ export function savePositions(
   }
 }
 
+export interface PositionChange {
+  type: string;
+  id?: string;
+  position?: { x: number; y: number };
+}
+
+/** Apply controlled-render position changes without mutating the saved map. */
+export function applyNodePositionChanges(
+  saved: PositionMap,
+  changes: readonly PositionChange[]
+): PositionMap {
+  let next = saved;
+  for (const change of changes) {
+    if (change.type !== "position" || !change.id || !change.position) continue;
+    if (next === saved) next = { ...saved };
+    next[change.id] = { ...change.position };
+  }
+  return next;
+}
+
 export function mergePositions(
   saved: PositionMap,
   nodes: Array<{ id: string; position: { x: number; y: number } }>

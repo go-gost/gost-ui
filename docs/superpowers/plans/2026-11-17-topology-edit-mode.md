@@ -64,7 +64,7 @@ Assert `Overview.tsx` contains no `resetLayout` and `Topology/index.tsx` contain
 
 Run `npm test` and `npm run build`; both pass. Commit.
 
-**Implementation record — 2026-11-17, complete.** Repo `gost-ui`, commit `206eeb8`.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`, commit `dcf36c7`.
 Files: `src/graph/build.ts` (chain/forwarder exit edges and `target` cards removed; `ensureDirectTarget` only), `src/graph/build.test.ts` (3 new assertions), `src/Pages/Overview.tsx` (reset button/state/import gone), `src/components/Topology/index.tsx` (`resetKey` removed, effect back to `[infoAddr]`), `src/graph/positions.ts` + `positions.test.ts` (`clearPositions` removed), `src/i18n/languages.csv` (`topology.resetLayout` removed), `src/components/Topology/interaction.test.ts` (reset-absence assertion), deleted `src/components/Topology/reset.ts` and `reset.test.ts`.
 Tests: new graph assertions RED (2 failed) then GREEN; focused `vitest run build.test.ts positions.test.ts interaction.test.ts` 22/22; `npm test` 84/84; `npm run build` exit 0.
 Review findings/fixes: none. Deferred: none.
@@ -107,7 +107,10 @@ Replace `savedRef` with `const [saved, setSaved] = useState(() => loadPositions(
 
 `npm test` + `npm run build`; commit.
 
-**Implementation record (fill after task):** date/status, repo + commit SHA, files changed, tests/commands + results, review findings + fixes, deferred items/limitations.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`; commit recorded in the SDD ledger (a record committed together with its code cannot name its own final SHA).
+Files: `src/graph/positions.ts` (`applyNodePositionChanges`, `PositionChange`), `positions.test.ts` (2 tests), `src/components/Topology/index.tsx` (controlled `saved` state, `onNodesChange`, drag-stop persistence), `interaction.test.ts` (source contract), plan (Task 1 SHA corrected).
+Tests: 2 new pure tests RED then GREEN; focused tests 12/12; `npm test` 87/87; `npm run build` exit 0.
+Review findings/fixes: React Flow's `NodeChange` union includes add-changes without `id`, and `OnNodesChange<RFNode>` is not assignable to the component prop — widened `PositionChange.id` to optional and used the default `OnNodesChange` signature. Deferred: none.
 
 ---
 

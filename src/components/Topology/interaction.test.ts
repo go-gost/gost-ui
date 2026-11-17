@@ -37,6 +37,11 @@ test("edge width scales with traffic", () => {
   expect(edges).toMatch(/flow\?\.width/);
 });
 
+test("drag positions are controlled by onNodesChange", () => {
+  expect(topology).toMatch(/onNodesChange=/);
+  expect(topology).toMatch(/applyNodePositionChanges\(/);
+});
+
 test("the layout-reset control is gone", () => {
   expect(overview).not.toContain("resetLayout");
   expect(topology).not.toContain("resetKey");

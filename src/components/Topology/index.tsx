@@ -9,6 +9,7 @@ import {
   type Node,
   type NodeMouseHandler,
   type OnNodeDrag,
+  type OnNodesChange,
   type ReactFlowInstance,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -29,7 +30,11 @@ import {
 import { loadViewport, saveViewport } from "../../graph/viewport";
 import { GRID_COLOR } from "../../graph/nodeSurface";
 import { pulsesByLabel } from "../../graph/nodePulse";
-import { loadPositions, savePositions } from "../../graph/positions";
+import {
+  applyNodePositionChanges,
+  loadPositions,
+  savePositions,
+} from "../../graph/positions";
 import { flowDuration, type Activity } from "../../graph/activity";
 import { nodeTypes } from "../../graph/nodes";
 import { edgeTypes } from "../../graph/edges";
@@ -61,7 +66,7 @@ export default function Topology({
   onSelect,
 }: TopologyProps) {
   const [flow, setFlow] = useState<ReactFlowInstance | null>(null);
-  const savedRef = useRef(loadPositions(infoAddr));
+  const [saved, setSaved] = useState(() => loadPositions(infoAddr));
   const viewportRef = useRef(loadViewport(infoAddr));
   const samplesRef = useRef<PanSample[]>([]);
   const glideRef = useRef<number | null>(null);
@@ -69,7 +74,7 @@ export default function Topology({
   const isDark = useIsDark();
 
   useEffect(() => {
-    savedRef.current = loadPositions(infoAddr);
+    setSaved(loadPositions(infoAddr));
     viewportRef.current = loadViewport(infoAddr);
     setLayoutNonce((n) => n + 1);
   }, [infoAddr]);
@@ -80,7 +85,7 @@ export default function Topology({
   );
 
   const { nodes, edges } = useMemo(() => {
-    const placed = resolvePositions(built.nodes, built.edges, savedRef.current);
+    const placed = resolvePositions(built.nodes, built.edges, saved);
     const pulses = pulsesByLabel(activity);
     const laidNodes: RFNode[] = built.nodes.map((n) => ({
       id: n.id,
@@ -128,17 +133,19 @@ export default function Topology({
     });
 
     return { nodes: laidNodes, edges: laidEdges };
-  }, [built, activity, selection, layoutNonce]);
+  }, [built, activity, selection, layoutNonce, saved]);
+
+  const onNodesChange: OnNodesChange = useCallback((changes) => {
+    setSaved((prev) => applyNodePositionChanges(prev, changes));
+  }, []);
 
   const onNodeDragStop: OnNodeDrag = useCallback(
     (_, node) => {
-      savedRef.current = {
-        ...savedRef.current,
-        [node.id]: node.position,
-      };
-      savePositions(infoAddr, savedRef.current);
+      const next = { ...saved, [node.id]: node.position };
+      setSaved(next);
+      savePositions(infoAddr, next);
     },
-    [infoAddr]
+    [infoAddr, saved]
   );
 
   const onPaneClick = useCallback(() => onSelect(null), [onSelect]);
@@ -232,6 +239,7 @@ export default function Topology({
           ...n,
           selected: n.id === selectedNodeId,
         }))}
+        onNodesChange={onNodesChange}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
