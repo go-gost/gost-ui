@@ -267,3 +267,50 @@ test("counters come from the snapshot and quota from the config", () => {
   const quota = nodes.find((n) => n.id === "module:quota:q1")!;
   expect(quota.data.quota).toMatchObject({ used: 7, limit: 10 });
 });
+
+test("a chain path ends at its last node, with no target or exit card", () => {
+  const { nodes, edges } = buildGraph({
+    config: cfg({
+      services: [
+        service("a", { handler: { type: "http", chain: "c1" } as never }),
+      ],
+      chains: [{ name: "c1", hops: [{ name: "h1" }] } as never],
+      hops: [
+        { name: "h1", nodes: [{ name: "n1", addr: "1.2.3.4:80" }] } as never,
+      ],
+    }),
+    snapshot: null,
+  });
+  expect(nodes.some((n) => n.data.kind === "target")).toBe(false);
+  expect(edges.some((e) => e.kind === "exit")).toBe(false);
+  expect(nodes.some((n) => n.id === "node:h1/n1")).toBe(true);
+});
+
+test("a forwarder path ends at its last node, with no target or exit card", () => {
+  const { nodes, edges } = buildGraph({
+    config: cfg({
+      services: [
+        service("a", {
+          forwarder: {
+            nodes: [{ name: "fw1", addr: "10.0.0.1:80" }],
+          } as never,
+        }),
+      ],
+    }),
+    snapshot: null,
+  });
+  expect(nodes.some((n) => n.data.kind === "target")).toBe(false);
+  expect(edges.some((e) => e.kind === "exit")).toBe(false);
+  expect(nodes.some((n) => n.id === "fwd:a/0")).toBe(true);
+});
+
+test("a direct-only service keeps exactly one target:direct card", () => {
+  const { nodes, edges } = buildGraph({
+    config: cfg({ services: [service("a")] }),
+    snapshot: null,
+  });
+  expect(nodes.filter((n) => n.id === "target:direct")).toHaveLength(1);
+  expect(
+    edges.filter((e) => e.kind === "direct" && e.target === "target:direct")
+  ).toHaveLength(1);
+});

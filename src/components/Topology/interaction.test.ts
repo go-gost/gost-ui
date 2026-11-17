@@ -36,3 +36,11 @@ test("edge width scales with traffic", () => {
   expect(topology).toMatch(/width: edgeWidth\(/);
   expect(edges).toMatch(/flow\?\.width/);
 });
+
+test("the layout-reset control is gone", () => {
+  expect(overview).not.toContain("resetLayout");
+  expect(topology).not.toContain("resetKey");
+  expect(read("../../i18n/languages.csv")).not.toContain(
+    "topology.resetLayout,"
+  );
+});

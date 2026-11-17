@@ -1,6 +1,5 @@
 import { beforeEach, expect, test } from "vitest";
 import {
-  clearPositions,
   loadPositions,
   mergePositions,
   positionKey,
@@ -24,11 +23,9 @@ test("positions are keyed per API address", () => {
   expect(positionKey()).toBe("gost-ui:topology:-");
 });
 
-test("save, load and clear", () => {
+test("save and load", () => {
   savePositions("x", { "service:a": { x: 1, y: 2 } });
   expect(loadPositions("x")).toEqual({ "service:a": { x: 1, y: 2 } });
-  clearPositions("x");
-  expect(loadPositions("x")).toEqual({});
 });
 
 test("corrupt storage reads as empty", () => {

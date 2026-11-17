@@ -31,14 +31,6 @@ export function savePositions(
   }
 }
 
-export function clearPositions(addr?: string): void {
-  try {
-    localStorage.removeItem(positionKey(addr));
-  } catch {
-    // ignore
-  }
-}
-
 export function mergePositions(
   saved: PositionMap,
   nodes: Array<{ id: string; position: { x: number; y: number } }>

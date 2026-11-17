@@ -29,7 +29,6 @@ import Services from "../components/Overview/Services";
 import Sparkline from "../components/Overview/Sparkline";
 import Summary from "../components/Overview/Summary";
 import Topology, { type Selection } from "../components/Topology";
-import { resetLayout } from "../components/Topology/reset";
 import Detail from "../components/Topology/Detail";
 import { useSnapshot } from "../components/Overview/useSnapshot";
 import {
@@ -47,7 +46,6 @@ const Overview = () => {
 
   const [selection, setSelection] = useState<Selection>(null);
   const [showDetails, setShowDetails] = useState(false);
-  const [resetKey, setResetKey] = useState(0);
   const settings = useSettings();
   const animationEnabled = settings?.animation !== false;
   const setAnimationEnabled = (value: boolean) =>
@@ -149,14 +147,6 @@ const Overview = () => {
               : "—",
           })}
         </Typography.Text>
-        <Button
-          onClick={() => {
-            resetLayout(info?.addr);
-            setResetKey((key) => key + 1);
-          }}
-        >
-          {t("topology.resetLayout")}
-        </Button>
         <Space>
           <Typography.Text type="secondary">
             {showDetails ? t("topology.details.hide") : t("topology.details.show")}
@@ -200,7 +190,6 @@ const Overview = () => {
               activity={activity}
               selection={selection}
               infoAddr={info?.addr}
-              resetKey={resetKey}
               onSelect={setSelection}
             />
           </Card>

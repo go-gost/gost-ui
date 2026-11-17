@@ -64,7 +64,10 @@ Assert `Overview.tsx` contains no `resetLayout` and `Topology/index.tsx` contain
 
 Run `npm test` and `npm run build`; both pass. Commit.
 
-**Implementation record (fill after task):** date/status, repo + commit SHA, files changed, tests/commands + results, review findings + fixes, deferred items/limitations.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`, commit `206eeb8`.
+Files: `src/graph/build.ts` (chain/forwarder exit edges and `target` cards removed; `ensureDirectTarget` only), `src/graph/build.test.ts` (3 new assertions), `src/Pages/Overview.tsx` (reset button/state/import gone), `src/components/Topology/index.tsx` (`resetKey` removed, effect back to `[infoAddr]`), `src/graph/positions.ts` + `positions.test.ts` (`clearPositions` removed), `src/i18n/languages.csv` (`topology.resetLayout` removed), `src/components/Topology/interaction.test.ts` (reset-absence assertion), deleted `src/components/Topology/reset.ts` and `reset.test.ts`.
+Tests: new graph assertions RED (2 failed) then GREEN; focused `vitest run build.test.ts positions.test.ts interaction.test.ts` 22/22; `npm test` 84/84; `npm run build` exit 0.
+Review findings/fixes: none. Deferred: none.
 
 ---
 

@@ -197,11 +197,12 @@ export function buildGraph(input: {
     });
 
   // ---------- target(s) ----------
-  const ensureTarget = (id: "target" | "target:direct"): GraphNode =>
-    addNode(id, {
+  // Only a service with no chain and no forwarder exits directly.
+  const ensureDirectTarget = (): GraphNode =>
+    addNode("target:direct", {
       kind: "target",
-      label: id === "target" ? "target" : "direct",
-      sub: id === "target" ? "exit" : "direct exit",
+      label: "direct",
+      sub: "direct exit",
     });
 
   // ---------- module attach helpers ----------
@@ -428,11 +429,6 @@ export function buildGraph(input: {
             services: [name],
             chain: chainName,
           });
-          addEdge(`${name}:exit:${nodeId}`, nodeId, "target", "exit", {
-            services: [name],
-            label: name,
-          });
-          ensureTarget("target");
         });
       });
     }
@@ -452,11 +448,6 @@ export function buildGraph(input: {
           services: [name],
           label: "forward",
         });
-        addEdge(`${name}:exit:${id}`, id, "target", "exit", {
-          services: [name],
-          label: name,
-        });
-        ensureTarget("target");
       });
     } else if (forwarder?.hop) {
       // Traffic exits via the referenced hop's nodes; no forwarder cards.
@@ -484,7 +475,7 @@ export function buildGraph(input: {
         services: [name],
         label: "direct",
       });
-      ensureTarget("target:direct");
+      ensureDirectTarget();
     }
 
     // keep referenced modules around even when the registry resolved them

@@ -46,7 +46,6 @@ export interface TopologyProps {
   activity: Activity;
   selection: Selection;
   infoAddr?: string;
-  resetKey: number;
   onSelect: (selection: Selection) => void;
 }
 
@@ -59,7 +58,6 @@ export default function Topology({
   activity,
   selection,
   infoAddr,
-  resetKey,
   onSelect,
 }: TopologyProps) {
   const [flow, setFlow] = useState<ReactFlowInstance | null>(null);
@@ -74,7 +72,7 @@ export default function Topology({
     savedRef.current = loadPositions(infoAddr);
     viewportRef.current = loadViewport(infoAddr);
     setLayoutNonce((n) => n + 1);
-  }, [infoAddr, resetKey]);
+  }, [infoAddr]);
 
   const built = useMemo(
     () => buildGraph({ config, snapshot }),
