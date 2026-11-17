@@ -125,6 +125,12 @@ test("disconnectLink inverts each mapping and no-ops when absent", () => {
   expect(unforwarded.config.services![0].forwarder.hop).toBe("");
 });
 
+test("a chain referenced only through chainGroup is not removable", () => {
+  const grouped = config();
+  grouped.services![0].handler.chainGroup = { chains: ["c1"] } as never;
+  expect(disconnectLink(grouped, "service:web", "chain:c1")).toBeNull();
+});
+
 test("connectLink does not mutate the input config", () => {
   const original = config();
   connectLink(original, "chain:c1", "hop:registry-h");

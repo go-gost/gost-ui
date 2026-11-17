@@ -37,6 +37,9 @@ export default function EditPanel({
     ? nodes.find((item) => item.id === edge.target)
     : undefined;
   const kind = source && target ? linkKind(source.data, target.data) : null;
+  const removable = edge
+    ? disconnectLink(config, edge.source, edge.target) !== null
+    : false;
 
   const disconnect = async () => {
     if (!edge) return;
@@ -69,7 +72,7 @@ export default function EditPanel({
           <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
             {edge.source} → {edge.target}
           </Typography.Paragraph>
-          {kind ? (
+          {kind && removable ? (
             <Button danger onClick={() => void disconnect()}>
               {t("topology.editDisconnect")}
             </Button>

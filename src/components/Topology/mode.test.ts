@@ -37,6 +37,15 @@ test("edit mode wires connect/disconnect through the config API", () => {
   );
 });
 
+test("the panel hides disconnect when the reference is not removable", () => {
+  const panel = read("./EditPanel.tsx");
+  expect(panel).toContain("const removable = edge");
+  expect(panel).toContain(
+    "disconnectLink(config, edge.source, edge.target) !== null"
+  );
+  expect(panel).toMatch(/kind && removable/);
+});
+
 test("mode strings are translated in both languages", () => {
   for (const key of [
     "topology.edit,",

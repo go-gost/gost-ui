@@ -304,6 +304,21 @@ test("a forwarder path ends at its last node, with no target or exit card", () =
   expect(nodes.some((n) => n.id === "fwd:a/0")).toBe(true);
 });
 
+test("unreferenced registry hops and nodes are still drawable cards", () => {
+  const { nodes } = buildGraph({
+    config: cfg({
+      services: [service("a")],
+      hops: [
+        { name: "free-hop", nodes: [{ name: "free-node", addr: ":1" }] },
+      ] as never,
+      nodes: [{ name: "free-node", addr: ":1" }] as never,
+    }),
+    snapshot: null,
+  });
+  expect(nodes.find((n) => n.id === "hop:free-hop")?.data.kind).toBe("hop");
+  expect(nodes.find((n) => n.id === "node:free-node")?.data.kind).toBe("node");
+});
+
 test("a direct-only service keeps exactly one target:direct card", () => {
   const { nodes, edges } = buildGraph({
     config: cfg({ services: [service("a")] }),

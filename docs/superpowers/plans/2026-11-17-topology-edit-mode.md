@@ -233,6 +233,13 @@ In `Topology`'s node construction set `data: { ...n.data, pulse: ..., editable: 
 
 **Implementation record — 2026-11-17, complete.** Repo `gost-ui`; commit recorded in the SDD ledger.
 Files: `Topology/index.tsx` (`onConnect`, editable node data), `graph/nodes.tsx` (connectable handles in edit mode), `graph/build.ts` + `graph/links.ts` (`editable` field; `parseGraphId` uses the last slash), new `EditPanel.tsx` and `utils/applyLinkChange.ts`, `Overview.tsx` (panel swap), `i18n/languages.csv`, `mode.test.ts`.
-Tests: the new source-contract test failed first; focused 13/13; `npm test` 100/100; `npm run build` exit 0.
+Tests: the new source-contract test failed first; focused 13/13; `npm test` 100/100. **Build verification correction:** the first `npm run build` ran against a dirty tree and reported exit 0; the committed task head `0b1dee7` failed `tsc` because `src/graph/nodeSurface.ts` was left unstaged. Fixed in follow-up `9e402d1`; the committed tree then passed `npx tsc --noEmit`.
 Rulings: i18n keys are flat (`topology.editDisconnect`, …) because the generator cannot nest under the `topology.edit` leaf; `parseGraphId` splits on the **last** slash so nested inline node ids resolve their terminal name; forwarder `.nodes`-based edges (`fwd:<name>/<i>`) stay read-only because the whitelist maps forwarder edits to `forwarder.hop` only. UI interaction verified only by TypeScript/Vitest/source checks, not a browser.
 Deferred: full node form (addr/connector/dialer) for new `hop→node` links — Task 3 currently appends a minimal `{name}` node.
+
+## Final review fixes (2026-11-17)
+
+- **C1 — unstaged `nodeSurface.ts`**: folded into the change set as `9e402d1`; Task 5 record above corrected to state the committed head initially failed `tsc` and the build was re-verified on the fixed tree.
+- **I1 — chainGroup edges offered a dead disconnect button**: `EditPanel` now computes `removable` from `disconnectLink(config, …)` and shows the read-only hint for references it cannot remove. Tests: new `links.test.ts` case pins that a chainGroup-only reference returns `null`; new `mode.test.ts` source contract pins the panel gate. Both RED then GREEN.
+- **I2 — no drop targets for three connect directions**: `build.ts` now renders unreferenced registry hops and nodes as connectable cards (`hop:<name>`, `node:<name>`), so `chain→hop`, `hop→node` and `service→forwarder` have real targets. New `build.test.ts` assertion RED then GREEN.
+- **Minor (deferred)**: per-drag-frame dagre recompute, duplicate config refresh/toasts, and unreachable listener-stage selection — recorded in the SDD ledger, not fixed.

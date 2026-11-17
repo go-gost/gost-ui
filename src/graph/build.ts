@@ -485,6 +485,23 @@ export function buildGraph(input: {
     void serviceNode;
   }
 
+  // Registry hops/nodes with no reference are still drawn so edit mode has
+  // drop targets for chain→hop, hop→node and service→forwarder connections.
+  for (const hopDef of hops.values()) {
+    addNode(`hop:${hopDef.name}`, {
+      kind: "hop",
+      label: hopDef.name,
+      sub: "registry hop",
+    });
+  }
+  for (const nodeDef of nodesRegistry.values()) {
+    addNode(`node:${nodeDef.name}`, {
+      kind: "node",
+      label: nodeDef.name,
+      sub: `registry node ${nodeDef.addr ?? ""}`,
+    });
+  }
+
   return {
     nodes: [...nodes.values()],
     edges: edges.filter((e) => {
