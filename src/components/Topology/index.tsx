@@ -16,6 +16,8 @@ import type { Snapshot } from "../../api/dashboard";
 import { buildGraph, type GraphNode } from "../../graph/build";
 import { resolvePositions } from "../../graph/placement";
 import { edgeFlowState } from "../../graph/edgeFlow";
+import { GRID_COLOR } from "../../graph/nodeSurface";
+import { pulsesByLabel } from "../../graph/nodePulse";
 import { loadPositions, savePositions } from "../../graph/positions";
 import { flowDuration, type Activity } from "../../graph/activity";
 import { nodeTypes } from "../../graph/nodes";
@@ -66,11 +68,12 @@ export default function Topology({
 
   const { nodes, edges } = useMemo(() => {
     const placed = resolvePositions(built.nodes, built.edges, savedRef.current);
+    const pulses = pulsesByLabel(activity);
     const laidNodes: RFNode[] = built.nodes.map((n) => ({
       id: n.id,
       type: n.data.kind,
       position: placed[n.id] ?? n.position,
-      data: n.data,
+      data: { ...n.data, pulse: pulses.get(n.data.label) ?? 0 },
     }));
 
     const deadServices = new Set(
@@ -160,7 +163,7 @@ export default function Topology({
         onInit={setFlow}
         proOptions={{ hideAttribution: true }}
       >
-        <Background />
+        <Background gap={20} color={GRID_COLOR} />
         <Controls showInteractive={false} />
       </ReactFlow>
     </div>

@@ -54,6 +54,8 @@ export type GostApiConfig = {
 
 export type Settings = {
   theme?: "dark" | "light" | "system";
+  /** Topology animation master switch; undefined means enabled. */
+  animation?: boolean;
 };
 
 const query = qs.parse(location.search, { ignoreQueryPrefix: true }) as {

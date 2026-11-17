@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { logout, useInfo, useServerConfig } from "../utils/server";
+import { logout, useInfo, useServerConfig, useSettings } from "../utils/server";
 import {
   formatBps,
   formatClock,
@@ -47,6 +47,10 @@ const Overview = () => {
   const [selection, setSelection] = useState<Selection>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const settings = useSettings();
+  const animationEnabled = settings?.animation !== false;
+  const setAnimationEnabled = (value: boolean) =>
+    useSettings.set({ ...settings, animation: value });
   const prevRef = useRef(snapshot);
   const [activity, setActivity] = useState(() => emptyActivity());
 
@@ -54,6 +58,9 @@ const Overview = () => {
     if (!snapshot) return;
     const prev = prevRef.current ?? null;
     prevRef.current = snapshot;
+    // Keep the baseline advancing while animations are off so switching back
+    // on does not replay a stale pulse.
+    if (!animationEnabled) return;
     setActivity((current) => {
       const next = diffActivity(prev, snapshot, Date.now());
       // Activity is a point-in-time event; keep daemon cheap.
@@ -63,7 +70,7 @@ const Overview = () => {
           ? next
           : current;
     });
-  }, [snapshot]);
+  }, [snapshot, animationEnabled]);
 
   const samples = useMemo(
     () => historySamples(snapshot?.history ?? []),
@@ -154,6 +161,17 @@ const Overview = () => {
             {showDetails ? t("topology.details.hide") : t("topology.details.show")}
           </Typography.Text>
           <Switch checked={showDetails} onChange={setShowDetails} size="small" />
+        </Space>
+        <Space>
+          <Typography.Text type="secondary">
+            {t("topology.animation")}
+          </Typography.Text>
+          <Switch
+            checked={animationEnabled}
+            onChange={setAnimationEnabled}
+            size="small"
+            aria-label={t("topology.animation")}
+          />
         </Space>
       </Space>
       {snapshot && !snapshot.metricsEnabled && (

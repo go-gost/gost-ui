@@ -34,6 +34,53 @@
   // --scrollbar-background-color: #313131;
 }
 
+// Topology surfaces — one tinted card colour per node kind, in both themes.
+:root {
+  --gost-topo-grid: #e2e8f0;
+  --gost-node-service-bg: #f0f9ff;
+  --gost-node-module-bg: #eef2ff;
+  --gost-node-chain-bg: #ecfeff;
+  --gost-node-hop-bg: #f5f3ff;
+  --gost-node-node-bg: #f0fdfa;
+  --gost-node-target-bg: #eef2ff;
+  --gost-node-unresolved-bg: #fef2f2;
+}
+
+:root.theme-dark {
+  --gost-topo-grid: #334155;
+  --gost-node-service-bg: #0c4a6e;
+  --gost-node-module-bg: #312e81;
+  --gost-node-chain-bg: #164e63;
+  --gost-node-hop-bg: #4c1d95;
+  --gost-node-node-bg: #064e3b;
+  --gost-node-target-bg: #312e81;
+  --gost-node-unresolved-bg: #7f1d1d;
+}
+
+// New traffic flashes the icon badge once, like cuttle's gw-node-flash.
+@keyframes g-node-flash {
+  0% { transform: scale(1); filter: brightness(1); }
+  30% { transform: scale(1.24); filter: brightness(1.5); }
+  60% { transform: scale(1.1); filter: brightness(1.18); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+.g-node-flash {
+  animation: g-node-flash 600ms ease-out 1;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.25);
+}
+
+.g-node-flash-error {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .g-node-flash {
+    animation: none;
+    box-shadow: none;
+  }
+}
+
 a {
   font-weight: 500;
   color: #646cff;

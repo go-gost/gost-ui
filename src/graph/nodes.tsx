@@ -15,10 +15,13 @@ import {
 import { formatCount } from "../components/Overview/format";
 import { moodBadgeLabel, moodOf, type Mood } from "./health";
 import type { GraphNodeData } from "./build";
+import {
+  ACTIVE_SURFACE,
+  nodeHandleStyle,
+  surfaceStyle,
+} from "./nodeSurface";
 
 type GNode = Node<GraphNodeData>;
-
-const HANDLE_SIZE = 12;
 
 const box: React.CSSProperties = {
   position: "relative",
@@ -31,18 +34,12 @@ const box: React.CSSProperties = {
   fontSize: 12,
   // React Flow switches these variables with its `colorMode`; antd CSS
   // variables are not available because cssVar is not enabled globally.
-  background:
-    "var(--xy-node-background-color, var(--xy-node-background-color-default, #fff))",
+  background: ACTIVE_SURFACE,
   color: "var(--xy-node-color, var(--xy-node-color-default, inherit))",
 };
 
-const handleStyle = (color: string): React.CSSProperties => ({
-  width: HANDLE_SIZE,
-  height: HANDLE_SIZE,
-  background: color,
-  border:
-    "2px solid var(--xy-node-background-color, var(--xy-node-background-color-default, #fff))",
-});
+const handleStyle = (color: string): React.CSSProperties =>
+  nodeHandleStyle(color);
 
 function selectionStyle(
   selected: boolean | undefined,
@@ -79,13 +76,18 @@ function IconBadge({
   color,
   children,
   pulse,
+  error,
 }: {
   color: string;
   children: React.ReactNode;
   pulse?: number;
+  error?: boolean;
 }) {
+  // Remount on each pulse so the one-shot CSS animation restarts.
   return (
     <div
+      key={pulse ?? 0}
+      className={pulse ? `g-node-flash${error ? " g-node-flash-error" : ""}` : undefined}
       style={{
         width: 34,
         height: 34,
@@ -96,7 +98,6 @@ function IconBadge({
         background: color,
         color: "#fff",
         flex: "none",
-        outline: pulse ? `2px solid ${color}` : "none",
       }}
     >
       {children}
@@ -203,6 +204,7 @@ const TargetNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("target"),
         ...selectionStyle(selected, "#6366f1"),
         minWidth: 140,
         justifyContent: "center",
@@ -232,11 +234,16 @@ const ServiceNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("service"),
         ...selectionStyle(selected, healthColor(counters, !!data.dead)),
         minWidth: 250,
       }}
     >
-      <IconBadge color="#0ea5e9">
+      <IconBadge
+        color="#0ea5e9"
+        pulse={data.pulse}
+        error={mood === "dead" || mood === "error"}
+      >
         <GatewayOutlined />
       </IconBadge>
       <NodeBody label={data.label} sub={data.sub} />
@@ -299,11 +306,18 @@ const ModuleNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("module"),
         ...selectionStyle(selected, color),
         minWidth: 210,
       }}
     >
-      <IconBadge color={color}>{icon}</IconBadge>
+      <IconBadge
+        color={color}
+        pulse={data.pulse}
+        error={mood === "dead" || mood === "error"}
+      >
+        {icon}
+      </IconBadge>
       <NodeBody label={data.label} sub={data.sub} />
       <NodeStats counters={counters} />
       <MoodBadge mood={mood} label={moodBadgeLabel(mood, counters)} />
@@ -324,6 +338,7 @@ const ChainNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("chain"),
         ...selectionStyle(selected, healthColor(counters, !!data.dead)),
         minWidth: 210,
       }}
@@ -355,6 +370,7 @@ const HopNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("hop"),
         ...selectionStyle(selected, "#7c3aed"),
         minWidth: 180,
         padding: "8px 12px",
@@ -387,6 +403,7 @@ const NodeCard = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("node"),
         ...selectionStyle(selected, healthColor(counters, !!data.dead)),
         minWidth: 230,
       }}
@@ -418,11 +435,10 @@ const UnresolvedNode = ({ data, selected }: NodeProps<GNode>) => {
     <div
       style={{
         ...box,
+        ...surfaceStyle("unresolved"),
         ...selectionStyle(selected, "#dc2626"),
         minWidth: 190,
         borderStyle: "dashed",
-        // Translucent so it reads as light pink on white and dark red on dark.
-        background: "rgba(220, 38, 38, 0.12)",
       }}
     >
       <IconBadge color="#dc2626">

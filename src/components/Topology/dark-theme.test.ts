@@ -11,6 +11,7 @@ const read = (relative: string) =>
 
 const topology = read("./index.tsx");
 const nodes = read("../../graph/nodes.tsx");
+const surface = read("../../graph/nodeSurface.ts");
 
 test("ReactFlow receives an explicit color mode from the app theme", () => {
   expect(topology).toMatch(/useIsDark\(\)/);
@@ -22,6 +23,8 @@ test("custom node surfaces follow ReactFlow theme variables", () => {
   // so referencing them leaves an always-white node card in dark mode.
   expect(nodes).not.toContain("--ant-color-bg-elevated");
   expect(nodes).not.toContain("--ant-color-error-bg");
-  expect(nodes).toContain("--xy-node-background-color");
+  // The React Flow fallback lives in nodeSurface.ts; cards opt in via surfaceStyle.
+  expect(surface).toContain("--xy-node-background-color");
+  expect(nodes).toContain("surfaceStyle(");
   expect(nodes).toContain("--xy-node-color");
 });

@@ -38,6 +38,8 @@ export interface GraphNodeData extends Record<string, unknown> {
   stage?: string;
   counters?: { errors: number; successes: number };
   dead?: boolean;
+  /** Increments on new traffic to restart the one-shot node flash. */
+  pulse?: number;
   bytesIn?: number;
   bytesOut?: number;
   conns?: number;

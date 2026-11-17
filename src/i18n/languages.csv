@@ -175,6 +175,7 @@ topology.mood.idle,无流量,No traffic
 topology.empty,暂无可绘制的拓扑,No topology to draw
 topology.metrics.disabled,未启用 metrics，链与节点无连接统计。,metrics is off; chain and node counters are unavailable.
 topology.resetLayout,重置布局,Reset layout
+topology.animation,动画,Animation
 topology.graph,拓扑图,Topology
 topology.details.show,展开明细,Show details
 topology.details.hide,收起明细,Hide details

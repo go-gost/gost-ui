@@ -1,6 +1,26 @@
 <!doctype html>
 <html>
   <head>
+    <script>
+      // Resolve the stored theme before first paint so dark users never see
+      // a light flash. Keep in sync with utils/server.ts (__SETTINGS__).
+      (function () {
+        try {
+          var raw = localStorage.getItem("__SETTINGS__");
+          var mode = (raw && JSON.parse(raw).theme) || "system";
+          var dark =
+            mode === "dark" ||
+            (mode === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) {
+            document.documentElement.classList.add("theme-dark");
+            document.documentElement.style.colorScheme = "dark";
+          }
+        } catch (e) {
+          // Storage or matchMedia unavailable — React still applies the class.
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <title>GOST API Manage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
