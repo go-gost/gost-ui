@@ -146,7 +146,11 @@ Deep-clone config before mutating; keep helpers pure and side-effect free. For i
 
 `npm test` + `npm run build`; commit.
 
-**Implementation record (fill after task):** date/status, repo + commit SHA, files changed, tests/commands + results, review findings + fixes, deferred items/limitations.
+**Implementation record — 2026-11-17, complete.** Repo `gost-ui`; commit recorded in the SDD ledger.
+Files: created `src/graph/links.ts` (`parseGraphId`, `linkKind`, `connectLink`, `disconnectLink`, `LinkChange`) and `src/graph/links.test.ts` (9 tests).
+Tests: all 9 tests failed at module load first, then passed; `npm test` 96/96; `npm run build` exit 0.
+Review findings/fixes: `chain` and `forwarder.hop` are required string fields in the generated config types, so disconnect clears them to `""` instead of deleting the properties (updated two assertions).
+Deferred: the node form that collects `addr`/`connector`/`dialer` for `hop→node` is Task 5; this helper currently appends a minimal `{name}` node.
 
 ---
 
