@@ -201,7 +201,7 @@ export default function Detail({
                 }}
               >
                 <Typography.Text strong>
-                  {t("topology.connections")}
+                  {t("topology.connectionsTitle")}
                 </Typography.Text>
                 <Typography.Link
                   onClick={() => void fetchConnections()}

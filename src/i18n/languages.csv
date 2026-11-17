@@ -184,7 +184,7 @@ topology.detail.stage,阶段,Stage
 topology.detail.counters,计数,Counters
 topology.detail.config,配置,Config
 topology.detailsLabel,详情,Details
-topology.connections,最近连接,Recent connections
+topology.connectionsTitle,最近连接,Recent connections
 topology.connections.empty,暂无连接记录,No recent connections
 topology.connections.refresh,刷新,Refresh connections
 topology.connections.sid,SID,SID
