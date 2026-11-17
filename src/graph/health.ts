@@ -42,6 +42,18 @@ export function moodOf(c: Counters, dead = false): Mood {
   return "healthy";
 }
 
+/** A blocked or expired quota outranks the traffic-derived mood on its card. */
+export function nodeMood(
+  c: Counters,
+  dead: boolean,
+  quota?: Parameters<typeof quotaMood>[0]
+): Mood {
+  const traffic = moodOf(c, dead);
+  if (!quota) return traffic;
+  const q = quotaMood(quota);
+  return q === "dead" || q === "warn" ? q : traffic;
+}
+
 /** Short, untranslated label for a mood badge's title/aria-label. The state
  * token plus the error/total ratio is enough without adding i18n keys. */
 export function moodBadgeLabel(mood: Mood, c?: Counters): string {

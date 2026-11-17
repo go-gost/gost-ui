@@ -5,6 +5,7 @@ import {
   Card,
   Col,
   Collapse,
+  Empty,
   Result,
   Row,
   Space,
@@ -182,20 +183,28 @@ const Overview = () => {
         />
       )}
       {cfg ? (
-        <Card
-          title={t("topology.graph")}
-          styles={{ body: { padding: 0, height: "clamp(420px, 62vh, 900px)" } }}
-        >
-          <Topology
-            config={cfg}
-            snapshot={snapshot}
-            activity={activity}
-            selection={selection}
-            infoAddr={info?.addr}
-            resetKey={resetKey}
-            onSelect={setSelection}
-          />
-        </Card>
+        topologyNodes.length === 0 ? (
+          <Card>
+            <Empty description={t("topology.empty")} />
+          </Card>
+        ) : (
+          <Card
+            title={t("topology.graph")}
+            styles={{
+              body: { padding: 0, height: "clamp(420px, 62vh, 900px)" },
+            }}
+          >
+            <Topology
+              config={cfg}
+              snapshot={snapshot}
+              activity={activity}
+              selection={selection}
+              infoAddr={info?.addr}
+              resetKey={resetKey}
+              onSelect={setSelection}
+            />
+          </Card>
+        )
       ) : (
         <Card>
           <Spin />

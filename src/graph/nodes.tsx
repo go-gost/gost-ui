@@ -13,7 +13,7 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { formatCount } from "../components/Overview/format";
-import { moodBadgeLabel, moodOf, type Mood } from "./health";
+import { moodBadgeLabel, moodOf, nodeMood, type Mood } from "./health";
 import type { GraphNodeData } from "./build";
 import {
   ACTIVE_SURFACE,
@@ -301,7 +301,11 @@ const ModuleNode = ({ data, selected }: NodeProps<GNode>) => {
           : kind === "quota"
             ? "#f97316"
             : "#0891b2";
-  const mood = moodOf(counters ?? { errors: 0, successes: 0 }, !!data.dead);
+  const mood = nodeMood(
+    counters ?? { errors: 0, successes: 0 },
+    !!data.dead,
+    data.quota
+  );
   return (
     <div
       style={{

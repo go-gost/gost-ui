@@ -6,6 +6,11 @@ export interface EdgeFlowState {
   dashed: boolean;
 }
 
+/** Edge stroke width from recent byte delta, capped like cuttle's request log. */
+export function edgeWidth(bytes: number): number {
+  return Math.min(4, 1.5 + Math.log10(Math.max(bytes, 0) / 1024 + 1));
+}
+
 /** Dead services paint their edges red and dashed; otherwise dashes encode
  * the structural edge kind (direct/attach). */
 export function edgeFlowState(

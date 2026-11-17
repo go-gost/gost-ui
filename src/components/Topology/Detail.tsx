@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Button,
   Descriptions,
   Drawer,
   Empty,
+  Space,
   Spin,
   Table,
   Tag,
@@ -61,6 +63,10 @@ export default function Detail({
   const [records, setRecords] = useState<ConnectionRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [errorsOnly, setErrorsOnly] = useState(false);
+  const visibleRecords = errorsOnly
+    ? records.filter((row) => !!row.err)
+    : records;
 
   const fetchConnections = useCallback(async () => {
     if (filter.kind === "other") {
@@ -203,12 +209,22 @@ export default function Detail({
                 <Typography.Text strong>
                   {t("topology.connectionsTitle")}
                 </Typography.Text>
-                <Typography.Link
-                  onClick={() => void fetchConnections()}
-                  style={{ fontSize: 12 }}
-                >
-                  {t("topology.connections.refresh")}
-                </Typography.Link>
+                <Space size={8}>
+                  <Button
+                    size="small"
+                    type={errorsOnly ? "primary" : "default"}
+                    aria-pressed={errorsOnly}
+                    onClick={() => setErrorsOnly((value) => !value)}
+                  >
+                    {t("topology.connections.errorsOnly")}
+                  </Button>
+                  <Typography.Link
+                    onClick={() => void fetchConnections()}
+                    style={{ fontSize: 12 }}
+                  >
+                    {t("topology.connections.refresh")}
+                  </Typography.Link>
+                </Space>
               </div>
               {loadError ? (
                 <Typography.Paragraph type="danger">
@@ -216,13 +232,13 @@ export default function Detail({
                 </Typography.Paragraph>
               ) : loading && records.length === 0 ? (
                 <Spin size="small" />
-              ) : records.length === 0 ? (
+              ) : visibleRecords.length === 0 ? (
                 <Typography.Paragraph type="secondary">
                   {t("topology.connections.empty")}
                 </Typography.Paragraph>
               ) : (
                 <Table<ConnectionRecord>
-                  dataSource={records}
+                  dataSource={visibleRecords}
                   columns={columns}
                   rowKey={(row) => `${row.sid}:${row.time}`}
                   pagination={false}

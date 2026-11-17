@@ -188,6 +188,7 @@ topology.detailsLabel,详情,Details
 topology.connectionsTitle,最近连接,Recent connections
 topology.connections.empty,暂无连接记录,No recent connections
 topology.connections.refresh,刷新,Refresh connections
+topology.connections.errorsOnly,仅错误,Errors only
 topology.connections.sid,SID,SID
 topology.connections.time,时间,Time
 topology.connections.bytes,字节数,Bytes

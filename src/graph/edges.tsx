@@ -11,6 +11,7 @@ interface FlowData extends Record<string, unknown> {
   duration?: number;
   color?: string;
   dashed?: boolean;
+  width?: number;
 }
 
 const DOTS = 3;
@@ -47,13 +48,11 @@ export function DotEdge({
   const duration = Math.max(0.3, flow?.duration || 0.9);
   const dotColor = flow?.error ? "#dc2626" : "#0ea5e9";
   const strokeColor = flow?.color ?? "#94a3b8";
+  const width = flow?.width ?? 2;
   const edgeStyle = {
-    stroke: strokeColor,
-    strokeWidth: 2,
+    stroke: selected ? "#0ea5e9" : strokeColor,
+    strokeWidth: selected ? Math.max(3.5, width) : width,
     strokeDasharray: flow?.dashed ? "6 4" : undefined,
-    ...(selected
-      ? { stroke: "#0ea5e9", strokeWidth: 3.5 }
-      : undefined),
     ...style,
   };
 
