@@ -14,8 +14,9 @@ import "@xyflow/react/dist/style.css";
 import type { Config } from "../../api/types";
 import type { Snapshot } from "../../api/dashboard";
 import { buildGraph, type GraphNode } from "../../graph/build";
-import { layoutGraph } from "../../graph/layout";
-import { loadPositions, mergePositions, savePositions } from "../../graph/positions";
+import { resolvePositions } from "../../graph/placement";
+import { edgeFlowState } from "../../graph/edgeFlow";
+import { loadPositions, savePositions } from "../../graph/positions";
 import { flowDuration, type Activity } from "../../graph/activity";
 import { nodeTypes } from "../../graph/nodes";
 import { edgeTypes } from "../../graph/edges";
@@ -32,6 +33,7 @@ export interface TopologyProps {
   activity: Activity;
   selection: Selection;
   infoAddr?: string;
+  resetKey: number;
   onSelect: (selection: Selection) => void;
 }
 
@@ -44,15 +46,18 @@ export default function Topology({
   activity,
   selection,
   infoAddr,
+  resetKey,
   onSelect,
 }: TopologyProps) {
   const [flow, setFlow] = useState<ReactFlowInstance | null>(null);
   const savedRef = useRef(loadPositions(infoAddr));
+  const [layoutNonce, setLayoutNonce] = useState(0);
   const isDark = useIsDark();
 
   useEffect(() => {
     savedRef.current = loadPositions(infoAddr);
-  }, [infoAddr]);
+    setLayoutNonce((n) => n + 1);
+  }, [infoAddr, resetKey]);
 
   const built = useMemo(
     () => buildGraph({ config, snapshot }),
@@ -60,14 +65,19 @@ export default function Topology({
   );
 
   const { nodes, edges } = useMemo(() => {
-    const laid = layoutGraph(built.nodes, built.edges);
-    const placed = mergePositions(savedRef.current, laid);
-    const laidNodes: RFNode[] = laid.map((n) => ({
+    const placed = resolvePositions(built.nodes, built.edges, savedRef.current);
+    const laidNodes: RFNode[] = built.nodes.map((n) => ({
       id: n.id,
       type: n.data.kind,
       position: placed[n.id] ?? n.position,
       data: n.data,
     }));
+
+    const deadServices = new Set(
+      built.nodes
+        .filter((n) => n.data.kind === "service" && n.data.dead)
+        .map((n) => n.data.label)
+    );
 
     const pulseBytes = new Map<string, number>();
     for (const [name, info] of Object.entries(activity.services)) {
@@ -93,8 +103,7 @@ export default function Topology({
         animated: false,
         selected: selection?.kind === "edge" && selection.id === edge.id,
         data: {
-          color: "#94a3b8",
-          dashed: edge.kind === "direct" || edge.kind === "attach",
+          ...edgeFlowState(edge, deadServices),
           pulse: bytes > 0 ? 1 : 0,
           duration: bytes > 0 ? flowDuration(bytes) : 0.9,
         },
@@ -102,7 +111,7 @@ export default function Topology({
     });
 
     return { nodes: laidNodes, edges: laidEdges };
-  }, [built, activity, selection]);
+  }, [built, activity, selection, layoutNonce]);
 
   const onNodeDragStop: OnNodeDrag = useCallback(
     (_, node) => {

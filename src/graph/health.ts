@@ -42,6 +42,15 @@ export function moodOf(c: Counters, dead = false): Mood {
   return "healthy";
 }
 
+/** Short, untranslated label for a mood badge's title/aria-label. The state
+ * token plus the error/total ratio is enough without adding i18n keys. */
+export function moodBadgeLabel(mood: Mood, c?: Counters): string {
+  if (mood === "idle") return "";
+  if (!c) return mood;
+  const total = c.errors + c.successes;
+  return total === 0 ? mood : `${mood} ${c.errors}/${total}`;
+}
+
 export function quotaMood(q: {
   blocked?: boolean;
   expired?: boolean;

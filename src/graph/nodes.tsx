@@ -13,7 +13,7 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { formatCount } from "../components/Overview/format";
-import { moodOf, type Mood } from "./health";
+import { moodBadgeLabel, moodOf, type Mood } from "./health";
 import type { GraphNodeData } from "./build";
 
 type GNode = Node<GraphNodeData>;
@@ -159,8 +159,10 @@ function NodeStats({
 
 function MoodBadge({
   mood,
+  label,
 }: {
   mood: ReturnType<typeof moodOf>;
+  label: string;
 }) {
   if (mood === "idle") return null;
   const icon =
@@ -179,6 +181,8 @@ function MoodBadge({
     <span
       data-status={mood}
       role="img"
+      aria-label={label || undefined}
+      title={label || undefined}
       style={{
         position: "absolute",
         top: 6,
@@ -254,7 +258,7 @@ const ServiceNode = ({ data, selected }: NodeProps<GNode>) => {
           {`↓${formatCount(data.rateIn ?? 0)}/s  ↑${formatCount(data.rateOut ?? 0)}/s`}
         </div>
       ) : null}
-      <MoodBadge mood={mood} />
+      <MoodBadge mood={mood} label={moodBadgeLabel(mood, counters)} />
       <Handle
         type="source"
         position={Position.Right}
@@ -302,7 +306,7 @@ const ModuleNode = ({ data, selected }: NodeProps<GNode>) => {
       <IconBadge color={color}>{icon}</IconBadge>
       <NodeBody label={data.label} sub={data.sub} />
       <NodeStats counters={counters} />
-      <MoodBadge mood={mood} />
+      <MoodBadge mood={mood} label={moodBadgeLabel(mood, counters)} />
       <Handle
         type="target"
         position={Position.Left}
@@ -329,7 +333,7 @@ const ChainNode = ({ data, selected }: NodeProps<GNode>) => {
       </IconBadge>
       <NodeBody label={data.label} sub={data.sub ?? "chain"} />
       <NodeStats counters={counters} />
-      <MoodBadge mood={mood} />
+      <MoodBadge mood={mood} label={moodBadgeLabel(mood, counters)} />
       <Handle
         type="target"
         position={Position.Left}
@@ -392,7 +396,7 @@ const NodeCard = ({ data, selected }: NodeProps<GNode>) => {
       </IconBadge>
       <NodeBody label={data.label} sub={data.sub} />
       <NodeStats counters={counters} />
-      <MoodBadge mood={mood} />
+      <MoodBadge mood={mood} label={moodBadgeLabel(mood, counters)} />
       <Handle
         type="target"
         position={Position.Left}

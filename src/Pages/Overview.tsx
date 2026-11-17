@@ -46,6 +46,7 @@ const Overview = () => {
 
   const [selection, setSelection] = useState<Selection>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const prevRef = useRef(snapshot);
   const [activity, setActivity] = useState(() => emptyActivity());
 
@@ -141,7 +142,10 @@ const Overview = () => {
           })}
         </Typography.Text>
         <Button
-          onClick={() => resetLayout(info?.addr)}
+          onClick={() => {
+            resetLayout(info?.addr);
+            setResetKey((key) => key + 1);
+          }}
         >
           {t("topology.resetLayout")}
         </Button>
@@ -170,6 +174,7 @@ const Overview = () => {
             activity={activity}
             selection={selection}
             infoAddr={info?.addr}
+            resetKey={resetKey}
             onSelect={setSelection}
           />
         </Card>
